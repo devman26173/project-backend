@@ -1,12 +1,12 @@
-package com.example.demo.controller;
+package com.example.join.controller;
 
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.User;
-import com.example.demo.UserRepository;
+import com.example.join.User;
+import com.example.join.UserRepository;
 
 @RestController
 public class UserController {

@@ -1,29 +1,27 @@
 package com.example.join.controller;
 
-import com.example.join.dto.PostDTO;
+import com.example.join.entity.Post;
+// import com.example.join.entity.Book;
 import com.example.join.service.PostService;
-import org.springframework.http.ResponseEntity;
+// import com.example.join.service.BookService;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
-@CrossOrigin(origins = "*")
+@RequestMapping("/posts")
 public class PostController {
-    
     private final PostService postService;
-    
+    // private final BoookService bookService;
+
     public PostController(PostService postService) {
-        this.postService = postService;
+    // public bookController(BookService bookService)
+		this.postService = postService;
     }
-    
+
     @GetMapping
-    public ResponseEntity<List<PostDTO>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
-    }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDTO> getPostById(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.getPostById(id));
+    public List<Post> findAll() {  // 괄호 2개로 수정
+    // public List<Book> findAll()
+        return postService.findAll();  // 세미콜론도 추가
     }
 }

@@ -17,7 +17,7 @@ public class FoodBoardController {
 		this.foodboardService = foodboardService;
     }
     
-@GetMapping
+    @GetMapping
     public List<FoodBoard> findAll() {
     // public List<Book> findAll()
         return foodboardService.findAll();

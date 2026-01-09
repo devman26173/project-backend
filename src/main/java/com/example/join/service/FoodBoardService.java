@@ -10,9 +10,8 @@ import java.util.List;
 @Service
 public class FoodBoardService {
 
-		private final FoodBoardRepository foodboardRepository;
+	private final FoodBoardRepository foodboardRepository;
 		
-    
     public FoodBoardService(FoodBoardRepository foodboardRepository) {
         this.foodboardRepository = foodboardRepository;
     }

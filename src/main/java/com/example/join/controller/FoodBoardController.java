@@ -3,11 +3,10 @@ package com.example.join.controller;
 import com.example.join.entity.FoodBoard;
 import com.example.join.service.FoodBoardService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/FoodBoards")
+@RequestMapping("/foodboards")
 public class FoodBoardController {
     private final FoodBoardService foodboardService;
     // private final BoookService bookService;

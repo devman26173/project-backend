@@ -1,7 +1,6 @@
 package com.example.join.service;
 
 import com.example.join.entity.FoodBoard;
-
 import com.example.join.repository.FoodBoardRepository;
 import org.springframework.stereotype.Service;
 

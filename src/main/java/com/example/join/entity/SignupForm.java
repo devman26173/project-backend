@@ -16,7 +16,7 @@ public class SignupForm {
     public void setId(Long Id) {
 	    this.Id = Id;
     }
-    public String content() {
+    public String getContent() {
 	    return content;
     }
     public void setContent(String content){

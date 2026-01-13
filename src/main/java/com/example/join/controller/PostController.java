@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")  
 @RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
@@ -20,8 +21,8 @@ public class PostController {
     }
 
     @GetMapping
-    public List<Post> findAll() {  // 괄호 2개로 수정
+    public List<Post> findAll() { 
     // public List<Book> findAll()
-        return postService.findAll();  // 세미콜론도 추가
+        return postService.findAll();
     }
 }

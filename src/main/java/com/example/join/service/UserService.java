@@ -1,23 +1,23 @@
 package com.example.join.service;
 
-import com.example.join.entity.SignupForm;
+import com.example.join.entity.User;
 // import com.example.join.entity.Book;
-import com.example.join.repository.SignupFormRepository;
+import com.example.join.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class SignupFormService {
+public class UserService {
 // public class Bookservice
-		private final SignupFormRepository signupFormRepository;
+		private final UserRepository signupFormRepository;
 		// private final BookRepository bookRepository;
 
-    public SignupFormService(SignupFormRepository signupFormRepository) {
+    public UserService(UserRepository signupFormRepository) {
     // public BookService(BookRepository bookRepository)
         this.signupFormRepository = signupFormRepository;
     }
-    public List<SignupForm> findAll() {
+    public List<User> findAll() {
         return signupFormRepository.findAll();
     }
 }

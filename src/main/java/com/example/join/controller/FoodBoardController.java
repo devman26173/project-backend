@@ -7,8 +7,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/board")
-@CrossOrigin(origins = "http://localhost:3000")
-
 public class FoodBoardController {
     private final FoodBoardService foodboardService;
     // private final BoookService bookService;

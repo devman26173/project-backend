@@ -3,7 +3,7 @@ package com.example.join.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class SignupForm {
+public class User {
 // public class Book
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/SignupForm")
+@RequestMapping("/signupform")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SignupFormController {
     private final SignupFormService signupformService;
     // private final BoookService bookService;

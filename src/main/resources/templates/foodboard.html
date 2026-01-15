@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>FoodBoard</title>
+	<link rel="stylesheet" th:href="@{/css/foodboard.css}">
+</head>
+<body>
+    <h1 th:text="${message}" >기본 텍스트</h1>
+	<!-- 상단 헤더-->
+	<header class = "boarder-header">
+		
+		<!--뒤로가기 버튼-->
+		<span class = "back-button">〈</span>
+		
+		<!--제목과 지역 선택 -->
+		<div class = "header-title-box">
+			<span class = "header-main-title">グルメ掲示板</span>
+			<span class = "header-sub-title">すべて ▼</span>
+		</div>
+		
+		<!--검색 및 메뉴 -->
+		<div class = "header-icons">
+		<span class = "search-icon">🔎</span>
+		<img src = "https://images.unsplash.com/photo-1740252117027-4275d3f84385?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cHJvZmlsZSUyMGljb258ZW58MHx8MHx8fDA%3D" 
+		alt = "프로필" class = "profile-icon">
+		</div>
+	</header>
+		<!--공지사항-->
+		<div class = "notice-box">
+			<span>📢</span>
+			<span>グルメ掲示板ご利用方法とルール</span>
+		</div>
+		
+		<!--게시글 리스트-->
+		<div class = "post-list">
+			<div class = "post-item">
+				<div class = "post-content">
+				<h3 class = "post-title">六本木で本格アメリカンBBQ🍖</h3>
+					<p class = "post-text">お肉がホロホロでボリューム満点！</p>
+					<div class = "post-meta">⭐ 5 👍 0 💬 0 | 12:24</div>
+					</div>
+					<img src = "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400"" alt = "음식 사진" class = "post-image">	
+			</div>
+		</div>
+		
+		
+	
+	
+</body>
+</html>

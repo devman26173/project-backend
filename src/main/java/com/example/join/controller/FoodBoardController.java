@@ -1,24 +1,15 @@
 package com.example.join.controller;
 
-import com.example.join.entity.FoodBoard;
-import com.example.join.service.FoodBoardService;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
-@RestController
-@RequestMapping("/board")
+@Controller
 public class FoodBoardController {
-    private final FoodBoardService foodboardService;
-    // private final BoookService bookService;
 
-    public FoodBoardController(FoodBoardService foodboardService) {
-    /// public bookController(BookService bookService)
-		this.foodboardService = foodboardService;
-    }
-    
-    @GetMapping
-    public List<FoodBoard> findAll() {
-    // public List<Book> findAll()
-        return foodboardService.findAll();
+    @GetMapping("/board")
+    public String home(Model model) {
+        model.addAttribute("message", "제 도쿄 맛집 게시판을 소개합니다🥗");
+        return "foodboard"; // templates/home.html
     }
 }

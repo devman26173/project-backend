@@ -1,27 +1,41 @@
 package com.example.join.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
 import com.example.join.entity.Post;
-// import com.example.join.entity.Book;
-import com.example.join.service.PostService;
-// import com.example.join.service.BookService;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/posts")
+@Controller
 public class PostController {
-    private final PostService postService;
-    // private final BoookService bookService;
+	
+	private Post post = new Post(); //임시 (DB 대신)
+	
+	public PostController() {
+		post.setId(1L);
+		post.setContent("첫 게시글");
+		post.setLikeCount(0);
+		post.setLikedByMe(false);
+		
+	}
 
-    public PostController(PostService postService) {
-    // public bookController(BookService bookService)
-		this.postService = postService;
-    }
+	@GetMapping("/post")
+	public String post(Model model) {
+		model.addAttribute("post", post);
+		return "post"; // templates/home.html
+	}
+	
+	@PostMapping("/post/like")
+	public String toggleLike() {
+		if (post.isLikedByMe()) {
+		    post.setLikeCount(post.getLikeCount() - 1);
+		    post.setLikedByMe(false);
+		} else {
+		    post.setLikeCount(post.getLikeCount() + 1); // 👍 likeCount 증가
+		    post.setLikedByMe(true);                    // 👍 boolean 설정
+		}
 
-    @GetMapping
-    public List<Post> findAll() { 
-    // public List<Book> findAll()
-        return postService.findAll();
-    }
+		return "redirect:/post";
+	}
 }

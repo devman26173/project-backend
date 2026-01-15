@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+    <link rel="stylesheet" th:href="@{/css/post.css}">
+</head>
+<body>
+
+<div class="page">
+
+    <!-- 게시글 카드 -->
+    <div class="post-card">
+        <div class="post-header">
+            <div class="profile"></div>
+            <div class="author">1234</div>
+        </div>
+
+        <div class="post-content">
+            게시글 내용입니다
+        </div>
+
+		<div class="post-actions">
+
+		    <!-- ❤️ 좋아요 버튼 -->
+			<form th:action="@{/post/like}" method="post">
+			    <button type="submit">
+			        <span th:text="${post.likedByMe ? '❤️ 좋아요' : '🤍 좋아요'}">🤍</span>
+			        <span th:text="${post.likeCount}">0</span>
+			    </button>
+			</form>
+
+
+		    <!-- 💬 댓글 수 -->
+		    <span>
+		        💬 댓글 <span th:text="${commentCount}">0</span>
+		    </span>
+
+		</div>
+
+    </div>
+
+    <!-- 댓글 입력 -->
+    <div class="comment-form">
+        <textarea placeholder="댓글을 입력하세요"></textarea>
+        <button>등록</button>
+    </div>
+
+    <!-- 댓글 리스트 -->
+    <div class="comment-list">
+
+        <div class="comment">
+            <div class="comment-header">
+                <div class="profile small"></div>
+                <span class="author">유저</span>
+                <span class="time">방금</span>
+            </div>
+
+            <div class="comment-content">
+                댓글 내용
+            </div>
+
+            <div class="comment-actions">
+                ❤️ 0 · 💬 댓글 · ✏️ 수정 · 🗑 삭제
+            </div>
+
+            <!-- 대댓글 -->
+            <div class="reply">
+                <div class="comment-header">
+                    <div class="profile tiny"></div>
+                    <span class="author">유저</span>
+                    <span class="time">방금</span>
+                </div>
+                <div class="comment-content">
+                    대댓글 내용
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

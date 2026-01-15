@@ -1,0 +1,17 @@
+@Bean
+SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+    http
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/", "/login").permitAll()
+            .anyRequest().authenticated()
+        )
+        .oauth2Login(oauth -> oauth
+            .loginPage("/login")
+            .userInfoEndpoint(userInfo ->
+                userInfo.userService(customOAuth2UserService)
+            )
+        );
+
+    return http.build();
+}

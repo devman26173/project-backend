@@ -13,4 +13,3 @@ public class HomeController {
         return "home"; // templates/home.html
     }
 }
-

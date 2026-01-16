@@ -66,6 +66,7 @@ body {
     border: none;
     border-radius: 8px;
     padding: 8px;
+	cursor: pointer;
 }
 
 .comment {
@@ -82,3 +83,54 @@ body {
     margin-top: 8px;
     margin-left: 24px;
 }
+
+/* 기존 CSS 아래에 추가 */
+
+.edit-form {
+        display: none;
+        margin-top: 8px;
+    }
+    .edit-form.active {
+        display: block;
+    }
+    .reply-form {
+        display: none;
+        margin-top: 8px;
+        margin-left: 24px;
+    }
+    .reply-form.active {
+        display: block;
+    }
+    .comment-actions span {
+        cursor: pointer;
+        margin-right: 12px;
+    }
+    .comment-actions span:hover {
+        opacity: 0.7;
+    }
+    
+    /* ✅ Textarea 크기 고정 */
+    textarea {
+        resize: none !important;  /* 크기 조절 불가 */
+        width: 100%;
+        min-height: 60px;  /* 댓글 입력창 높이 */
+        max-height: 60px;
+        padding: 10px;
+        box-sizing: border-box;
+        font-family: inherit;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    /* 대댓글 입력창은 조금 작게 */
+    .reply-form textarea {
+        min-height: 50px;
+        max-height: 50px;
+    }
+    
+    /* 수정 폼 textarea */
+    .edit-form textarea {
+        min-height: 60px;
+        max-height: 60px;
+    }

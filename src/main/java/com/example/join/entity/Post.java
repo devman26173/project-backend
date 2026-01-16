@@ -76,4 +76,19 @@ public class Post {
 	public void setLikedByMe(boolean likedByMe) {
 		this.likedByMe = likedByMe;
 	}
+	public List<Comment> getComments() {
+		return comments;
+	}
+	public void addComment(Comment comment) {
+		this.comments.add(comment);
+	}
+	public void removeComment(Long commentId) {
+		comments.removeIf(c -> c.getId().equals(commentId));
+	}
+	public Comment findCommentById(Long id) {
+		return comments.stream()
+				.filter(c -> c.getId().equals(id))
+				.findFirst()
+				.orElse(null);
+	}
 }

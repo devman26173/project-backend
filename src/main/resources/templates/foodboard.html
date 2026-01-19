@@ -1,50 +1,85 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th = "http://www.thymeleaf.org">
 <head>
-    <title>FoodBoard</title>
-	<link rel="stylesheet" th:href="@{/css/foodboard.css}">
+	<meta charset = "UTF-8">
+	<meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+	<title>FoodBoard</title>
+	
+	<!--Bootstrap CSS-->
+	<link href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	
+	<!--커스텀 CSS (추가 스타일용)-->
+	<link rel = "stylesheet" th:href = "@{/css/foodboard.css}">
+	<style>
+		.dropdown-submenu:hover > .dropdown-menu {
+			display: block; 
+			}
+		</style>
 </head>
 <body>
-    <h1 th:text="${message}" >기본 텍스트</h1>
-	<!-- 상단 헤더-->
-	<header class = "boarder-header">
+	<header class = "bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+		<span>〈</span>
+		<div class = "d-flex flex-column align-items-center dropdown">
+		<span class = "fw-bold fs-4">グルメ掲示板</span>
+		<span class = "small text-muted dropdown-toggle"
+					data-bs-toggle = "dropdown"
+			 style = "cursor: pointer">すべて</span>
+			 <ul class = "dropdown-menu shadow border-0">
+				<li class="dropdown-submenu position-relative">
+					<a class = "dropdown-item dropdown-toggle" href="#">関東</a>
+					
+					<ul class = "dropdown-menu start-100 top-0">
+						<li><a class = "dropdown-item ps-4" href="#">東京都</a></li>
+						<li><a class = "dropdown-item ps-4" href="#">神奈川県</a></li>
+						<li><a class = "dropdown-item ps-4" href="#">千葉県</a></li>
+						<li><a class = "dropdown-item ps-4" href="#">埼玉県</a></li>
+				</ul></li></ul>
+				</div>
+		<div class = "d-flex gap-3 align-items-center">
+		<span style = "cursor: pointer">🔎</span>
+		<img src = "https://images.unsplash.com/photo-1740252117027-4275d3f84385?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class = "rounded-circle" style = "width:32px; height:32px ; cursor:pointer">
+		</div>
+		</header>
 		
-		<!--뒤로가기 버튼-->
-		<span class = "back-button">〈</span>
-		
-		<!--제목과 지역 선택 -->
-		<div class = "header-title-box">
-			<span class = "header-main-title">グルメ掲示板</span>
-			<span class = "header-sub-title">すべて ▼</span>
+		<div class = " p-3 rounded d-flex gap-2 small fw-bold" style = "background-color: #ffecd9 ; cursor: pointer">
+		<span>📢</span>
+		<span>グルメ掲示板ご利用方法とルール</span>
 		</div>
 		
-		<!--검색 및 메뉴 -->
-		<div class = "header-icons">
-		<span class = "search-icon">🔎</span>
-		<img src = "https://images.unsplash.com/photo-1740252117027-4275d3f84385?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cHJvZmlsZSUyMGljb258ZW58MHx8MHx8fDA%3D" 
-		alt = "프로필" class = "profile-icon">
-		</div>
-	</header>
-		<!--공지사항-->
-		<div class = "notice-box">
-			<span>📢</span>
-			<span>グルメ掲示板ご利用方法とルール</span>
-		</div>
-		
-		<!--게시글 리스트-->
-		<div class = "post-list">
-			<div class = "post-item">
-				<div class = "post-content">
-				<h3 class = "post-title">六本木で本格アメリカンBBQ🍖</h3>
-					<p class = "post-text">お肉がホロホロでボリューム満点！</p>
-					<div class = "post-meta">⭐ 5 👍 0 💬 0 | 12:24</div>
+		<main class = "container-fluid p-0 pb-5">
+			<div class = "d-flex p-3 border-bottom" style = "background-color: white">
+				<div class = "flex-grow-1 pe-3" >
+					<div class = "small text-secondary mb-1">[東京都]</div>
+					<h6 class = "fw-bold mb-1 text-truncate" style = "cursor:pointer">六本木で本格アメリカンBBQ 🍖</h6>
+					<p class = "small text-muted mb-2 text-truncate">お肉がホロホロでボリューム満点！...</p>
+					
+					<div class = "d-flex align-items-center gap-2 small">
+						<span class = "text-warning">⭐5</span>
+						<span>👍</span>
+						<span>💬</span>
+						<span class = "ms-auto text-muted">12:24 | 作成者</span>
+						</div>
 					</div>
-					<img src = "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400" alt = "음식 사진" class = "post-image">	
+							
+				<div>
+					<img src = "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400"
+						 class = rounded
+						 style = "width: 80px; height: 80px; object-fit: cover">
+						 
+					</div>
 			</div>
+		</main>
+			
+		<div class = "fixed-bottom d-flex justify-content-center mb-4">
+			<button class = "btn rounded-pill shadow z-index px-4 py-2 fw-bold">
+			<span class = "me-2">投稿する✏️</span>
+			</button>
 		</div>
-		
-		
+						 
 	
-	
+	<!--Bootstrap JS-->
+	<script src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+	

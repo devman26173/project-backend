@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.example.join.entity.Post;
 import com.example.join.entity.Post.Comment;
+import java.time.LocalDateTime;
 
 @Controller
 public class PostController {
@@ -22,6 +23,7 @@ public class PostController {
 	
 		//샘플 댓글 추가
 		Comment sampleComment = new Comment(1L, "첫 댓글입니다!", "유저1");
+		sampleComment.setCreatedAt(LocalDateTime.now().minusMinutes(30));
 		post.addComment(sampleComment);
 		commentIdCounter = 2L;
 	}
@@ -30,7 +32,7 @@ public class PostController {
 	public String post(Model model) {
 		model.addAttribute("post", post);
 		model.addAttribute("commentCount", post.getComments().size());
-		return "post"; // templates/home.html
+		return "post"; // templates/post.html
 	}
 	
 	@PostMapping("/post/like")
@@ -39,8 +41,8 @@ public class PostController {
 		    post.setLikeCount(post.getLikeCount() - 1);
 		    post.setLikedByMe(false);
 		} else {
-		    post.setLikeCount(post.getLikeCount() + 1); // 👍 likeCount 증가
-		    post.setLikedByMe(true);                    // 👍 boolean 설정
+		    post.setLikeCount(post.getLikeCount() + 1);
+		    post.setLikedByMe(true);
 		}
 		return "redirect:/post";
 	}
@@ -50,10 +52,11 @@ public class PostController {
 	public String addComment(@RequestParam String content) {
 		if (content != null && !content.trim().isEmpty()) {
 			Comment newComment = new Comment(commentIdCounter++, content, "익명");
+			newComment.setCreatedAt(LocalDateTime.now());
 			post.addComment(newComment);
 		}
 		return "redirect:/post";
-		}
+	}
 	
 	//댓글 삭제
 	@PostMapping("/post/comment/delete")
@@ -62,7 +65,7 @@ public class PostController {
 		return "redirect:/post";
 	}
 	
-	//댓글 수정 (간단 버전)
+	//댓글 수정
 	@PostMapping("/post/comment/edit")
 	public String editComment(
 			@RequestParam Long commentId,
@@ -80,10 +83,10 @@ public class PostController {
 		Comment comment = post.findCommentById(commentId);
 		if (comment != null) {
 			if (comment.isLikedByMe()) {
-				comment.setLikeCount(comment.getLikeCount() -1);
+				comment.setLikeCount(comment.getLikeCount() - 1);
 				comment.setLikedByMe(false);
 			} else {
-				comment.setLikeCount(comment.getLikeCount() +1);
+				comment.setLikeCount(comment.getLikeCount() + 1);
 				comment.setLikedByMe(true);
 			}
 		}
@@ -98,6 +101,7 @@ public class PostController {
 		Comment parent = post.findCommentById(parentId);
 		if (parent != null && content != null && !content.trim().isEmpty()) {
 			Comment reply = new Comment(commentIdCounter++, content, "익명");
+			reply.setCreatedAt(LocalDateTime.now());
 			parent.getReplies().add(reply);
 		}
 		return "redirect:/post";
@@ -111,7 +115,6 @@ public class PostController {
 	    
 	    Comment parent = post.findCommentById(parentId);
 	    if (parent != null) {
-	        // 부모 댓글의 대댓글 리스트에서 해당 대댓글 찾기
 	        Comment reply = parent.getReplies().stream()
 	            .filter(r -> r.getId().equals(replyId))
 	            .findFirst()
@@ -126,6 +129,42 @@ public class PostController {
 	                reply.setLikedByMe(true);
 	            }
 	        }
+	    }
+	    
+	    return "redirect:/post";
+	}
+	
+	// 대댓글 수정
+	@PostMapping("/post/comment/reply/edit")
+	public String editReply(
+	        @RequestParam Long parentId,
+	        @RequestParam Long replyId,
+	        @RequestParam String content) {
+	    
+	    Comment parent = post.findCommentById(parentId);
+	    if (parent != null) {
+	        Comment reply = parent.getReplies().stream()
+	            .filter(r -> r.getId().equals(replyId))
+	            .findFirst()
+	            .orElse(null);
+	        
+	        if (reply != null && content != null && !content.trim().isEmpty()) {
+	            reply.setContent(content);
+	        }
+	    }
+	    
+	    return "redirect:/post";
+	}
+	
+	// 대댓글 삭제
+	@PostMapping("/post/comment/reply/delete")
+	public String deleteReply(
+	        @RequestParam Long parentId,
+	        @RequestParam Long replyId) {
+	    
+	    Comment parent = post.findCommentById(parentId);
+	    if (parent != null) {
+	        parent.getReplies().removeIf(r -> r.getId().equals(replyId));
 	    }
 	    
 	    return "redirect:/post";

@@ -1,8 +1,7 @@
 package com.example.join.entity;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
@@ -23,6 +22,7 @@ public class Post {
     	private Long id;
     	private String content;
     	private String author;
+    	private LocalDateTime createdAt;
     	
     	private int likeCount;
     	private boolean likedByMe;
@@ -32,8 +32,10 @@ public class Post {
     	public Comment(Long id, String content, String author) {
     		this.id = id;
     		this.content = content;
-    		this.author = author;    		
-    }
+    		this.author = author;
+    		this.createdAt = LocalDateTime.now();
+    	}
+    	
     	// getter / setter
     	public Long getId() { return id; }
     	public String getContent() { return content; }
@@ -49,11 +51,16 @@ public class Post {
     	
     	public String getAuthor() { return author; }
     	public List<Comment> getReplies() { return replies; }
+    	
+    	public LocalDateTime getCreatedAt() { return createdAt; }
+    	public void setCreatedAt(LocalDateTime createdAt) { 
+    		this.createdAt = createdAt; 
+    	}
     }
     
     // Post getter / setter 
     public Long getId() {
-		  return Id;
+		return Id;
     }
     public void setId(Long Id) {
 	    this.Id = Id;

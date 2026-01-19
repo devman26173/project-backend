@@ -1,0 +1,117 @@
+*{
+	margin : 0;
+	padding : 0;
+	box-sizing : border-box;
+}
+body{
+		font-family : 'Hiragino sans', 'Yu Gothic', 'Meiryo', sans-serif;
+}
+.container{
+	display : flex;
+	justify-content : center;
+	align-items :center;
+	min-height : 100vh;
+	background-color : #FFF5F3;
+	padding : 20px;
+}
+.box{
+	background : white;
+	padding : 80px 40px;
+	border-radius : 8px;
+	box-shadow : 0 4px 20px rgba(255, 123, 107, 0.15);
+	width : 100%
+	max-width : 400;
+	min-height : 500px;
+}
+h1{
+	text-align : center;
+	font-size : 52px;
+	margin-bottom : 40px;
+	color : transparent;
+	-webkit-text-stroke : 2px #FF7B6B;
+	font-weight : 700;
+	letter-spacing : 6px;
+	font-family : 'Montserrat', sans-serif;
+}
+.form-group{
+	margin-bottom : 24px;
+}
+label{
+	display : block;
+	margin-bottom : 8px;
+	font-size : 14px;
+	color : #333;
+	font-weight : 500;
+}
+input[type="text"],
+input[type="password"]{
+	width : 100%;
+	padding : 12px;
+	border : 1px solid #FFD4CE;
+	border-radius : 4px;
+	font-size : 14px;
+	box-sizing : border-box;
+	transition : border-color 0.3s, box-shadow 0.3s;
+	box-shadow : 0 2px 6px rgba(255, 123, 107, 0.08);
+	background-color : #fff;
+	outline : none;
+	color : #333;
+}
+input[type="text"]:focus,
+input[type="password"]:focus{
+	border-color : #FF7B6B;
+	box-shadow : 0 2px 8px rgba(255, 123, 107, 0.2);
+}
+.checkbox-container{
+	text-align : right;
+	margin-bottom : 28px;
+}
+.checkbox-label{
+	display : inline-flex;
+	align-items : center;
+	cursor : pointer;
+	font-size : 12px;
+	color : #999;
+}
+input[type="checkbox"]{
+	margin-right : 6px;
+	cursor : pointer;
+	accent-color : #FF7B6B;
+	width : 16px;
+	height : 16px;
+}
+.checkbox-text{
+	user-select : none;
+}
+.btn-primary{
+	width : 100%;
+	padding : 14px;
+	margin-top : 12px;
+	margin-bottom : 12px;
+	border : none;
+	border-radius : 4px;
+	background-color : #FF7B6B;
+	color : #fff;
+	font-size : 16px;
+	font-weight : 500;
+	cursor : pointer;
+	transition : background-color 0.3s, box-shadow 0.3s;
+	box-shadow : 0 2px 8px rgba(255, 123, 107, 0.3);
+	outline : none;
+}
+.btn-outline{
+	width : 100%;
+	padding : 14px;
+	border : 2px solid #FF7B6B;
+	border-radius : 4px;
+	background-color : transparent;
+	color : #FF7B6B;
+	font-size : 16px;
+	font-weight : 500;
+	cursor : pointer;
+	transition : all 0.3s;
+	outline : none;
+}
+.btn-outline:hover{
+	background-color : #FFE8E5;
+}

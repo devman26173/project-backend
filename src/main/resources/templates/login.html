@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>ログイン</title>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+		<link rel= "stylesheet" th:href="@{/css/login.css}">
+	</head>
+	<body>
+		<div class = "container">
+			<div class = "box">
+			<h1> JOIN</h1>
+			<form>
+				<div class = "form-group">
+					<label>ID</label>
+					<input type = "text" name = "id" placeholder = "IDを入力してください。">
+				</div>
+				
+				<div class = "form-group">
+					<label>パスワード</label>
+					<input type = "password" name = "password" placeholder = "パスワードを入力してください。">
+				</div>
+				
+				<div class = "checkbox-container">
+					<label class = "checkbox-label">
+						<input type = "checkbox" name = "rememberMe">
+						<span class="checkbox-text">ログイン状態を維持</span>
+					</label>
+				</div>
+				<button type="submit" class="btn-primary">ログイン</button>
+				
+				<button type="button" class ="btn-outline">会員登録</button>
+			</form>
+			</div>
+		</div>
+	</body>
+</html>

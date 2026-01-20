@@ -9,5 +9,4 @@ public class JoinApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(JoinApplication.class, args);
 	}
-
 }

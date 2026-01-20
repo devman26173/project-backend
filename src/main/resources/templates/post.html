@@ -2,85 +2,363 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post</title>
-    <link rel="stylesheet" th:href="@{/css/post.css}">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f6f8;
+        }
+        .page {
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .profile {
+            width: 40px;
+            height: 40px;
+            background: #ddd;
+            border-radius: 50%;
+        }
+        .profile.small {
+            width: 28px;
+            height: 28px;
+        }
+        .profile.tiny {
+            width: 20px;
+            height: 20px;
+        }
+        .edit-form {
+            display: none;
+            margin-top: 8px;
+        }
+        .edit-form.active {
+            display: block;
+        }
+        .reply-form {
+            display: none;
+            margin-top: 8px;
+            margin-left: 24px;
+        }
+        .reply-form.active {
+            display: block;
+        }
+        .comment-actions span {
+            cursor: pointer;
+            margin-right: 12px;
+            color: #666;
+        }
+        .comment-actions span:hover {
+            opacity: 0.7;
+        }
+        .comment {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .reply {
+            background: #f5f6f8;
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 8px;
+            margin-left: 24px;
+        }
+        textarea {
+            resize: none !important;
+            min-height: 60px;
+            max-height: 60px;
+        }
+        .reply-form textarea,
+        .edit-form textarea {
+            min-height: 50px;
+            max-height: 50px;
+        }
+        .btn-action {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            color: #666;
+        }
+        .btn-action:hover {
+            opacity: 0.7;
+        }
+        .btn-outline-secondary.active {
+            background-color: #6c757d;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-
 <div class="page">
-
     <!-- 게시글 카드 -->
     <div class="post-card">
-        <div class="post-header">
+        <div class="d-flex align-items-center gap-2 mb-3">
             <div class="profile"></div>
-            <div class="author">1234</div>
+            <div class="fw-semibold">1234</div>
         </div>
-
-        <div class="post-content">
+        <div class="mb-3" th:text="${post.content}">
             게시글 내용입니다
         </div>
-
-		<div class="post-actions">
-
-		    <!-- ❤️ 좋아요 버튼 -->
-			<form th:action="@{/post/like}" method="post">
-			    <button type="submit">
-			        <span th:text="${post.likedByMe ? '❤️ 좋아요' : '🤍 좋아요'}">🤍</span>
-			        <span th:text="${post.likeCount}">0</span>
-			    </button>
-			</form>
-
-
-		    <!-- 💬 댓글 수 -->
-		    <span>
-		        💬 댓글 <span th:text="${commentCount}">0</span>
-		    </span>
-
-		</div>
-
+        <div class="d-flex gap-3 text-secondary">
+            <!-- 좋아요 버튼 -->
+            <form th:action="@{/post/like}" method="post" class="d-inline">
+                <button type="submit" class="btn-action">
+                    <span th:text="${post.likedByMe ? '❤️ 좋아요' : '🤍 좋아요'}">🤍 좋아요</span>
+                    <span th:text="${post.likeCount}">0</span>
+                </button>
+            </form>
+            <!-- 댓글 버튼 -->
+            <span onclick="toggleCommentSection()" style="cursor:pointer;">
+                💬 댓글 <span th:text="${commentCount}">0</span>
+            </span>
+        </div>
     </div>
 
-    <!-- 댓글 입력 -->
-    <div class="comment-form">
-        <textarea placeholder="댓글을 입력하세요"></textarea>
-        <button>등록</button>
-    </div>
-
-    <!-- 댓글 리스트 -->
-    <div class="comment-list">
-
-        <div class="comment">
-            <div class="comment-header">
-                <div class="profile small"></div>
-                <span class="author">유저</span>
-                <span class="time">방금</span>
+    <!-- 댓글 섹션 -->
+    <div id="comment-section" style="display:none;">
+        <!-- 댓글 입력 -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <form th:action="@{/post/comment/add}" method="post">
+                    <textarea name="content" class="form-control mb-2" placeholder="댓글을 입력하세요" required></textarea>
+                    <button type="submit" class="btn btn-danger w-100">등록</button>
+                </form>
             </div>
-
-            <div class="comment-content">
-                댓글 내용
-            </div>
-
-            <div class="comment-actions">
-                ❤️ 0 · 💬 댓글 · ✏️ 수정 · 🗑 삭제
-            </div>
-
-            <!-- 대댓글 -->
-            <div class="reply">
-                <div class="comment-header">
-                    <div class="profile tiny"></div>
-                    <span class="author">유저</span>
-                    <span class="time">방금</span>
-                </div>
-                <div class="comment-content">
-                    대댓글 내용
-                </div>
-            </div>
-
         </div>
 
-    </div>
+        <!-- 정렬 버튼 -->
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="sort-newest" onclick="sortComments('newest')">
+                최신순
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="sort-oldest" onclick="sortComments('oldest')">
+                시간순
+            </button>
+        </div>
 
+        <!-- 댓글 리스트 -->
+        <div class="comment-list">
+            <div class="comment" th:each="comment : ${post.comments}">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="profile small"></div>
+                    <span class="fw-semibold" th:text="${comment.author}">유저</span>
+                    <span class="text-muted small" th:text="${comment.createdAt != null ? #temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:30'}">2026-01-19 14:30</span>
+                </div>
+                
+                <!-- 댓글 내용 -->
+                <div class="mb-2" th:text="${comment.content}" 
+                     th:id="'comment-content-' + ${comment.id}">
+                    댓글 내용
+                </div>
+                
+                <!-- 댓글 수정 폼 -->
+                <div class="edit-form" th:id="'edit-form-' + ${comment.id}">
+                    <form th:action="@{/post/comment/edit}" method="post">
+                        <input type="hidden" name="commentId" th:value="${comment.id}">
+                        <textarea name="content" class="form-control mb-2" th:text="${comment.content}" required></textarea>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-sm btn-primary">저장</button>
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                    th:onclick="'toggleEdit(' + ${comment.id} + ')'">취소</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- 댓글 액션 -->
+                <div class="comment-actions d-flex align-items-center gap-2">
+                    <!-- 좋아요 -->
+                    <form th:action="@{/post/comment/like}" method="post" class="d-inline">
+                        <input type="hidden" name="commentId" th:value="${comment.id}">
+                        <button type="submit" class="btn-action">
+                            <span th:text="${comment.likedByMe ? '❤️' : '🤍'}">🤍</span>
+                            <span th:text="${comment.likeCount}">0</span>
+                        </button>
+                    </form>
+                    
+                    <span th:onclick="'toggleReply(' + ${comment.id} + ')'">💬 0</span>
+                    <span th:onclick="'toggleEdit(' + ${comment.id} + ')'">✔️ 수정</span>
+                    
+                    <!-- 삭제 -->
+                    <form th:action="@{/post/comment/delete}" method="post" 
+                          class="d-inline"
+                          onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                        <input type="hidden" name="commentId" th:value="${comment.id}">
+                        <button type="submit" class="btn-action">
+                            ✖️ 삭제
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- 대댓글 입력 폼 -->
+                <div class="reply-form" th:id="'reply-form-' + ${comment.id}">
+                    <form th:action="@{/post/comment/reply}" method="post">
+                        <input type="hidden" name="parentId" th:value="${comment.id}">
+                        <textarea name="content" class="form-control mb-2" placeholder="대댓글을 입력하세요" required></textarea>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-sm btn-danger">등록</button>
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                    th:onclick="'toggleReply(' + ${comment.id} + ')'">취소</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- 대댓글 목록 -->
+                <div class="reply" th:each="reply : ${comment.replies}">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="profile tiny"></div>
+                        <span class="fw-semibold small" th:text="${reply.author}">유저</span>
+                        <span class="text-muted small" th:text="${reply.createdAt != null ? #temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:35'}">2026-01-19 14:35</span>
+                    </div>
+                    
+                    <!-- 대댓글 내용 -->
+                    <div class="mb-2 small" th:text="${reply.content}" 
+                         th:id="'reply-content-' + ${comment.id} + '-' + ${reply.id}">
+                        대댓글 내용
+                    </div>
+                    
+                    <!-- 대댓글 수정 폼 -->
+                    <div class="edit-form" th:id="'reply-edit-form-' + ${comment.id} + '-' + ${reply.id}">
+                        <form th:action="@{/post/comment/reply/edit}" method="post">
+                            <input type="hidden" name="parentId" th:value="${comment.id}">
+                            <input type="hidden" name="replyId" th:value="${reply.id}">
+                            <textarea name="content" class="form-control mb-2" th:text="${reply.content}" required></textarea>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-sm btn-primary">저장</button>
+                                <button type="button" class="btn btn-sm btn-secondary"
+                                        th:onclick="'toggleReplyEdit(' + ${comment.id} + ',' + ${reply.id} + ')'">취소</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="comment-actions">
+                        <!-- 대댓글 좋아요 -->
+                        <form th:action="@{/post/comment/reply/like}" method="post" class="d-inline">
+                            <input type="hidden" name="parentId" th:value="${comment.id}">
+                            <input type="hidden" name="replyId" th:value="${reply.id}">
+                            <button type="submit" class="btn-action">
+                                <span th:text="${reply.likedByMe ? '❤️' : '🤍'}">🤍</span>
+                                <span th:text="${reply.likeCount}">0</span>
+                            </button>
+                        </form>
+                        
+                        <span th:onclick="'toggleReplyEdit(' + ${comment.id} + ',' + ${reply.id} + ')'">✔️ 수정</span>
+                        
+                        <!-- 대댓글 삭제 -->
+                        <form th:action="@{/post/comment/reply/delete}" method="post" 
+                              class="d-inline"
+                              onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                            <input type="hidden" name="parentId" th:value="${comment.id}">
+                            <input type="hidden" name="replyId" th:value="${reply.id}">
+                            <button type="submit" class="btn-action">
+                                ✖️ 삭제
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // 현재 정렬 상태
+    let currentSort = 'newest'; // 기본값: 최신순
+    
+    // 페이지 로드 시 최신순으로 초기화
+    window.addEventListener('DOMContentLoaded', function() {
+        // 댓글 섹션 상태 복원
+        const commentSectionOpen = sessionStorage.getItem('commentSectionOpen');
+        if (commentSectionOpen === 'true') {
+            document.getElementById('comment-section').style.display = 'block';
+        }
+        
+        // 최신순으로 초기화
+        if (document.querySelector('.comment-list .comment')) {
+            sortComments('newest');
+        }
+    });
+    
+    // 댓글 섹션 토글
+    function toggleCommentSection() {
+        const commentSection = document.getElementById('comment-section');
+        if (commentSection.style.display === 'none') {
+            commentSection.style.display = 'block';
+            sessionStorage.setItem('commentSectionOpen', 'true');
+        } else {
+            commentSection.style.display = 'none';
+            sessionStorage.setItem('commentSectionOpen', 'false');
+        }
+    }
+    
+    // 수정 폼 토글
+    function toggleEdit(commentId) {
+        const content = document.getElementById('comment-content-' + commentId);
+        const editForm = document.getElementById('edit-form-' + commentId);
+        
+        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+        editForm.classList.toggle('active');
+    }
+    
+    // 대댓글 폼 토글
+    function toggleReply(commentId) {
+        const replyForm = document.getElementById('reply-form-' + commentId);
+        replyForm.classList.toggle('active');
+    }
+    
+    // 대댓글 수정 폼 토글
+    function toggleReplyEdit(parentId, replyId) {
+        const content = document.getElementById('reply-content-' + parentId + '-' + replyId);
+        const editForm = document.getElementById('reply-edit-form-' + parentId + '-' + replyId);
+        
+        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+        editForm.classList.toggle('active');
+    }
+    
+    // 댓글 정렬
+    function sortComments(order) {
+        const commentList = document.querySelector('.comment-list');
+        const comments = Array.from(commentList.querySelectorAll('.comment'));
+        
+        if (order === 'newest') {
+            // 최신순 (역순)
+            comments.reverse();
+            document.getElementById('sort-newest').classList.add('active');
+            document.getElementById('sort-oldest').classList.remove('active');
+        } else {
+            // 시간순 (원래 순서로 되돌리기)
+            if (currentSort === 'newest') {
+                comments.reverse();
+            }
+            document.getElementById('sort-newest').classList.remove('active');
+            document.getElementById('sort-oldest').classList.add('active');
+        }
+        
+        // 댓글 다시 추가
+        comments.forEach(comment => {
+            commentList.appendChild(comment);
+        });
+        
+        currentSort = order;
+    }
+    
+    // 페이지 로드 시 최신순으로 초기화
+    window.addEventListener('DOMContentLoaded', function() {
+        sortComments('newest');
+    });
+</script>
 </body>
 </html>

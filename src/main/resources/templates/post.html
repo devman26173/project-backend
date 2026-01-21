@@ -56,9 +56,11 @@
             </button>
         </div>
 
-        <!-- 댓글 리스트 -->
-        <div class="comment-list">
-            <div class="comment" th:each="comment : ${post.comments}">
+		<!-- 댓글 리스트 -->
+		<div class="comment-list">
+		    <!-- ✅ 수정: ${post.comments} → ${comments} -->
+		    <div class="comment" th:each="comment : ${comments}">
+		        <!-- 나머지는 그대로 -->
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <div class="profile small"></div>
                     <span class="fw-semibold" th:text="${comment.author}">유저</span>

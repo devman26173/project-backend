@@ -6,64 +6,73 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.example.join.entity.Post;
-import com.example.join.entity.Post.Comment;
+import com.example.join.entity.Comment;
 import com.example.join.entity.Like;
 import com.example.join.repository.LikeRepository;
+import com.example.join.service.CommentService;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class PostController {
     
-    // ✅ 추가: LikeRepository 주입
     private final LikeRepository likeRepository;
+    private final CommentService commentService;
     
     private Post post = new Post();
-    private Long commentIdCounter = 1L;
     
-    // ✅ 수정: 생성자에 LikeRepository 추가
-    public PostController(LikeRepository likeRepository) {
+    // ✅ 수정: 생성자
+    public PostController(LikeRepository likeRepository, CommentService commentService) {
         this.likeRepository = likeRepository;
+        this.commentService = commentService;
         
         post.setId(1L);
         post.setContent("첫 게시글");
         
-        Comment sampleComment = new Comment(1L, "첫 댓글입니다!", "유저1");
+        // ✅ 수정: ID를 null로 설정 (JPA가 자동 생성)
+        Comment sampleComment = new Comment(null, 1L, "첫 댓글입니다!", "유저1");
         sampleComment.setCreatedAt(LocalDateTime.now().minusMinutes(30));
-        post.addComment(sampleComment);
-        commentIdCounter = 2L;
+        commentService.save(sampleComment);
     }
 
     @GetMapping("/post")
     public String post(Model model) {
-        // ✅ 추가: 게시글 좋아요 정보 로드
-        String currentUser = "user1"; // 임시 사용자 ID
+        String currentUser = "user1";
         
-        // 게시글 좋아요
+        // 게시글 좋아요 정보
         post.setLikeCount((int) likeRepository.countByTargetIdAndTargetType(post.getId(), "POST"));
         post.setLikedByMe(likeRepository.findByTargetIdAndTargetTypeAndUserId(
             post.getId(), "POST", currentUser).isPresent());
         
-        // ✅ 추가: 각 댓글/대댓글의 좋아요 정보 로드
-        for (Comment comment : post.getComments()) {
+        // DB에서 댓글 조회
+        List<Comment> comments = commentService.findByPostId(post.getId());
+        
+        // 각 댓글의 좋아요 정보 및 대댓글 로드
+        for (Comment comment : comments) {
+            // 댓글 좋아요
             comment.setLikeCount((int) likeRepository.countByTargetIdAndTargetType(
                 comment.getId(), "COMMENT"));
             comment.setLikedByMe(likeRepository.findByTargetIdAndTargetTypeAndUserId(
                 comment.getId(), "COMMENT", currentUser).isPresent());
             
-            for (Comment reply : comment.getReplies()) {
+            // 대댓글 조회
+            List<Comment> replies = commentService.findRepliesByParentId(comment.getId());
+            for (Comment reply : replies) {
                 reply.setLikeCount((int) likeRepository.countByTargetIdAndTargetType(
                     reply.getId(), "REPLY"));
                 reply.setLikedByMe(likeRepository.findByTargetIdAndTargetTypeAndUserId(
                     reply.getId(), "REPLY", currentUser).isPresent());
             }
+            comment.setReplies(replies);
         }
         
         model.addAttribute("post", post);
-        model.addAttribute("commentCount", post.getComments().size());
+        model.addAttribute("comments", comments);
+        model.addAttribute("commentCount", comments.size());
         return "post";
     }
     
-    // ✅ 수정: 게시글 좋아요 (Like 테이블 사용)
     @PostMapping("/post/like")
     public String toggleLike() {
         String currentUser = "user1";
@@ -82,20 +91,34 @@ public class PostController {
     @PostMapping("/post/comment/add")
     public String addComment(@RequestParam String content) {
         if (content != null && !content.trim().isEmpty()) {
-            Comment newComment = new Comment(commentIdCounter++, content, "익명");
+            // ✅ ID는 null로 설정 (JPA가 자동 생성)
+            Comment newComment = new Comment(null, post.getId(), content, "익명");
             newComment.setCreatedAt(LocalDateTime.now());
-            post.addComment(newComment);
+            commentService.save(newComment);
         }
         return "redirect:/post";
     }
     
     @PostMapping("/post/comment/delete")
     public String deleteComment(@RequestParam Long commentId) {
-        post.removeComment(commentId);
-        
-        // ✅ 추가: 댓글의 좋아요도 함께 삭제
-        likeRepository.findByTargetIdAndTargetType(commentId, "COMMENT")
-            .forEach(likeRepository::delete);
+        Comment comment = commentService.findById(commentId);
+        if (comment != null) {
+            // 대댓글들도 삭제
+            List<Comment> replies = commentService.findRepliesByParentId(commentId);
+            for (Comment reply : replies) {
+                commentService.delete(reply);
+                // 대댓글 좋아요 삭제
+                likeRepository.findByTargetIdAndTargetType(reply.getId(), "REPLY")
+                    .forEach(likeRepository::delete);
+            }
+            
+            // 댓글 삭제
+            commentService.delete(comment);
+            
+            // 댓글 좋아요 삭제
+            likeRepository.findByTargetIdAndTargetType(commentId, "COMMENT")
+                .forEach(likeRepository::delete);
+        }
         
         return "redirect:/post";
     }
@@ -104,14 +127,14 @@ public class PostController {
     public String editComment(
             @RequestParam Long commentId,
             @RequestParam String content) {
-        Comment comment = post.findCommentById(commentId);
+        Comment comment = commentService.findById(commentId);
         if (comment != null && content != null && !content.trim().isEmpty()) {
             comment.setContent(content);
+            commentService.save(comment);
         }
         return "redirect:/post";
     }
     
-    // ✅ 수정: 댓글 좋아요 (Like 테이블 사용)
     @PostMapping("/post/comment/like")
     public String toggleCommentLike(@RequestParam Long commentId) {
         String currentUser = "user1";
@@ -131,16 +154,16 @@ public class PostController {
     public String addReply(
             @RequestParam Long parentId,
             @RequestParam String content) {
-        Comment parent = post.findCommentById(parentId);
-        if (parent != null && content != null && !content.trim().isEmpty()) {
-            Comment reply = new Comment(commentIdCounter++, content, "익명");
+        if (content != null && !content.trim().isEmpty()) {
+            // ✅ ID는 null로 설정 (JPA가 자동 생성)
+            Comment reply = new Comment(null, post.getId(), content, "익명");
+            reply.setParentId(parentId);
             reply.setCreatedAt(LocalDateTime.now());
-            parent.getReplies().add(reply);
+            commentService.save(reply);
         }
         return "redirect:/post";
     }
     
-    // ✅ 수정: 대댓글 좋아요 (Like 테이블 사용)
     @PostMapping("/post/comment/reply/like")
     public String toggleReplyLike(
             @RequestParam Long parentId,
@@ -165,16 +188,10 @@ public class PostController {
             @RequestParam Long replyId,
             @RequestParam String content) {
         
-        Comment parent = post.findCommentById(parentId);
-        if (parent != null) {
-            Comment reply = parent.getReplies().stream()
-                .filter(r -> r.getId().equals(replyId))
-                .findFirst()
-                .orElse(null);
-            
-            if (reply != null && content != null && !content.trim().isEmpty()) {
-                reply.setContent(content);
-            }
+        Comment reply = commentService.findById(replyId);
+        if (reply != null && content != null && !content.trim().isEmpty()) {
+            reply.setContent(content);
+            commentService.save(reply);
         }
         
         return "redirect:/post";
@@ -185,11 +202,11 @@ public class PostController {
             @RequestParam Long parentId,
             @RequestParam Long replyId) {
         
-        Comment parent = post.findCommentById(parentId);
-        if (parent != null) {
-            parent.getReplies().removeIf(r -> r.getId().equals(replyId));
+        Comment reply = commentService.findById(replyId);
+        if (reply != null) {
+            commentService.delete(reply);
             
-            // ✅ 추가: 대댓글의 좋아요도 함께 삭제
+            // 대댓글 좋아요 삭제
             likeRepository.findByTargetIdAndTargetType(replyId, "REPLY")
                 .forEach(likeRepository::delete);
         }

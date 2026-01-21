@@ -17,4 +17,7 @@ public class FoodBoardService {
     public List<FoodBoard> findAll() {
         return foodboardRepository.findAll();
     }
+    public void saveFood(FoodBoard foodBoard) {
+        foodboardRepository.save(foodBoard);
+    }
 }

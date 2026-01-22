@@ -5,15 +5,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class LoginController {
+public class UserController {
     
     @GetMapping("/login")
     public String login() {
-        return "login";  // login.html을 보여줌
+        return "user-login";  // login.html을 보여줌
     }
     @GetMapping("/signup")
     public String signup(Model model) {
         model.addAttribute("message", "태형 AI 👍");
-        return "signupform"; // templates/home.html
+        return "user-signup"; // templates/home.html
     }
 }

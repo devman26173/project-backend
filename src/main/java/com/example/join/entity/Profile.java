@@ -8,13 +8,9 @@ public class Profile {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	// プロフィール文
-	private String introduction;
-
-	// プロフィールイメージのパス(仮)
 	private String imagePath;
-
+	private String introduction;
+	
 	public Long getId() {
 		return id;
 	}
@@ -23,7 +19,7 @@ public class Profile {
 		this.id = id;
 	}
 
-	public String getInroduction() {
+	public String getIntroduction() {
 		return introduction;
 	}
 

@@ -19,10 +19,9 @@ public class ProfileController {
 	@GetMapping("/profile")
 	public String profile(Model model) {
 
-		// 仮データ
-		Profile profile = new Profile();
-		profile.setIntroduction("JAVAは万物に触れる素晴らしい言語じゃ。");
-		profile.setImagePath("/images/profile.png");
+		Profile profile = profileRepository
+				.findById(1L)
+				.orElse(null);
 
 		model.addAttribute("profile", profile);
 		return "profile"; // templates/home.html

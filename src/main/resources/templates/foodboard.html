@@ -83,7 +83,9 @@
 		        <div class="flex-grow-1 pe-3" style="min-width: 0;">
 		            <div class="small text-secondary mb-1" th:text="'[' + ${board.prefecture} + ']'">[東京都]</div>
 		            
-		            <h6 class="fw-bold mb-1 text-truncate" style="cursor:pointer" th:text="${board.title}">タイトル</h6>
+		            <a th:href = "@{/board/view/{id}(id=${board.id})}"
+						class = "text-decoration-none text-dark">
+						<h6 class="fw-bold mb-1 text-truncate" style="cursor:pointer" th:text="${board.title}">タイトル</h6>
 		            
 					<p class="small text-muted mb-2" 
 					   th:text="${board.content}" 

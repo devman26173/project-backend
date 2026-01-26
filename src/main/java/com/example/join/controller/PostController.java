@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.join.entity.Post;
 import com.example.join.entity.Comment;
 import com.example.join.entity.Like;
+import com.example.join.entity.User;  // ✅ 추가
 import com.example.join.repository.LikeRepository;
 import com.example.join.service.CommentService;
 
@@ -22,15 +23,20 @@ public class PostController {
     
     private Post post = new Post();
     
-    // ✅ 수정: 생성자
     public PostController(LikeRepository likeRepository, CommentService commentService) {
         this.likeRepository = likeRepository;
         this.commentService = commentService;
         
+     // ✅ 추가: 임시 User 생성
+        User tempUser = new User();
+        tempUser.setId(1L);
+        tempUser.setUsername("1234");
+        
+        // ✅ Post 설정
         post.setId(1L);
         post.setContent("첫 게시글");
+        post.setUser(tempUser);  // ✅ User 연결
         
-        // ✅ 수정: ID를 null로 설정 (JPA가 자동 생성)
         Comment sampleComment = new Comment(null, 1L, "첫 댓글입니다!", "유저1");
         sampleComment.setCreatedAt(LocalDateTime.now().minusMinutes(30));
         commentService.save(sampleComment);

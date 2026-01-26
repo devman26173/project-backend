@@ -55,7 +55,7 @@ public class User {
     }
     public void setPrefecture(String prefecture) {
     	this.prefecture = prefecture;
-
+    }
     public List<Post> getPosts() {
         return posts;
     }

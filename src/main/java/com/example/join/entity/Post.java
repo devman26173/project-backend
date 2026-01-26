@@ -10,16 +10,17 @@ public class Post {
     
     private String content;
     
-    // ✅ 좋아요 정보만 Transient로 유지
+ // ✅ 추가: User와의 관계 설정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // Transient (DB 저장 안 함)
     @Transient
     private int likeCount;
     
     @Transient
     private boolean likedByMe;
-    
-    // ❌ 삭제: Comment 내부 클래스 전체 삭제
-    // ❌ 삭제: private List<Comment> comments
-    // ❌ 삭제: addComment, removeComment, findCommentById 메서드
     
     // Getter / Setter
     public Long getId() {
@@ -36,6 +37,15 @@ public class Post {
     
     public void setContent(String content) {
         this.content = content;
+    }
+    
+ // ✅ 추가: User getter/setter
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
     
     public int getLikeCount() {

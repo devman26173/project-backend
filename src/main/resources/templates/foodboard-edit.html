@@ -152,20 +152,8 @@
 		   const prefectureSelect = document.getElementById('prefectureSelect');
 		   const currentPrefecture = '[[${board.prefecture}]]'; // Thymeleaf로 현재 도시 가져오기
 		   
-		   // 페이지 로드 시 현재 지역의 도시 목록 로드
-		   window.addEventListener('DOMContentLoaded', function() {
-		     const currentRegion = regionSelect.value; 
-		   if(currentRegion && regionData[currentRegion]){
-				loadPrefectures(currentRegion, currentPrefecture);
-		   }
-		   
-		   regionSelect.addEventListener('change', function(){
-			const selectedRegion = this.value; 
-			loadPrefectures(selectedRegion, null);
-		   });
-		   
 		   function loadPrefectures(region, selectedPref){
-			prefectureSelect.innerHTML = '<option value="" disabled>都道府県</option>';
+			prefectureSelect.innerHTML = '<option value = "" disabled>都道府県</option>';
 			const prefectures = regionData[region];
 			
 			if(prefectures){
@@ -174,19 +162,29 @@
 					option.value = prefecture;
 					option.textContent = prefecture; 
 					if(selectedPref && prefecture === selectedPref){
-						option.selected = true; 
+						option.selected = true;
 					}
-					prefectureSelect.appendChild(option)
+					prefectureSelect.appendChild(option);
 				});
-		
+			}
+		   }
+		   
+		   regionSelect.addEventListener('change', function(){
+			const selectedRegion = this.value; 
+			loadPrefectures(selectedRegion, null);
+		   })
+		   
+		   //페이지 로드 시 현재 지역의 도시 목록 로드 
+		   window.addEventListener('DOMContentLoaded', function(){
+			const currentRegion = regionSelect.value; 
+			if(currentRegion && regionData[currentRegion]){
+				loadPrefectures(currentRegion, currentPrefecture);
+			}
+		   });
 		</script>
 	</body>
 </html>
 
-			}   
-		}
-		   
-		   
 
 
 

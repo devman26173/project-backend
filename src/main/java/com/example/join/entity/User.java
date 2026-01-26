@@ -1,20 +1,23 @@
 package com.example.join.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
-// public class Book
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
     private String username;
     private String name;
     private String password;
     private String region;
     private String prefecture;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
+
 
     public Long getId() {
 		  return id;
@@ -52,5 +55,12 @@ public class User {
     }
     public void setPrefecture(String prefecture) {
     	this.prefecture = prefecture;
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+    
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }

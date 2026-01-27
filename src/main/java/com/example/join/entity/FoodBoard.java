@@ -11,32 +11,87 @@ public class FoodBoard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     
-    @ManyToOne
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
+    private String title; 
+    private String region; 
+    private String prefecture; 
+    private Integer rating; 
     
-    
-    //getterSetter
-    public Long getId() {
-		  return Id;
-    }
-   
-    public void setId(Long Id) {
-	    this.Id = Id;
-    }
-    public String getContent() {
-	    return content;
-    }
-    public void setContent(String content){
-	    this.content = content;
-    }    
-    
-    public Profile getProfile() {
-    	return profile;
-    }
-    
-    public void setProfile(Profile profile) {
-		this.profile = profile;
-	}
-    
+@Column(columnDefinition = "TEXT")
+	private String content; 
+	private String imageUrl; 
+	private LocalDateTime createdAt; 
+	
+@PrePersist
+	public void prePersist() {
+	this.createdAt = LocalDateTime.now(); 
+}
+
+
+//Getter & Setter
+  
+public Long getId() {
+	return Id;
+}
+
+public void setId(Long id) {
+	Id = id;
+}
+
+public String getTitle() {
+	return title;
+}
+
+public void setTitle(String title) {
+	this.title = title;
+}
+
+public String getRegion() {
+	return region;
+}
+
+public void setRegion(String region) {
+	this.region = region;
+}
+
+public String getPrefecture() {
+	return prefecture;
+}
+
+public void setPrefecture(String prefecture) {
+	this.prefecture = prefecture;
+}
+
+public Integer getRating() {
+	return rating;
+}
+
+public void setRating(Integer rating) {
+	this.rating = rating;
+}
+
+public String getContent() {
+	return content;
+}
+
+public void setContent(String content) {
+	this.content = content;
+}
+
+public String getImageUrl() {
+	return imageUrl;
+}
+
+public void setImageUrl(String imageUrl) {
+	this.imageUrl = imageUrl;
+}
+
+public LocalDateTime getCreatedAt() {
+	return createdAt;
+}
+
+public void setCreatedAt(LocalDateTime createdAt) {
+	this.createdAt = createdAt;
+}
+
+  
 }

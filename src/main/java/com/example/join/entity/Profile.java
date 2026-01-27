@@ -11,11 +11,6 @@ public class Profile {
 	private String imagePath;
 	private String introduction;
 	
-	@OneToMany(mappedBy = "profile")
-	private java.util.List<FoodBoard> foodBoards;
-	
-	
-	//getterSetter
 	public Long getId() {
 		return id;
 	}
@@ -40,12 +35,4 @@ public class Profile {
 		this.imagePath = imagePath;
 	}
 
-	public java.util.List<FoodBoard> getFoodBoards(){
-		return foodBoards;
-	}
-	
-	public void setFoodBoards(java.util.List<FoodBoard> foodBoards) {
-		this.foodBoards = foodBoards;
-	}
-	
 }

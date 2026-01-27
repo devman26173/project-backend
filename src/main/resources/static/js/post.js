@@ -44,7 +44,7 @@ function checkLoginForClick(event) {
         event.preventDefault();
         event.target.blur();
         
-        if (confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+        if (confirm('ログインが必要です。ログインページへ移動しますか？')) {
             window.location.href = '/login';
         }
     }
@@ -54,7 +54,7 @@ function checkLoginForAction(event) {
     if (!isLoggedIn) {
         event.preventDefault();
         
-        if (confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+        if (confirm('ログインが必要です。ログインページへ移動しますか？')) {
             window.location.href = '/login';
         }
         return false;
@@ -122,7 +122,7 @@ function toggleReplyEdit(parentId, replyId) {
 function checkLoginAndToggleEdit(event, commentId) {
     if (!isLoggedIn) {
         event.preventDefault();
-        if (confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+        if (confirm('ログインが必要です。ログインページへ移動しますか？')) {
             window.location.href = '/login';
         }
         return;
@@ -133,7 +133,7 @@ function checkLoginAndToggleEdit(event, commentId) {
 function checkLoginAndToggleReplyEdit(event, parentId, replyId) {
     if (!isLoggedIn) {
         event.preventDefault();
-        if (confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+        if (confirm('ログインが必要です。ログインページへ移動しますか？')) {
             window.location.href = '/login';
         }
         return;

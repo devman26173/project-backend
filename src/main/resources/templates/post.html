@@ -16,22 +16,22 @@
 	<div class="bg-white px-3 py-3 border-bottom">
 		<div class="d-flex align-items-center gap-2 mb-2">
             <div class="profile"></div>
-            <div class="fw-semibold">1234</div>
+            <div class="fw-semibold"> ユーザー</div>
         </div>
         <div class="mb-3" th:text="${post.content}">
-            게시글 내용입니다
+            ポスト内容です
         </div>
 		<div class="d-flex gap-3 text-muted small">
 			 <!-- 좋아요 버튼 -->
 			    <form th:action="@{/post/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
 			        <button type="submit" class="btn-action">
-			            <span th:text="${post.likedByMe ? '❤️ 좋아요' : '🤍 좋아요'}">🤍 좋아요</span>
+			            <span th:text="${post.likedByMe ? '❤️ いいね！' : '🤍 いいね！'}">🤍 いいね！</span>
 			            <span th:text="${post.likeCount}">0</span>
 			        </button>
 			    </form>
 			    <!-- 댓글 버튼 -->
 			    <span onclick="toggleCommentSection()" style="cursor:pointer;">
-			        💬 댓글 <span th:text="${commentCount}">0</span>
+			        💬 コメント <span th:text="${commentCount}">0</span>
 			    </span>
 			</div>
     </div>
@@ -44,26 +44,34 @@
 		            <textarea id="commentInput" 
 		                      name="content" 
 		                      class="form-control mb-2" 
-		                      placeholder="댓글을 입력하세요"
+		                      placeholder="コメントを入力してください"
 		                      onclick="checkLoginForClick(event)" 
 		                      required></textarea>
 							  <button type="submit"
 							          class="btn btn-primary w-100 fw-bold rounded-pill py-2">
-							    등록
+							    登録
 							  </button>
 		        </form>
 		</div>
 
         <!-- 정렬 버튼 -->
-		<div class="d-flex justify-content-end gap-2 px-3 mb-3">
-            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="sort-newest" onclick="sortComments('newest')">
-                최신순
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="sort-oldest" onclick="sortComments('oldest')">
-                시간순
-            </button>
-        </div>
-
+		<div class="px-3 py-3">  <!-- border-bottom 제거! -->
+		        <div class="d-flex justify-content-end gap-2">
+		            <button type="button" 
+		                    class="btn btn-sm btn-outline-secondary rounded-pill px-3" 
+		                    id="sort-newest" 
+		                    onclick="sortComments('newest')">
+		                新着順
+		            </button>
+		            <button type="button" 
+		                    class="btn btn-sm btn-outline-secondary rounded-pill px-3" 
+		                    id="sort-oldest" 
+		                    onclick="sortComments('oldest')">
+		                投稿順
+		            </button>
+		        </div>
+		    </div>
+			
 		<!-- 댓글 리스트 -->
 		<div class="comment-list">
 		    <!-- ✅ 수정: ${post.comments} → ${comments} -->
@@ -71,14 +79,14 @@
 		        <!-- 나머지는 그대로 -->
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <div class="profile small"></div>
-                    <span class="fw-semibold" th:text="${comment.author}">유저</span>
+                    <span class="fw-semibold" th:text="${comment.author}">ユーザー</span>
                     <span class="text-muted small" th:text="${comment.createdAt != null ? #temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:30'}">2026-01-19 14:30</span>
                 </div>
                 
                 <!-- 댓글 내용 -->
                 <div class="mb-2" th:text="${comment.content}" 
                      th:id="'comment-content-' + ${comment.id}">
-                    댓글 내용
+                    コメント内容
                 </div>
                 
                 <!-- 댓글 수정 폼 -->
@@ -87,9 +95,9 @@
                         <input type="hidden" name="commentId" th:value="${comment.id}">
                         <textarea name="content" class="form-control mb-2" th:text="${comment.content}" required></textarea>
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-sm btn-primary">저장</button>
+                            <button type="submit" class="btn btn-sm btn-primary">保存</button>
                             <button type="button" class="btn btn-sm btn-secondary"
-                                    th:onclick="'toggleEdit(' + ${comment.id} + ')'">취소</button>
+                                    th:onclick="'toggleEdit(' + ${comment.id} + ')'">キャンセル</button>
                         </div>
                     </form>
                 </div>
@@ -107,16 +115,16 @@
 					    
 					    <span th:onclick="'toggleReply(' + ${comment.id} + ')'">💬 0</span>
 						<span th:onclick="'checkLoginAndToggleEdit(event,' + ${comment.id} + ')'">
-						    ✔️ 수정
+						    ✔️ 編集
 						</span>
 					    
 					    <!-- 삭제 -->
 					    <form th:action="@{/post/comment/delete}" method="post" 
 					          class="d-inline"
-							  onsubmit="return checkLoginForAction(event) && confirm('정말 삭제하시겠습니까?');">
+							  onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
 					        <input type="hidden" name="commentId" th:value="${comment.id}">
 					        <button type="submit" class="btn-action">
-					            ✖️ 삭제
+					            ✖️ 削除
 					        </button>
 					    </form>
 					</div>
@@ -127,13 +135,13 @@
 					        <input type="hidden" name="parentId" th:value="${comment.id}">
 					        <textarea name="content" 
 					                  class="form-control mb-2" 
-					                  placeholder="대댓글을 입력하세요"
+					                  placeholder="コメントを入力してください"
 					                  onclick="checkLoginForClick(event)" 
 					                  required></textarea>
 					        <div class="d-flex gap-2">
-					            <button type="submit" class="btn btn-sm btn-danger">등록</button>
+					            <button type="submit" class="btn btn-sm btn-danger">登録</button>
 					            <button type="button" class="btn btn-sm btn-secondary"
-					                    th:onclick="'toggleReply(' + ${comment.id} + ')'">취소</button>
+					                    th:onclick="'toggleReply(' + ${comment.id} + ')'">キャンセル</button>
 					        </div>
 					    </form>
 					</div>
@@ -142,14 +150,14 @@
                 <div class="reply bg-light rounded px-2 py-2 ms-4 mt-2" th:each="reply : ${comment.replies}">
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <div class="profile tiny"></div>
-                        <span class="fw-semibold small" th:text="${reply.author}">유저</span>
+                        <span class="fw-semibold small" th:text="${reply.author}">ユーザー</span>
                         <span class="text-muted small" th:text="${reply.createdAt != null ? #temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:35'}">2026-01-19 14:35</span>
                     </div>
                     
                     <!-- 대댓글 내용 -->
                     <div class="mb-2 small" th:text="${reply.content}" 
                          th:id="'reply-content-' + ${comment.id} + '-' + ${reply.id}">
-                        대댓글 내용
+                        コメント内容
                     </div>
                     
                     <!-- 대댓글 수정 폼 -->
@@ -159,9 +167,9 @@
                             <input type="hidden" name="replyId" th:value="${reply.id}">
                             <textarea name="content" class="form-control mb-2" th:text="${reply.content}" required></textarea>
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-sm btn-primary">저장</button>
+                                <button type="submit" class="btn btn-sm btn-primary">保存</button>
                                 <button type="button" class="btn btn-sm btn-secondary"
-                                        th:onclick="'toggleReplyEdit(' + ${comment.id} + ',' + ${reply.id} + ')'">취소</button>
+                                        th:onclick="'toggleReplyEdit(' + ${comment.id} + ',' + ${reply.id} + ')'">キャンセル</button>
                             </div>
                         </form>
                     </div>
@@ -178,7 +186,7 @@
 					    </form>
 					    
 						<span th:onclick="'checkLoginAndToggleReplyEdit(event,' + ${comment.id} + ',' + ${reply.id} + ')'">
-						    ✔️ 수정
+						    ✔️ 編集
 						</span>
 
 					    
@@ -189,7 +197,7 @@
 					        <input type="hidden" name="parentId" th:value="${comment.id}">
 					        <input type="hidden" name="replyId" th:value="${reply.id}">
 					        <button type="submit" class="btn-action">
-					            ✖️ 삭제
+					            ✖️ 削除
 					        </button>
 					    </form>
 					</div>

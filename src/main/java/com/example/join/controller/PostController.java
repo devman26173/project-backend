@@ -34,10 +34,10 @@ public class PostController {
         
         // ✅ Post 설정
         post.setId(1L);
-        post.setContent("첫 게시글");
+        post.setContent("こんにちは❣");
         post.setUser(tempUser);  // ✅ User 연결
         
-        Comment sampleComment = new Comment(null, 1L, "첫 댓글입니다!", "유저1");
+        Comment sampleComment = new Comment(null, 1L, "今日。。。寒いですね！", "ユーザー1");
         sampleComment.setCreatedAt(LocalDateTime.now().minusMinutes(30));
         commentService.save(sampleComment);
     }
@@ -98,7 +98,7 @@ public class PostController {
     public String addComment(@RequestParam String content) {
         if (content != null && !content.trim().isEmpty()) {
             // ✅ ID는 null로 설정 (JPA가 자동 생성)
-            Comment newComment = new Comment(null, post.getId(), content, "익명");
+            Comment newComment = new Comment(null, post.getId(), content, "ユーザー");
             newComment.setCreatedAt(LocalDateTime.now());
             commentService.save(newComment);
         }
@@ -162,7 +162,7 @@ public class PostController {
             @RequestParam String content) {
         if (content != null && !content.trim().isEmpty()) {
             // ✅ ID는 null로 설정 (JPA가 자동 생성)
-            Comment reply = new Comment(null, post.getId(), content, "익명");
+            Comment reply = new Comment(null, post.getId(), content, "ユーザー");
             reply.setParentId(parentId);
             reply.setCreatedAt(LocalDateTime.now());
             commentService.save(reply);

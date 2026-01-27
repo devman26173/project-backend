@@ -7,12 +7,10 @@ import java.util.List;
 
 @Service
 public class UserService {
-// public class Bookservice
-		private final UserRepository userRepository;
-		// private final BookRepository bookRepository;
+
+	private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
-    // public BookService(BookRepository bookRepository)
         this.userRepository = userRepository;
     }
     public List<User> findAll() {

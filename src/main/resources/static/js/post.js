@@ -36,26 +36,29 @@ function toggleReplyEdit(parentId, replyId) {
     form.classList.toggle('active');
 }
 
-// 로그인 상태
-const isLoggedIn = false;
-
+// ✅ 수정: 현재 페이지 URL을 전달
 function checkLoginForClick(event) {
     if (!isLoggedIn) {
         event.preventDefault();
         event.target.blur();
         
         if (confirm('ログインが必要です。ログインページへ移動しますか？')) {
-            window.location.href = '/login';
+            // 현재 페이지 URL을 returnUrl로 전달
+            const currentUrl = encodeURIComponent(window.location.pathname + window.location.search);
+            window.location.href = '/login?returnUrl=' + currentUrl;
         }
     }
 }
 
+// ✅ 수정: 현재 페이지 URL을 전달
 function checkLoginForAction(event) {
     if (!isLoggedIn) {
         event.preventDefault();
         
         if (confirm('ログインが必要です。ログインページへ移動しますか？')) {
-            window.location.href = '/login';
+            // 현재 페이지 URL을 returnUrl로 전달
+            const currentUrl = encodeURIComponent(window.location.pathname + window.location.search);
+            window.location.href = '/login?returnUrl=' + currentUrl;
         }
         return false;
     }
@@ -119,22 +122,27 @@ function toggleReplyEdit(parentId, replyId) {
     content.style.display = content.style.display === 'none' ? 'block' : 'none';
     editForm.classList.toggle('active');
 }
+
+// ✅ 수정: 현재 페이지 URL을 전달
 function checkLoginAndToggleEdit(event, commentId) {
     if (!isLoggedIn) {
         event.preventDefault();
         if (confirm('ログインが必要です。ログインページへ移動しますか？')) {
-            window.location.href = '/login';
+            const currentUrl = encodeURIComponent(window.location.pathname + window.location.search);
+            window.location.href = '/login?returnUrl=' + currentUrl;
         }
         return;
     }
     toggleEdit(commentId);
 }
 
+// ✅ 수정: 현재 페이지 URL을 전달
 function checkLoginAndToggleReplyEdit(event, parentId, replyId) {
     if (!isLoggedIn) {
         event.preventDefault();
         if (confirm('ログインが必要です。ログインページへ移動しますか？')) {
-            window.location.href = '/login';
+            const currentUrl = encodeURIComponent(window.location.pathname + window.location.search);
+            window.location.href = '/login?returnUrl=' + currentUrl;
         }
         return;
     }

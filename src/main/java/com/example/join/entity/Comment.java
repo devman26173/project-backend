@@ -15,10 +15,14 @@ public class Comment {
     private Long parentId;      // 대댓글인 경우 부모 댓글 ID (null이면 댓글)
     
     private String content;
-    private String author;
+    private String author;	// 임시로 유지
     private LocalDateTime createdAt;
     
-    // ✅ 좋아요 정보는 런타임에만 사용 (DB 저장 안 함)
+    // ✅ 추가: User와 연결
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    
     @Transient
     private int likeCount;
     
@@ -57,6 +61,10 @@ public class Comment {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     
+    // ✅ 추가: User getter/setter
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+    
     public int getLikeCount() { return likeCount; }
     public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
     
@@ -65,4 +73,5 @@ public class Comment {
     
     public List<Comment> getReplies() { return replies; }
     public void setReplies(List<Comment> replies) { this.replies = replies; }
+
 }

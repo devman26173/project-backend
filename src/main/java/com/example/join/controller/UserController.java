@@ -64,6 +64,12 @@ public class UserController {
             Model model) {
     	User user = userService.login(username, password);
     if(user != null) {
+    	// 세션에 사용자 정보 저장
+        session.setAttribute("loginUser", user);
+        // returnUrl이 있으면 그곳으로, 없으면 board로
+        if(returnUrl != null && !returnUrl.isEmpty()) {
+            return "redirect:" + returnUrl;
+        }
     	return "redirect:/board";
     }else {
     	model.addAttribute("error", "IDまたはパスワードが一致しません");

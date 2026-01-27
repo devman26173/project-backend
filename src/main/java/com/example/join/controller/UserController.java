@@ -54,7 +54,7 @@ public class UserController {
     		Model model) {
     	User user = userService.login(username, password);
     if(user != null) {
-    	return "redirect:/home";
+    	return "redirect:/board";
     }else {
     	model.addAttribute("error", "IDまたはパスワードが一致しません");
     	return "user-login";

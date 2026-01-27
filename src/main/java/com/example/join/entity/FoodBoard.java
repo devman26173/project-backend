@@ -1,5 +1,7 @@
 package com.example.join.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -8,7 +10,6 @@ public class FoodBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    private String content;
     
     @ManyToOne
     @JoinColumn(name = "profile_id")

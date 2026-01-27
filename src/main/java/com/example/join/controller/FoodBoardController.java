@@ -1,5 +1,8 @@
 package com.example.join.controller;
 import com.example.join.service.FoodBoardService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.join.entity.FoodBoard;
+import com.example.join.entity.User;
 
 @Controller
 public class FoodBoardController {
@@ -25,15 +29,23 @@ public class FoodBoardController {
     }
     // 게시글 작성 페이지
     @GetMapping("/board/write")
-    public String write() {
+    public String write(HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/login?returnUrl=/board/write";
+        }
         return "foodboard-write";
     }
     
     //게시글 저장 
     @PostMapping("/board/write")
-    public String saveFood(FoodBoard foodBoard) {
-    	foodBoardService.saveFood(foodBoard);
-    	return "redirect:/board";
+    public String saveFood(FoodBoard foodBoard, HttpSession session) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/login?returnUrl=/board/write";
+        }
+        foodBoardService.saveFood(foodBoard);
+        return "redirect:/board";
     }
     
     //게시글 상세 페이지 

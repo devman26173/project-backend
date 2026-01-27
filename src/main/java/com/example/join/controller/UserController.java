@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.join.entity.User;
 import com.example.join.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class UserController {
 
@@ -19,13 +21,19 @@ public class UserController {
 	}
     
     @GetMapping("/login")
-    public String login() {
+    public String login(@RequestParam(required = false) String returnUrl, Model model) {
+        model.addAttribute("returnUrl", returnUrl);
         return "user-login";  // login.html을 보여줌
     }
     @GetMapping("/signup")
     public String signup(Model model) {
         model.addAttribute("message", "태형 AI 👍");
         return "user-signup"; // templates/home.html
+    }
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
     
     @PostMapping("/signup")
@@ -50,13 +58,22 @@ public class UserController {
     }
     @PostMapping("/login")
     public String loginSubmit(@RequestParam String username,
-    		@RequestParam String password,
-    		Model model) {
+            @RequestParam String password,
+            @RequestParam(required = false) String returnUrl,
+            HttpSession session,
+            Model model) {
     	User user = userService.login(username, password);
     if(user != null) {
-    	return "redirect:/home";
+    	// 세션에 사용자 정보 저장
+        session.setAttribute("loginUser", user);
+        // returnUrl이 있으면 그곳으로, 없으면 board로
+        if(returnUrl != null && !returnUrl.isEmpty()) {
+            return "redirect:" + returnUrl;
+        }
+    	return "redirect:/board";
     }else {
     	model.addAttribute("error", "IDまたはパスワードが一致しません");
+    	model.addAttribute("returnUrl", returnUrl);
     	return "user-login";
     }
 }

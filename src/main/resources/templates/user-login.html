@@ -24,11 +24,14 @@
 
             <!-- 로그인 폼 -->
             <form th:action="@{/login}" method="post">
+				
+				<!-- returnUrl 전달 (추가) -->
+				 <input type="hidden" name="returnUrl" th:value="${returnUrl}">
 
                 <!-- ID -->
                 <div class="mb-4">
                     <label class="form-label">ID</label>
-                    <input type="text" class="form-control" name="id" placeholder="IDを入力してください">
+                    <input type="text" class="form-control" name="username" placeholder="IDを入力してください">
                 </div>
 
                 <!-- Password -->

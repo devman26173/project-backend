@@ -3,49 +3,47 @@ package com.example.join.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "PROFILE", uniqueConstraints = { @UniqueConstraint(columnNames = "USER_ID") }
+
+)
+@SequenceGenerator(name = "PROFILE_SEQ_GEN", sequenceName = "PROFILE_SEQ", allocationSize = 1)
+
 public class Profile {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PROFILE_SEQ_GEN")
+	@Column(name = "PROFILE_ID")
+	private Long profileId;
+
+	@Column(name = "IMAGE_PATH", length = 255)
 	private String imagePath;
-	private String introduction;
-	
-	@OneToMany(mappedBy = "profile")
-	private java.util.List<FoodBoard> foodBoards;
-	
-	
-	//getterSetter
-	public Long getId() {
-		return id;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "USER_ID", nullable = false, unique = true
+
+	)
+	private User user;
+
+	// コンストラクタ
+	protected Profile() {
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Profile(User user, String imagePath) {
+		this.user = user;
+		this.imagePath = imagePath;
 	}
 
-	public String getIntroduction() {
-		return introduction;
-	}
-
-	public void setIntroduction(String introduction) {
-		this.introduction = introduction;
+	// getterSetter
+	public Long getProfileId() {
+		return profileId;
 	}
 
 	public String getImagePath() {
 		return imagePath;
 	}
 
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
+	public User getUser() {
+		return user;
 	}
 
-	public java.util.List<FoodBoard> getFoodBoards(){
-		return foodBoards;
-	}
-	
-	public void setFoodBoards(java.util.List<FoodBoard> foodBoards) {
-		this.foodBoards = foodBoards;
-	}
-	
 }

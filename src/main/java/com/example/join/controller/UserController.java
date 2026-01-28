@@ -49,7 +49,7 @@ public class UserController {
         @RequestParam String passwordConfirm,
         @RequestParam String region,
         @RequestParam String prefecture,
-        @RequestParam(required = false) String returnUrl
+        @RequestParam(required = false) String returnUrl,
         Model model
     ) {
         if (!password.equals(passwordConfirm)) {

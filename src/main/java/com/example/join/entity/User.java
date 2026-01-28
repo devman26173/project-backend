@@ -10,22 +10,26 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     private String username;
     private String name;
     private String password;
     private String region;
     private String prefecture;
+    
+    // ✅ 추가: 프로필 이미지 URL
+    private String profileImageUrl;
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
-
+    // Getter / Setter
     public Long getId() {
 		  return id;
     }
     public void setId(Long id) {
 	    this.id = id;
     }
-    
     public String getUsername() {
     	return username;
     }
@@ -56,10 +60,17 @@ public class User {
     public void setPrefecture(String prefecture) {
     	this.prefecture = prefecture;
     }
+    
+    // ✅ 추가: profileImageUrl getter/setter
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
     public List<Post> getPosts() {
         return posts;
     }
-    
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }

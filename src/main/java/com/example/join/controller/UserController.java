@@ -24,13 +24,23 @@ public class UserController {
         model.addAttribute("returnUrl", returnUrl);
         return "user-login";
     }
-    
+
     @GetMapping("/signup")
-    public String signup(Model model) {
-        model.addAttribute("message", "태형 AI 👍");
-        return "user-signup";
+    public String signup(
+         @RequestParam(required = false) String returnUrl,  // ✅ 추가
+         Model model) {
+     model.addAttribute("message", "태형 AI 👍");
+     model.addAttribute("returnUrl", returnUrl);  // ✅ 추가
+     return "user-signup";
+ }
+    
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
     
+    // ✅ 수정: 회원가입 후 returnUrl 처리
     @PostMapping("/signup")
     public String signupSubmit(
         @RequestParam String username,
@@ -39,10 +49,12 @@ public class UserController {
         @RequestParam String passwordConfirm,
         @RequestParam String region,
         @RequestParam String prefecture,
+        @RequestParam(required = false) String returnUrl
         Model model
     ) {
         if (!password.equals(passwordConfirm)) {
             model.addAttribute("error","パスワードが一致しません。");
+            model.addAttribute("returnUrl", returnUrl);
             return "user-signup";
         }
         userService.registerUser(username, name, password, region, prefecture);

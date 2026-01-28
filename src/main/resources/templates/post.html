@@ -76,12 +76,28 @@
 		<div class="comment-list">
 		    <!-- ✅ 수정: ${post.comments} → ${comments} -->
 		    <div class="comment px-3 py-3 border-bottom" th:each="comment : ${comments}">
-		        <!-- 나머지는 그대로 -->
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <div class="profile small"></div>
-                    <span class="fw-semibold" th:text="${comment.author}">ユーザー</span>
-                    <span class="text-muted small" th:text="${comment.createdAt != null ? #temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:30'}">2026-01-19 14:30</span>
-                </div>
+
+				<div class="d-flex align-items-center gap-2 mb-2">
+				            <!-- 프로필 이미지 -->
+				            <div th:if="${comment.user != null && comment.user.profileImageUrl != null}"
+				                 class="profile small"
+				                 th:style="'background-image: url(' + ${comment.user.profileImageUrl} + '); background-size: cover; background-position: center;'">
+				            </div>
+				            <div th:unless="${comment.user != null && comment.user.profileImageUrl != null}"
+				                 class="profile small">
+				            </div>
+				            
+				            <!-- 사용자 이름 -->
+				            <span class="fw-semibold" 
+				                  th:text="${comment.user != null ? comment.user.name : comment.author}">
+				                ユーザー
+				            </span>
+				            
+				            <span class="text-muted small" 
+				                  th:text="${comment.createdAt != null ? #temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:30'}">
+				                2026-01-19 14:30
+				            </span>
+				        </div>
                 
                 <!-- 댓글 내용 -->
                 <div class="mb-2" th:text="${comment.content}" 
@@ -148,11 +164,28 @@
                 
                 <!-- 대댓글 목록 -->
                 <div class="reply bg-light rounded px-2 py-2 ms-4 mt-2" th:each="reply : ${comment.replies}">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <div class="profile tiny"></div>
-                        <span class="fw-semibold small" th:text="${reply.author}">ユーザー</span>
-                        <span class="text-muted small" th:text="${reply.createdAt != null ? #temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:35'}">2026-01-19 14:35</span>
-                    </div>
+                  
+					<div class="d-flex align-items-center gap-2 mb-2">
+					       <!-- 프로필 이미지 -->
+					       <div th:if="${reply.user != null && reply.user.profileImageUrl != null}"
+					            class="profile tiny"
+					            th:style="'background-image: url(' + ${reply.user.profileImageUrl} + '); background-size: cover; background-position: center;'">
+					       </div>
+					       <div th:unless="${reply.user != null && reply.user.profileImageUrl != null}"
+					            class="profile tiny">
+					       </div>
+					       
+					       <!-- 사용자 이름 -->
+					       <span class="fw-semibold small" 
+					             th:text="${reply.user != null ? reply.user.name : reply.author}">
+					           ユーザー
+					       </span>
+					       
+					       <span class="text-muted small" 
+					             th:text="${reply.createdAt != null ? #temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:35'}">
+					           2026-01-19 14:35
+					       </span>
+					   </div>
                     
                     <!-- 대댓글 내용 -->
                     <div class="mb-2 small" th:text="${reply.content}" 
@@ -206,6 +239,13 @@
         </div>
     </div>
 </div>
+
+<!-- ✅ 추가: 서버의 로그인 상태를 JavaScript 변수로 전달 -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const isLoggedIn = /*[[${isLoggedIn}]]*/ false;
+    /*]]>*/
+</script>
 
 <!-- Bootstrap JS -->
 <script th:src="@{/js/post.js}"></script>

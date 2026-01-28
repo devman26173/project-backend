@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.join.entity.Post;
 import com.example.join.entity.Comment;
 import com.example.join.entity.Like;
-import com.example.join.entity.User;  // ✅ 추가
+import com.example.join.entity.User; 
 import com.example.join.repository.LikeRepository;
 import com.example.join.service.CommentService;
 
+import jakarta.servlet.http.HttpSession;  // ✅ 추가
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -42,27 +43,27 @@ public class PostController {
         commentService.save(sampleComment);
     }
 
+ // ✅ 수정: HttpSession 추가
     @GetMapping("/post")
-    public String post(Model model) {
+    public String post(Model model, HttpSession session) {
         String currentUser = "user1";
         
-        // 게시글 좋아요 정보
+        // ✅ 추가: 세션에서 로그인 상태 확인
+        User loginUser = (User) session.getAttribute("loginUser");
+        boolean isLoggedIn = (loginUser != null);
+        
         post.setLikeCount((int) likeRepository.countByTargetIdAndTargetType(post.getId(), "POST"));
         post.setLikedByMe(likeRepository.findByTargetIdAndTargetTypeAndUserId(
             post.getId(), "POST", currentUser).isPresent());
         
-        // DB에서 댓글 조회
         List<Comment> comments = commentService.findByPostId(post.getId());
         
-        // 각 댓글의 좋아요 정보 및 대댓글 로드
         for (Comment comment : comments) {
-            // 댓글 좋아요
             comment.setLikeCount((int) likeRepository.countByTargetIdAndTargetType(
                 comment.getId(), "COMMENT"));
             comment.setLikedByMe(likeRepository.findByTargetIdAndTargetTypeAndUserId(
                 comment.getId(), "COMMENT", currentUser).isPresent());
             
-            // 대댓글 조회
             List<Comment> replies = commentService.findRepliesByParentId(comment.getId());
             for (Comment reply : replies) {
                 reply.setLikeCount((int) likeRepository.countByTargetIdAndTargetType(
@@ -76,6 +77,8 @@ public class PostController {
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
         model.addAttribute("commentCount", comments.size());
+        model.addAttribute("isLoggedIn", isLoggedIn);  // ✅ 추가
+        
         return "post";
     }
     
@@ -94,12 +97,21 @@ public class PostController {
         return "redirect:/post";
     }
     
+    // ✅ 수정 후
     @PostMapping("/post/comment/add")
-    public String addComment(@RequestParam String content) {
+    public String addComment(@RequestParam String content, HttpSession session) {  // ← HttpSession 추가
         if (content != null && !content.trim().isEmpty()) {
-            // ✅ ID는 null로 설정 (JPA가 자동 생성)
+            User loginUser = (User) session.getAttribute("loginUser");  // ← 로그인 사용자 가져오기
+            
             Comment newComment = new Comment(null, post.getId(), content, "ユーザー");
             newComment.setCreatedAt(LocalDateTime.now());
+            
+            // ✅ User 연결
+            if (loginUser != null) {
+                newComment.setUser(loginUser);
+                newComment.setAuthor(loginUser.getName());  // 이름도 설정
+            }
+            
             commentService.save(newComment);
         }
         return "redirect:/post";
@@ -156,15 +168,25 @@ public class PostController {
         return "redirect:/post";
     }
     
+    // ✅ 수정 후
     @PostMapping("/post/comment/reply")
     public String addReply(
             @RequestParam Long parentId,
-            @RequestParam String content) {
+            @RequestParam String content,
+            HttpSession session) {  // ← HttpSession 추가
         if (content != null && !content.trim().isEmpty()) {
-            // ✅ ID는 null로 설정 (JPA가 자동 생성)
+            User loginUser = (User) session.getAttribute("loginUser");  // ← 로그인 사용자 가져오기
+            
             Comment reply = new Comment(null, post.getId(), content, "ユーザー");
             reply.setParentId(parentId);
             reply.setCreatedAt(LocalDateTime.now());
+            
+            // ✅ User 연결
+            if (loginUser != null) {
+                reply.setUser(loginUser);
+                reply.setAuthor(loginUser.getName());  // 이름도 설정
+            }
+            
             commentService.save(reply);
         }
         return "redirect:/post";

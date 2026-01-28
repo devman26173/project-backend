@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.join.entity.FoodBoard;
 import com.example.join.entity.User;
@@ -22,11 +23,25 @@ public class FoodBoardController {
 		this.foodBoardService = foodBoardService;
 	}
 
-    @GetMapping("/board")
-    public String home(Model model) {
-    	model.addAttribute("boards", foodBoardService.findAll()); 
-        return "foodboard";
-    }
+	@GetMapping("/board")
+	public String home(@RequestParam(required = false) String region,
+	                   @RequestParam(required = false) String prefecture,
+	                   Model model) {
+	    
+	    // 지역 필터링
+	    if (prefecture != null && !prefecture.isEmpty()) {
+	        model.addAttribute("boards", foodBoardService.findByPrefecture(prefecture));
+	        model.addAttribute("currentCategory", prefecture); // 현재 선택된 카테고리
+	    } else if (region != null && !region.isEmpty()) {
+	        model.addAttribute("boards", foodBoardService.findByRegion(region));
+	        model.addAttribute("currentCategory", region); // 현재 선택된 카테고리
+	    } else {
+	        model.addAttribute("boards", foodBoardService.findAll());
+	        model.addAttribute("currentCategory", "すべて"); // 기본값
+	    }
+	    
+	    return "foodboard";
+	}
     // 게시글 작성 페이지
     @GetMapping("/board/write")
     public String write(HttpSession session) {

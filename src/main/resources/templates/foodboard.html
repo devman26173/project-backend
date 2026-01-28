@@ -40,14 +40,16 @@
 	<div class="container-fluid px-0">
 		<div class="mobile-container">
 		<header class = "bg-white border-bottom py-3 px-3 d-flex justify-content-between align-items-center">
-			<span class="d-inline-flex align-items-center justify-content-center" 
-			      style="cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px;">〈</span>
+			<a th:href="@{/home}" 
+			   class="d-inline-flex align-items-center justify-content-center" 
+			   style="cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
 			<div class="d-flex flex-column align-items-center dropdown">
 			    <span class="fw-bold fs-4">グルメ掲示板</span>
-			    <span class="small text-muted dropdown-toggle" 
-			          id="categoryDisplay"
-			          data-bs-toggle="dropdown" 
-			          style="cursor: pointer">すべて</span>
+				<span class="small text-muted dropdown-toggle" 
+				      id="categoryDisplay"
+				      data-bs-toggle="dropdown" 
+				      style="cursor: pointer" 
+				      th:text="${currentCategory != null ? currentCategory : 'すべて'}">すべて</span>
 			          
 			    <ul class="dropdown-menu shadow border-0" id="regionDropdown">
 			        <li><a class="dropdown-item" href="#" onclick="selectCategory('すべて')">すべて</a></li>
@@ -179,12 +181,12 @@
 							                `<li><a class="dropdown-item ps-4" href="#" onclick="selectCategory('${pref}')">${pref}</a></li>`
 							            ).join('');
 
-							            li.innerHTML = `
-							                <a class="dropdown-item dropdown-toggle" href="#">${region}</a>
-							                <ul class="dropdown-menu start-100 top-0 shadow">
-							                    ${prefecturesHtml}
-							                </ul>
-							            `;
+										li.innerHTML = `
+										    <a class="dropdown-item dropdown-toggle" href="#" onclick="selectCategory('${region}')">${region}</a>
+										    <ul class="dropdown-menu start-100 top-0 shadow">
+										        ${prefecturesHtml}
+										    </ul>
+										`;
 							            regionDropdown.appendChild(li);
 							        });
 							    }
@@ -192,9 +194,20 @@
 								        if (categoryDisplay) {
 								            categoryDisplay.textContent = name;
 								        }
-								        console.log("선택된 카테고리:", name);
-								        // 이동 예시: location.href = '/board?category=' + encodeURIComponent(name);
-								    };
+
+										    // すべて 선택 시
+										    if (name === 'すべて') {
+										        location.href = '/board';
+										    }
+										    // 지방 선택 시 (北海道・東北, 関東 등)
+										    else if (['北海道・東北', '関東', '中部', '近畿', '中国・四国', '九州・沖縄'].includes(name)) {
+										        location.href = '/board?region=' + encodeURIComponent(name);
+										    }
+										    // 도도부현 선택 시
+										    else {
+										        location.href = '/board?prefecture=' + encodeURIComponent(name);
+										    }
+										};
 	</script>
 		
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.join.entity.Post;
 import com.example.join.entity.Comment;
 import com.example.join.entity.Like;
-import com.example.join.entity.User;  // ✅ 추가
+import com.example.join.entity.User; 
 import com.example.join.repository.LikeRepository;
 import com.example.join.service.CommentService;
 
@@ -97,12 +97,21 @@ public class PostController {
         return "redirect:/post";
     }
     
+    // ✅ 수정 후
     @PostMapping("/post/comment/add")
-    public String addComment(@RequestParam String content) {
+    public String addComment(@RequestParam String content, HttpSession session) {  // ← HttpSession 추가
         if (content != null && !content.trim().isEmpty()) {
-            // ✅ ID는 null로 설정 (JPA가 자동 생성)
+            User loginUser = (User) session.getAttribute("loginUser");  // ← 로그인 사용자 가져오기
+            
             Comment newComment = new Comment(null, post.getId(), content, "ユーザー");
             newComment.setCreatedAt(LocalDateTime.now());
+            
+            // ✅ User 연결
+            if (loginUser != null) {
+                newComment.setUser(loginUser);
+                newComment.setAuthor(loginUser.getName());  // 이름도 설정
+            }
+            
             commentService.save(newComment);
         }
         return "redirect:/post";
@@ -159,15 +168,25 @@ public class PostController {
         return "redirect:/post";
     }
     
+    // ✅ 수정 후
     @PostMapping("/post/comment/reply")
     public String addReply(
             @RequestParam Long parentId,
-            @RequestParam String content) {
+            @RequestParam String content,
+            HttpSession session) {  // ← HttpSession 추가
         if (content != null && !content.trim().isEmpty()) {
-            // ✅ ID는 null로 설정 (JPA가 자동 생성)
+            User loginUser = (User) session.getAttribute("loginUser");  // ← 로그인 사용자 가져오기
+            
             Comment reply = new Comment(null, post.getId(), content, "ユーザー");
             reply.setParentId(parentId);
             reply.setCreatedAt(LocalDateTime.now());
+            
+            // ✅ User 연결
+            if (loginUser != null) {
+                reply.setUser(loginUser);
+                reply.setAuthor(loginUser.getName());  // 이름도 설정
+            }
+            
             commentService.save(reply);
         }
         return "redirect:/post";

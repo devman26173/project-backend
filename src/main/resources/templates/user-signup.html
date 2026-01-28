@@ -28,6 +28,9 @@
                 <!-- 폼 시작 -->
                 <form th:action="@{/signup}" method="post">
                     
+					<!-- ✅ 추가: returnUrl 전달 -->
+					    <input type="hidden" name="returnUrl" th:value="${returnUrl}">
+					
                     <!-- 이름 -->
                     <div class="mb-3">
                         <label class="form-label">名前</label>

@@ -51,15 +51,15 @@
         </div>
 		<div class="d-flex gap-3 text-muted small">
 			 <!-- 좋아요 버튼 -->
-			 <form th:action="@{/post/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
-			             <button type="submit" class="btn-action d-flex align-items-center gap-1">
-			                 <img th:src="${post.likedByMe ? 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' : 'https://img.icons8.com/ios/20/888888/like.png'}" 
-			                      alt="いいね" 
-			                      style="width:16px; height:16px;">
-			                 <span>いいね！</span>
-			                 <span th:text="${post.likeCount}">0</span>
-			             </button>
-			         </form>
+			<form th:action="@{/post/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
+				<button type="submit" class="btn-action d-flex align-items-center gap-1">
+					<img th:src="${post.likedByMe ? 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' : 'https://img.icons8.com/ios/20/888888/like.png'}" 
+					     alt="いいね" 
+					     style="width:16px; height:16px;">
+					<span>いいね！</span>
+					<span th:text="${post.likeCount}">0</span>
+				</button>
+			</form>
 					 
 			    <!-- 댓글 버튼 -->
 				<span onclick="toggleCommentSection()" 

@@ -21,14 +21,17 @@ public class Profile {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
+    public Profile() {
+    	
+    }
+    
+    
 	// コンストラクタ
-	protected Profile() {
-	}
-
 	public Profile(User user, String imagePath) {
 		this.user = user;
 		this.imagePath = imagePath;
 	}
+
 
 	// getterSetter
 	public Long getProfileId() {
@@ -40,7 +43,7 @@ public class Profile {
 	}
 
 	public User getUser() {
-		return user;
+		return user; 
 	}
 
 	public String getIntroduction() {

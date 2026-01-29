@@ -1,0 +1,102 @@
+/* 배경 */
+body {
+    background-color: #f5f5f5; 
+    font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+}
+
+/* 세로형 카드 */
+.vertical-card {
+    width: 100%;
+    max-width: 520px;      
+    min-height: 100vh;
+    border: none;
+    display: flex;
+}
+
+/* 제목 */
+h1 {
+    font-size: 52px;
+    color: transparent;
+    -webkit-text-stroke: 2px #FF7B6B;
+    font-weight: 700;
+    letter-spacing: 6px;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 80px;   /* 세로 여백 강조 */
+}
+
+/* 라벨 */
+.form-label {
+    font-weight: 500;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* 입력 */
+.form-control {
+    padding: 14px 16px;
+    border: 1px solid #E8E8E8;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #FF7B6B;
+    box-shadow: 0 0 0 3px rgba(255, 123, 107, 0.1);
+    background-color: white;
+}
+
+.form-control::placeholder {
+    color: #BBBBBB;
+}
+
+/* 체크박스 */
+.form-check-input {
+    width: 18px;
+    height: 18px;
+}
+
+.form-check-input:checked {
+    background-color: #FF7B6B;
+    border-color: #FF7B6B;
+}
+
+.form-check-label {
+    font-size: 12px;
+    color: #999;
+}
+
+/* 로그인 버튼 */
+.btn-custom {
+    background-color: #FF7B6B;
+    border: none;
+    color: white;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 14px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(255, 123, 107, 0.2);
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #ff6555;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(255, 123, 107, 0.3);
+}
+
+/* 회원가입 버튼 */
+.btn-outline-custom {
+    border: 1px solid #FF7B6B;
+    color: #FF7B6B;
+    font-size: 15px;
+    padding: 14px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+    background-color: #FF7B6B;
+    color: white;
+}

@@ -51,18 +51,28 @@
         </div>
 		<div class="d-flex gap-3 text-muted small">
 			 <!-- 좋아요 버튼 -->
-			    <form th:action="@{/post/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
-			        <button type="submit" class="btn-action">
-			            <span th:text="${post.likedByMe ? '❤️ いいね！' : '🤍 いいね！'}">🤍 いいね！</span>
-			            <span th:text="${post.likeCount}">0</span>
-			        </button>
-			    </form>
+			<form th:action="@{/post/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
+				<button type="submit" class="btn-action d-flex align-items-center gap-1">
+					<img th:src="${post.likedByMe ? 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' : 'https://img.icons8.com/ios/20/888888/like.png'}" 
+					     alt="いいね" 
+					     style="width:16px; height:16px;">
+					<span>いいね！</span>
+					<span th:text="${post.likeCount}">0</span>
+				</button>
+			</form>
+					 
 			    <!-- 댓글 버튼 -->
-			    <span onclick="toggleCommentSection()" style="cursor:pointer;">
-			        💬 コメント <span th:text="${commentCount}">0</span>
-			    </span>
-			</div>
-    </div>
+				<span onclick="toggleCommentSection()" 
+				              style="cursor:pointer;" 
+				              class="d-flex align-items-center gap-1">
+				            <img src="https://img.icons8.com/ios/20/888888/comments.png" 
+				                 alt="コメント" 
+				                 style="width:16px; height:16px;">
+				            <span>コメント</span>
+				            <span th:text="${commentCount}">0</span>
+				        </span>
+				    </div>
+				</div>
 
     <!-- 댓글 섹션 -->
     <div id="comment-section" style="display:none;">
@@ -149,29 +159,40 @@
                 <!-- 댓글 액션 -->
                 <div class="comment-actions d-flex align-items-center gap-2">
 					 <!-- 좋아요 -->
-					    <form th:action="@{/post/comment/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
-					        <input type="hidden" name="commentId" th:value="${comment.id}">
-					        <button type="submit" class="btn-action">
-					            <span th:text="${comment.likedByMe ? '❤️' : '🤍'}">🤍</span>
-					            <span th:text="${comment.likeCount}">0</span>
-					        </button>
-					    </form>
-					    
-					    <span th:onclick="'toggleReply(' + ${comment.id} + ')'">💬 <span th:text="${comment.replies.size()}">0</span></span>
-						<span th:onclick="'checkLoginAndToggleEdit(event,' + ${comment.id} + ')'">
-						    ✔️ 編集
-						</span>
-					    
-					    <!-- 삭제 -->
-					    <form th:action="@{/post/comment/delete}" method="post" 
-					          class="d-inline"
-							  onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
-					        <input type="hidden" name="commentId" th:value="${comment.id}">
-					        <button type="submit" class="btn-action">
-					            ✖️ 削除
-					        </button>
-					    </form>
-					</div>
+					 <form th:action="@{/post/comment/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
+					         <input type="hidden" name="commentId" th:value="${comment.id}">
+					         <button type="submit" class="btn-action d-flex align-items-center gap-1">
+					             <img th:src="${comment.likedByMe ? 'https://img.icons8.com/ios-filled/18/ff6b6b/like.png' : 'https://img.icons8.com/ios/18/888888/like.png'}" 
+					                  alt="いいね" 
+					                  style="width:14px; height:14px;">
+					             <span th:text="${comment.likeCount}">0</span>
+					         </button>
+					     </form>
+					     
+					     <!-- ✅ 수정: 대댓글 수 표시 -->
+					     <span th:onclick="'toggleReply(' + ${comment.id} + ')'" 
+					           class="d-flex align-items-center gap-1" 
+					           style="cursor:pointer;">
+					         <img src="https://img.icons8.com/ios/18/888888/comments.png" 
+					              alt="コメント" 
+					              style="width:14px; height:14px;">
+					         <span th:text="${comment.replies.size()}">0</span>
+					     </span>
+					     
+					     <span th:onclick="'checkLoginAndToggleEdit(event,' + ${comment.id} + ')'" style="cursor:pointer;">
+					         ✔️ 編集
+					     </span>
+					     
+					     <!-- 삭제 -->
+					     <form th:action="@{/post/comment/delete}" method="post" 
+					           class="d-inline"
+					           onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
+					         <input type="hidden" name="commentId" th:value="${comment.id}">
+					         <button type="submit" class="btn-action">
+					             ✖️ 削除
+					         </button>
+					     </form>
+					 </div>
                 
 					<!-- 대댓글 입력 폼 -->
 					<div class="reply-form" th:id="'reply-form-' + ${comment.id}">

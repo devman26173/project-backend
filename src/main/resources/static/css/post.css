@@ -83,6 +83,8 @@ textarea {
     cursor: pointer;
     padding: 0;
     color: #666;
+    display: inline-flex;  /* ✅ 추가 */
+    align-items: center;   /* ✅ 추가 */
 }
 .btn-action:hover {
     opacity: 0.7;

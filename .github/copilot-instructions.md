@@ -115,6 +115,7 @@ src/main/java/com/example/join/
   - test: 테스트 코드 추가/수정
 
 ## Pull Request 리뷰
+- **PR 리뷰는 커밋 메시지가 어떤 언어로 작성되었든 항상 한국어로 작성해야 합니다**
 - GitHub Copilot은 PR에 대한 자동 코드 리뷰를 제공합니다
 - Repository 설정에서 GitHub Copilot을 활성화하면 사용할 수 있습니다
 - Copilot 리뷰는 다음 항목을 중점적으로 확인합니다:

@@ -36,7 +36,7 @@ public class FoodBoardService {
         board.setPrefecture(updatedBoard.getPrefecture());
         board.setRating(updatedBoard.getRating());
         board.setContent(updatedBoard.getContent());
-        board.setImageUrl(updatedBoard.getImageUrl());
+        board.setImageUrls(updatedBoard.getImageUrls());
         foodboardRepository.save(board);
     }
  // 게시글 삭제

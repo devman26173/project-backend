@@ -106,8 +106,8 @@
 		</div>
 		
 		<div class = "mt-3 px-3">
-			<input type="url" name="imageUrl"
-			       th:value="${board.imageUrl}"
+			<input type="text" name="imageUrls"
+			       th:value="${board.imageUrls}"
 			       class="form-control"
 			       placeholder="画像URL (任意)">
 		</div>
@@ -183,6 +183,59 @@
 			}
 		   });
 		</script>
+		<script>
+		    // 페이지 로드 시 원본 데이터 저장
+		    let originalData = {
+		        title: document.querySelector('input[name="title"]').value,
+		        region: document.getElementById('regionSelect').value,
+		        prefecture: document.getElementById('prefectureSelect').value,
+		        rating: document.getElementById('ratingInput').value,
+		        content: document.querySelector('textarea[name="content"]').value,
+		        imageUrls: document.querySelector('input[name="imageUrls"]').value
+		    };
+		    
+			
+			
+		    // 현재 데이터와 비교하는 함수
+		    function hasChanges() {
+		        let currentData = {
+		            title: document.querySelector('input[name="title"]').value,
+		            region: document.getElementById('regionSelect').value,
+		            prefecture: document.getElementById('prefectureSelect').value,
+		            rating: document.getElementById('ratingInput').value,
+		            content: document.querySelector('textarea[name="content"]').value,
+		            imageUrls: document.querySelector('input[name="imageUrls"]').value
+		        };
+				
+		        
+		        // 하나라도 다르면 true 반환
+		        return originalData.title !== currentData.title ||
+		               originalData.region !== currentData.region ||
+		               originalData.prefecture !== currentData.prefecture ||
+		               originalData.rating !== currentData.rating ||
+		               originalData.content !== currentData.content ||
+		               originalData.imageUrls !== currentData.imageUrls;
+		    }
+		    
+		    
+		    
+		    // form 제출 시에는 경고 안 뜨게
+		    const form = document.querySelector('form');
+		    let isSubmitting = false;
+		    
+		    form.addEventListener('submit', function() {
+		        isSubmitting = true;
+		    });
+		    
+		    // 브라우저 새로고침/닫기 시에도 경고
+		    window.addEventListener('beforeunload', function(e) {
+		        if (hasChanges() && !isSubmitting) {
+		            e.preventDefault();
+		            e.returnValue = ''; // Chrome에서 필요
+		        }
+		    });
+		</script>
+
 	</body>
 </html>
 

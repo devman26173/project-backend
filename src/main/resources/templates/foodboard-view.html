@@ -62,50 +62,60 @@
 		
 			</header>
 			<!--게시글 내용-->
-			<main class = "flex-grow-1">
-				<!--지역 카테고리-->
-				<div class = "px-3 pt-3">
-					<span class = "badge bg-warning text-dark" th:text="${board.prefecture}">[東京都]</span>
-					</div>
-				<!--제목-->
-				<div class = "px-3 pt-4">
-					<h4 class = "fw-bold" th:text="${board.title}">恵比寿の絶品パエリアランチES</h4>
+			<main class="flex-grow-1">
+			    
+				<!-- 1. 지역명 + 별점 + 작성자 + 날짜 (한 줄) -->
+				<div class="px-3 pt-3 d-flex justify-content-between align-items-center">
+				    <div class="d-flex align-items-center gap-2">
+				        <span class="badge bg-warning text-dark" th:text="${board.prefecture}">東京都</span>
+				        <span class="text-warning fw-bold" th:text="'⭐' + ${board.rating}">⭐4</span>
+				    </div>
+				    <div class="small text-muted">
+				        <span th:text="${board.user != null ? board.user.username : '匿名'}">作成者ID</span>
+				        <span>|</span>
+				        <span th:text="${#temporals.format(board.createdAt, 'MM/dd HH:mm')}">12/24 18:30</span>
+				    </div>
 				</div>
-				
-				<!--별점-->
-				<div class = "px-3 py-2 d-flex align-items-center gap-2">
-					<span style = "font-size: 24px;">⭐</span>
-					<span class = "fw-bold" th:text="${board.rating}">4</span>
-					</div>
-				<!--이미지-->
-				<div class = "px-3 py-2">
-					<img th:src="${board.imageUrl}"
-						  alt = "投稿イメージ"
-						  class = "w-100 rounded"
-						  style = "max-height: 300px; object-fit: cover;">
-				</div>
-				<!--게시글-->
-				<div class = "px-3 py-3">
-					<p class = "mb-0" th:text = "${board.content}">
-						本格的なスペイン料理が楽しめるお店。魚介の旨味が凝縮されたパエリアは絶対に食べてほしい一品です！
-					</p>
-				</div>
-				
-				<!--작성자 정보-->
-				<div class = "px-3 py-2 d-flex align-items-center gap-2 text-muted small">
-					<span>👤</span>
-					<span th:text = "${#temporals.format(board.createdAt, 'MM/dd')}">12/24</span>
-					<span>|</span>
-					<span>作成者</span>
-				</div>
-				</main>
-				
-				<!--댓글 영역(선향님 코드 추가)-->
-				<div class = "border-top mt-3">
-					<div class = "px-3 py-3 bg-light">
-						<p class="mb-0 text-muted small">※ 댓글 기능은 구현 예정입니다</p>
-					</div>
-				</div>
+			    
+			    <!-- 2. 제목 -->
+			    <div class="px-3 pt-2">
+			        <h5 class="fw-bold mb-0" th:text="${board.title}">恵比寿の絶品パエリアランチES</h5>
+			    </div>
+			    
+			    <!-- 3. 이미지 (여러 장, 옆으로 스크롤) -->
+				<div class="px-3 py-3" th:if="${board.imageUrls != null and !board.imageUrls.isEmpty()}">
+				    <div class="d-flex gap-2"
+				         style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+				        <img th:each="url : ${board.imageUrls.split(',')}"
+				             th:src="${url}" 
+				             alt="投稿イメージ"
+				             class="rounded flex-shrink-0"
+				             style="width: 100%; max-width: 350px; height: 250px; object-fit: cover;">
+				    </div>
+			        
+			        <!-- 이미지 없을 때 -->
+			        <div th:if="${board.imageUrls == null or board.imageUrls.isEmpty()}"
+			             class="bg-light rounded d-flex align-items-center justify-content-center"
+			             style="height: 200px;">
+			            <span class="text-muted">画像なし</span>
+			        </div>
+			    </div>
+			    
+			    <!-- 4. 글 내용 -->
+			    <div class="px-3 py-2">
+			        <p class="mb-0" style="line-height: 1.6;" th:text="${board.content}">
+			            本格的なスペイン料理が楽しめるお店。魚介の旨味が凝縮されたパエリアは絶対に食べてほしい一品です！
+			        </p>
+			    </div>
+			    
+			</main>
+
+			<!--댓글 영역 (그대로)-->
+			<div class="border-top mt-3">
+			    <div class="px-3 py-3 bg-light">
+			        <p class="mb-0 text-muted small">※ 댓글 기능은 구현 예정입니다</p>
+			    </div>
+			</div>
 				<script> 
 				function deletePost(){
 				if(confirm('本当に削除しますか？')){

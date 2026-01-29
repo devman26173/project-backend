@@ -18,8 +18,12 @@ public class FoodBoard {
     
 @Column(columnDefinition = "TEXT")
 	private String content; 
-	private String imageUrl; 
+	private String imageUrls; 
 	private LocalDateTime createdAt; 
+	
+@ManyToOne
+@JoinColumn(name = "user_id")
+   	private User user;
 	
 @PrePersist
 	public void prePersist() {
@@ -77,12 +81,12 @@ public void setContent(String content) {
 	this.content = content;
 }
 
-public String getImageUrl() {
-	return imageUrl;
+public String getImageUrls() {
+	return imageUrls;
 }
 
-public void setImageUrl(String imageUrl) {
-	this.imageUrl = imageUrl;
+public void setImageUrls(String imageUrls) {
+	this.imageUrls = imageUrls;
 }
 
 public LocalDateTime getCreatedAt() {
@@ -91,6 +95,14 @@ public LocalDateTime getCreatedAt() {
 
 public void setCreatedAt(LocalDateTime createdAt) {
 	this.createdAt = createdAt;
+}
+
+public User getUser() {
+    return user;
+}
+
+public void setUser(User user) {
+    this.user = user;
 }
 
   

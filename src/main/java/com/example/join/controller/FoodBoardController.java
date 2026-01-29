@@ -59,9 +59,12 @@ public class FoodBoardController {
         if (loginUser == null) {
             return "redirect:/login?returnUrl=/board/write";
         }
+        foodBoard.setUser(loginUser);
         foodBoardService.saveFood(foodBoard);
         return "redirect:/board";
     }
+    
+    
     
     //게시글 상세 페이지 
     @GetMapping("/board/view/{id}")
@@ -79,9 +82,16 @@ public class FoodBoardController {
     
     //게시글 수정 처리 
     @PostMapping("/board/edit/{id}")
-    public String updateBoard(@PathVariable Long id, FoodBoard foodBoard) {
-    	foodBoardService.updateBoard(id, foodBoard);
-    	 return "redirect:/board/view/" + id;
+    public String updateBoard(@PathVariable Long id, FoodBoard foodBoard, HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+        FoodBoard existingBoard = foodBoardService.findById(id);
+        foodBoard.setUser(existingBoard.getUser());
+        
+        foodBoardService.updateBoard(id, foodBoard);
+        return "redirect:/board/view/" + id;
     }
     
     //게시글 삭제 처리 

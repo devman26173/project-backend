@@ -115,10 +115,12 @@ src/main/java/com/example/join/
   - test: 테스트 코드 추가/수정
 
 ## Pull Request 리뷰
-- PR이 생성되거나 업데이트되면 GitHub Copilot이 자동으로 코드 리뷰를 수행합니다
+- GitHub Copilot은 PR에 대한 자동 코드 리뷰를 제공합니다
+- Repository 설정에서 GitHub Copilot을 활성화하면 사용할 수 있습니다
 - Copilot 리뷰는 다음 항목을 중점적으로 확인합니다:
   - 코드 품질 및 베스트 프랙티스 준수
   - 잠재적 버그나 보안 취약점
   - 성능 최적화 가능성
   - 코드 가독성 및 유지보수성
 - 자동 리뷰 결과를 참고하여 코드를 개선하세요
+- PR 코멘트에서 Copilot에게 추가 질문을 할 수 있습니다 (@github-copilot 멘션)

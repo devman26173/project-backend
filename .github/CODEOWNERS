@@ -1,0 +1,35 @@
+# CODEOWNERS 파일
+# 각 팀원의 담당 영역을 정의합니다.
+# 담당 외 파일을 수정하면 해당 파일의 소유자가 자동으로 리뷰어로 지정됩니다.
+
+# 선향: Post 관련 파일
+**/Post*.java @seonhyang
+**/post*.java @seonhyang
+**/Post*.html @seonhyang
+**/post*.html @seonhyang
+**/post*.css @seonhyang
+**/post*.js @seonhyang
+
+# 현주: FoodBoard 관련 파일
+**/FoodBoard*.java @hyeonju
+**/foodboard*.java @hyeonju
+**/foodboard*.html @hyeonju
+**/foodboard*.css @hyeonju
+**/foodboard*.js @hyeonju
+
+# 수진: User, Signup, Login 관련 파일
+**/User*.java @sujin
+**/user*.java @sujin
+**/user-*.html @sujin
+**/login*.html @sujin
+**/login*.css @sujin
+**/signup*.html @sujin
+**/signup*.css @sujin
+
+# 민창: Profile 관련 파일
+**/Profile*.java @minchang
+**/profile*.java @minchang
+**/profile*.html @minchang
+**/profile*.css @minchang
+**/profile*.png @minchang
+**/profile*.js @minchang

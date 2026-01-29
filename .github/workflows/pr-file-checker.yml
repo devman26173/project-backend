@@ -1,0 +1,177 @@
+---
+name: PR File Change Checker
+
+"on":
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-file-changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          # PR의 변경된 파일 목록 가져오기
+          git fetch origin ${{ github.base_ref }}
+          FILES=$(git diff --name-only \
+            origin/${{ github.base_ref }}...HEAD)
+          echo "$FILES"
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Check file ownership
+        id: check-ownership
+        run: |
+          FILES="${{ steps.changed-files.outputs.changed_files }}"
+
+          # 각 영역별 파일 패턴 정의
+          POST_PATTERN="Post|post"
+          FOODBOARD_PATTERN="FoodBoard|foodboard"
+          USER_PATTERN="User|user|login|signup"
+          PROFILE_PATTERN="Profile|profile"
+
+          # 영역별 변경 파일 확인
+          POST_FILES=$(echo "$FILES" | \
+            grep -iE "$POST_PATTERN" || true)
+          FOODBOARD_FILES=$(echo "$FILES" | \
+            grep -iE "$FOODBOARD_PATTERN" || true)
+          USER_FILES=$(echo "$FILES" | \
+            grep -iE "$USER_PATTERN" || true)
+          PROFILE_FILES=$(echo "$FILES" | \
+            grep -iE "$PROFILE_PATTERN" || true)
+          PATTERN="$POST_PATTERN|$FOODBOARD_PATTERN"
+          PATTERN="$PATTERN|$USER_PATTERN|$PROFILE_PATTERN"
+          OTHER_FILES=$(echo "$FILES" | \
+            grep -viE "$PATTERN" || true)
+
+          # 결과를 output에 저장
+          echo "post_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$POST_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "foodboard_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$FOODBOARD_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "user_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$USER_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "profile_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$PROFILE_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "other_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$OTHER_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create PR comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const postFiles = `${{
+              steps.check-ownership.outputs.post_files
+            }}`.trim();
+            const foodboardFiles = `${{
+              steps.check-ownership.outputs.foodboard_files
+            }}`.trim();
+            const userFiles = `${{
+              steps.check-ownership.outputs.user_files
+            }}`.trim();
+            const profileFiles = `${{
+              steps.check-ownership.outputs.profile_files
+            }}`.trim();
+            const otherFiles = `${{
+              steps.check-ownership.outputs.other_files
+            }}`.trim();
+
+            let comment = '## 📋 PR 파일 변경 내역\n\n';
+            comment += '이 PR에서 수정된 파일들을 ';
+            comment += '담당자별로 분류했습니다.\n\n';
+
+            if (postFiles) {
+              comment += '### 🔵 Post 관련 파일 ';
+              comment += '(담당: 선향)\n';
+              comment += '```\n' + postFiles + '\n```\n\n';
+            }
+
+            if (foodboardFiles) {
+              comment += '### 🟢 FoodBoard 관련 파일 ';
+              comment += '(담당: 현주)\n';
+              comment += '```\n' + foodboardFiles + '\n```\n\n';
+            }
+
+            if (userFiles) {
+              comment += '### 🟡 User/Login/Signup 관련 파일 ';
+              comment += '(담당: 수진)\n';
+              comment += '```\n' + userFiles + '\n```\n\n';
+            }
+
+            if (profileFiles) {
+              comment += '### 🟣 Profile 관련 파일 ';
+              comment += '(담당: 민창)\n';
+              comment += '```\n' + profileFiles + '\n```\n\n';
+            }
+
+            if (otherFiles) {
+              comment += '### ⚪ 기타 공통 파일\n';
+              comment += '```\n' + otherFiles + '\n```\n\n';
+            }
+
+            // 여러 영역의 파일이 수정되었는지 확인
+            const areas = [
+              postFiles,
+              foodboardFiles,
+              userFiles,
+              profileFiles
+            ].filter(f => f).length;
+            if (areas > 1 || otherFiles) {
+              comment += '---\n';
+              comment += '⚠️ **주의**: 이 PR은 여러 담당 영역의 ';
+              comment += '파일을 수정하거나 공통 파일을 포함합니다.\n';
+              comment += '해당 영역의 담당자들이 ';
+              comment += '리뷰를 진행해주세요.\n';
+            }
+
+            // 기존 봇 코멘트 찾기
+            const { data: comments } =
+              await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('📋 PR 파일 변경 내역')
+            );
+
+            if (botComment) {
+              // 기존 코멘트 업데이트
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              // 새 코멘트 생성
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }

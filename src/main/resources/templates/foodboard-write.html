@@ -193,6 +193,7 @@
 						    
 						    let uploadedImages = []; // 업로드된 이미지 URL 배열
 						    const MAX_IMAGES = 5;
+						    let activeUploads = 0; // 진행 중인 업로드 카운터
 						    
 						    // 파일 선택 시 (여러 개 가능)
 						    imageInput.addEventListener('change', function(e) {
@@ -248,6 +249,11 @@
 						            return;
 						        }
 						        
+						        // 로딩 표시 (한 번만)
+						        if (activeUploads === 0) {
+						            showLoading();
+						        }
+						        
 						        // 각 파일 업로드
 						        files.forEach(file => uploadSingleImage(file));
 						    }
@@ -263,8 +269,8 @@
 						        const formData = new FormData();
 						        formData.append('file', file);
 						        
-						        // 로딩 표시
-						        showLoading();
+						        // 업로드 카운터 증가
+						        activeUploads++;
 						        
 						        fetch('/api/upload', {
 						            method: 'POST',
@@ -285,12 +291,18 @@
 						            } else {
 						                alert(data.error || 'アップロード失敗');
 						            }
-						            hideLoading();
 						        })
 						        .catch(error => {
 						            alert('アップロードエラー: ' + error.message);
 						            console.error('Upload error:', error);
-						            hideLoading();
+						        })
+						        .finally(() => {
+						            // 업로드 카운터 감소
+						            activeUploads--;
+						            // 모든 업로드가 완료되면 로딩 숨기기
+						            if (activeUploads === 0) {
+						                hideLoading();
+						            }
 						        });
 						    }
 						    

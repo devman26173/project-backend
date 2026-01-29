@@ -129,7 +129,7 @@
 		            <span class="text-danger">❤️</span>
 		            <span class="text-secondary">💬</span>
 		            <span class="ms-auto text-muted" 
-		                  th:text="${#temporals.format(board.createdAt, 'HH:mm')} + ' | ' + (${board.user != null ? board.user.username : '匿名'})">
+		                  th:text="${#temporals.format(board.createdAt, 'HH:mm') + ' | ' + (board.user != null ? board.user.username : '匿名')}">
 		                12:24 | 작성자
 		            </span>
 		        </div>

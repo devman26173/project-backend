@@ -20,11 +20,16 @@
 # 수진: User, Signup, Login 관련 파일
 **/User*.java @sujin
 **/user*.java @sujin
+**/user*.html @sujin
+**/user*.css @sujin
+**/user*.js @sujin
 **/user-*.html @sujin
 **/login*.html @sujin
 **/login*.css @sujin
+**/login*.js @sujin
 **/signup*.html @sujin
 **/signup*.css @sujin
+**/signup*.js @sujin
 
 # 민창: Profile 관련 파일
 **/Profile*.java @minchang
@@ -33,3 +38,4 @@
 **/profile*.css @minchang
 **/profile*.png @minchang
 **/profile*.js @minchang
+

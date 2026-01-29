@@ -111,3 +111,4 @@ A: `.github/CODEOWNERS` 파일을 직접 수정하고 PR을 생성하세요.
 - [GitHub CODEOWNERS 문서](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
 - [GitHub Actions 문서](https://docs.github.com/en/actions)
 - [Pull Request 템플릿 사용법](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/creating-a-pull-request-template-for-your-repository)
+

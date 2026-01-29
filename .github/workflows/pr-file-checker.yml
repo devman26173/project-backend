@@ -40,6 +40,9 @@ jobs:
           FOODBOARD_PATTERN="FoodBoard|foodboard"
           USER_PATTERN="User|user|login|signup"
           PROFILE_PATTERN="Profile|profile"
+          # 전체 패턴 조합
+          ALL_PATTERN="$POST_PATTERN|$FOODBOARD_PATTERN"
+          ALL_PATTERN="$ALL_PATTERN|$USER_PATTERN|$PROFILE_PATTERN"
 
           # 영역별 변경 파일 확인
           POST_FILES=$(echo "$FILES" | \
@@ -50,10 +53,8 @@ jobs:
             grep -iE "$USER_PATTERN" || true)
           PROFILE_FILES=$(echo "$FILES" | \
             grep -iE "$PROFILE_PATTERN" || true)
-          PATTERN="$POST_PATTERN|$FOODBOARD_PATTERN"
-          PATTERN="$PATTERN|$USER_PATTERN|$PROFILE_PATTERN"
           OTHER_FILES=$(echo "$FILES" | \
-            grep -viE "$PATTERN" || true)
+            grep -viE "$ALL_PATTERN" || true)
 
           # 결과를 output에 저장
           echo "post_files<<EOF" >> $GITHUB_OUTPUT
@@ -75,6 +76,7 @@ jobs:
           echo "other_files<<EOF" >> $GITHUB_OUTPUT
           echo "$OTHER_FILES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+
 
       - name: Create PR comment
         uses: actions/github-script@v7
@@ -175,3 +177,4 @@ jobs:
                 body: comment
               });
             }
+

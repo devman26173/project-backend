@@ -1,8 +1,11 @@
 package com.example.join.controller;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.example.join.entity.User;
@@ -99,10 +102,24 @@ public class UserController {
     
     @PostMapping("/logout")
     public String processLogout(HttpSession session) {
-    	if (session.getAttribute("loginUser") == null) {
-    		return "redirect:/login";
-    	}
-    	userService.logout(session);
-    	return "redirect:/login";
+        if (session.getAttribute("loginUser") == null) {
+            return "redirect:/login";
+        }
+        userService.logout(session);
+        return "redirect:/login";
+    }
+    
+    @GetMapping("/user/profile/{userId}")
+    public String showUserProfile(@PathVariable Long userId, Model model) {
+        // userService.getUserById(userId) は Optional<User> を返す想定
+        Optional<User> userOpt = userService.getUserById(userId); 
+        
+        if (userOpt.isPresent()) {
+            model.addAttribute("user", userOpt.get());
+            return "user-profile"; 
+        } else {
+            // ユーザーが存在しない場合の処理
+            return "redirect:/board";
+        }
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
     
     private String username;
     private String name;
@@ -24,11 +24,11 @@ public class User {
     private List<Post> posts = new ArrayList<>();
 
     // Getter / Setter
-    public Long getId() {
-		  return id;
+    public Long getUserId() {
+		  return userId;
     }
-    public void setId(Long id) {
-	    this.id = id;
+    public void setUserId(Long userId) {
+	    this.userId = userId;
     }
     public String getUsername() {
     	return username;

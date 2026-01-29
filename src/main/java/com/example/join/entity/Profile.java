@@ -34,13 +34,26 @@ public class Profile {
 	public Long getProfileId() {
 		return profileId;
 	}
+	
+	public void setProfileId(Long profuleId) {
+		this.profileId = profileId;
+	}
 
 	public String getImagePath() {
 		return imagePath;
 	}
+	
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+		
+	}
 
 	public User getUser() {
 		return user;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public String getIntroduction() {

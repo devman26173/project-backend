@@ -20,6 +20,12 @@ public class UserService {
         return userRepository.findAll();
     }
     
+    public Optional<User> getUserById(Long userId) {
+        return userRepository.findById(userId);
+    }
+    
+   
+    
     public void registerUser(String username, String name, String password, String region, String prefecture) {
         User user = new User();
         user.setUsername(username);

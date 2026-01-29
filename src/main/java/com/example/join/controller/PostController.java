@@ -30,7 +30,7 @@ public class PostController {
         
      // ✅ 추가: 임시 User 생성
         User tempUser = new User();
-        tempUser.setId(1L);
+        tempUser.setUserId(1L);
         tempUser.setUsername("1234");
         
         // ✅ Post 설정

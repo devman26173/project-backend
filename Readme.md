@@ -20,10 +20,10 @@
 
 ## PR 리뷰 규칙
 이 프로젝트는 팀원별로 담당 영역이 지정되어 있습니다:
-- **선향**: Post 관련 파일 (Post*.java, post*.*)
-- **현주**: FoodBoard 관련 파일 (FoodBoard*.java, foodboard*.*)
-- **수진**: User, Signup, Login 관련 파일 (User*.java, user*.*, *login*.*, *signup*.*)
-- **민창**: Profile 관련 파일 (Profile*.java, profile*.*)
+- **선향**: Post 관련 파일 (Post*.java, post*.html, post*.css, post*.js)
+- **현주**: FoodBoard 관련 파일 (FoodBoard*.java, foodboard*.html, foodboard*.css, foodboard*.js)
+- **수진**: User, Signup, Login 관련 파일 (User*.java, user*.html, user*.css, user*.js, user-*.html, login*.html, login*.css, login*.js, signup*.html, signup*.css, signup*.js)
+- **민창**: Profile 관련 파일 (Profile*.java, profile*.html, profile*.css, profile*.js, profile*.png)
 
 ### CODEOWNERS
 `.github/CODEOWNERS` 파일에 각 담당자의 영역이 정의되어 있습니다.
@@ -37,3 +37,4 @@ PR이 생성되거나 업데이트될 때, GitHub Actions가 자동으로:
 
 **담당 외 파일을 수정하는 경우**, 해당 파일의 담당자가 자동으로 리뷰어로 추가되며,
 PR 템플릿에 수정 이유를 명시해주세요.
+

@@ -7,10 +7,10 @@
 
 | 팀원 | 담당 영역 | 파일 패턴 |
 |------|----------|----------|
-| 선향 | Post 관련 | Post*.java, post*.* |
-| 현주 | FoodBoard 관련 | FoodBoard*.java, foodboard*.* |
-| 수진 | User, Signup, Login 관련 | User*.java, user*.*, *login*.*, *signup*.* |
-| 민창 | Profile 관련 | Profile*.java, profile*.* |
+| 선향 | Post 관련 | Post*.java, post*.html, post*.css, post*.js |
+| 현주 | FoodBoard 관련 | FoodBoard*.java, foodboard*.html, foodboard*.css, foodboard*.js |
+| 수진 | User, Signup, Login 관련 | User*.java, user*.html, user*.css, user*.js, user-*.html, login*.html, login*.css, login*.js, signup*.html, signup*.css, signup*.js |
+| 민창 | Profile 관련 | Profile*.java, profile*.html, profile*.css, profile*.js, profile*.png |
 
 ## 작동 방식
 

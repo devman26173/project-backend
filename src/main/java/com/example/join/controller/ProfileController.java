@@ -1,22 +1,21 @@
 package com.example.join.controller;
 
 import com.example.join.entity.Profile;
-import com.example.join.service.ProfileService;
+import com.example.join.repository.ProfileRepository;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class ProfileController {
 
-	private final ProfileService profileService;
+	private final ProfileRepository profileRepository;
 
-	public ProfileController(ProfileService profileService) {
-		this.profileService = profileService;
+	public ProfileController(ProfileRepository profileRepository) {
+		this.profileRepository = profileRepository;
 	}
-	
+
 	@GetMapping("/profile")
 	public String profile(Model model) {
 		Profile profile = profileService.getProfile(1L);
@@ -28,12 +27,7 @@ public class ProfileController {
 	public String edit(Model model) {
 		Profile profile = profileService.getProfile(1L);
 		model.addAttribute("profile", profile);
-		return "profile_edit";
+		return "profile"; // templates/home.html
 	}
 
-	@PostMapping("/profile/edit")
-	public String update(Profile profile) {
-		profileService.update(profile);
-		return "redirect:/profile";
-	}
 }

@@ -1,50 +1,216 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th = "http://www.thymeleaf.org">
 <head>
-    <title>FoodBoard</title>
-	<link rel="stylesheet" th:href="@{/css/foodboard.css}">
+	<meta charset = "UTF-8">
+	<meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+	<title>FoodBoard</title>
+
+	<!--Bootstrap CSS-->
+	<link href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<link rel = "stylesheet" th:href = "@{/css/foodboard.css}">
+		
+	<style>
+		.dropdown-submenu:hover > .dropdown-menu {
+			display: block;
+		}
+		/* 앱 형태의 중앙 정렬 레이아웃 */
+		.mobile-container {
+		    max-width: 430px;    /* 최신 아이폰 프로 맥스 정도의 너비 */
+		    margin: 0 auto;      /* 화면 중앙 정렬 */
+		    min-height: 100vh;   /* 최소 높이를 화면 전체로 */
+		    background-color: #ffffff;
+		    border-left: 1px solid #f0f0f0;
+		    border-right: 1px solid #f0f0f0;
+		    display: flex;
+		    flex-direction: column;
+		    padding: 0;          /* 내부 여백 초기화 */
+		}
+
+		/* 스크롤 시 헤더 고정 (선택 사항) */
+		header {
+		    position: sticky;
+		    top: 0;
+		    z-index: 1020;
+		    width: 100%;
+		}
+	</style>
 </head>
 <body>
-    <h1 th:text="${message}" >기본 텍스트</h1>
-	<!-- 상단 헤더-->
-	<header class = "boarder-header">
+	<div class="container-fluid px-0">
+		<div class="mobile-container">
+		<header class = "bg-white border-bottom py-3 px-3 d-flex justify-content-between align-items-center">
+			<a th:href="@{/home}" 
+			   class="d-inline-flex align-items-center justify-content-center" 
+			   style="cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
+			<div class="d-flex flex-column align-items-center dropdown">
+			    <span class="fw-bold fs-4">グルメ掲示板</span>
+				<span class="small text-muted dropdown-toggle" 
+				      id="categoryDisplay"
+				      data-bs-toggle="dropdown" 
+				      style="cursor: pointer" 
+				      th:text="${currentCategory != null ? currentCategory : 'すべて'}">すべて</span>
+			          
+			    <ul class="dropdown-menu shadow border-0" id="regionDropdown">
+			        <li><a class="dropdown-item" href="#" onclick="selectCategory('すべて')">すべて</a></li>
+			        <li><hr class="dropdown-divider"></li>
+			        </ul>
+			</div>
+			
+			<div class = "d-flex gap-3 align-items-center">
+				<span id = "searchIcon" style = "cursor: pointer">🔍</span>
+				<div th:replace="~{logout :: logoutButton}"></div>
+				<img src = "https://images.unsplash.com/photo-1740252117027-4275d3f84385?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+					class = "rounded-circle" 
+					style = "width:32px; height:32px; cursor:pointer">
+			</div>
+	
+		</header>
 		
-		<!--뒤로가기 버튼-->
-		<span class = "back-button">〈</span>
-		
-		<!--제목과 지역 선택 -->
-		<div class = "header-title-box">
-			<span class = "header-main-title">グルメ掲示板</span>
-			<span class = "header-sub-title">すべて ▼</span>
-		</div>
-		
-		<!--검색 및 메뉴 -->
-		<div class = "header-icons">
-		<span class = "search-icon">🔎</span>
-		<img src = "https://images.unsplash.com/photo-1740252117027-4275d3f84385?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cHJvZmlsZSUyMGljb258ZW58MHx8MHx8fDA%3D" 
-		alt = "프로필" class = "profile-icon">
-		</div>
-	</header>
-		<!--공지사항-->
-		<div class = "notice-box">
+		<div id = "searchBar" class = "bg-white border-bottom p-3" style="display: none;">
+			<div class = "input-group">
+				<input type = "text"
+						id = "searchInput"
+						class = "form-control"
+						placeholder = "検索ワードを入力">
+					<button class = "btn btn-outline-secondary" id = "searchButton">検索></button>
+					<button class = "btn btn-outline-danger" id = "closeSearch">❌</button>
+					</div>
+				</div>
+
+		<div class = "p-3 rounded d-flex gap-2 small fw-bold" style = "background-color: #ffecd9; cursor: pointer">
 			<span>📢</span>
 			<span>グルメ掲示板ご利用方法とルール</span>
 		</div>
-		
-		<!--게시글 리스트-->
-		<div class = "post-list">
-			<div class = "post-item">
-				<div class = "post-content">
-				<h3 class = "post-title">六本木で本格アメリカンBBQ🍖</h3>
-					<p class = "post-text">お肉がホロホロでボリューム満点！</p>
-					<div class = "post-meta">⭐ 5 👍 0 💬 0 | 12:24</div>
-					</div>
-					<img src = "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400" alt = "음식 사진" class = "post-image">	
-			</div>
+
+		<main class="p-0 pb-5">
+		    <div th:each="board : ${boards}" class="d-flex p-3 border-bottom" style="background-color: white">
+		        <div class="flex-grow-1 pe-3" style="min-width: 0;">
+		            <div class="small text-secondary mb-1" th:text="'[' + ${board.prefecture} + ']'">[東京都]</div>
+		            
+		            <a th:href = "@{/board/view/{id}(id=${board.id})}"
+						class = "text-decoration-none text-dark">
+						<h6 class="fw-bold mb-1 text-truncate" style="cursor:pointer" th:text="${board.title}">タイトル</h6>
+		            
+					<p class="small text-muted mb-2" 
+					   th:text="${board.content}" 
+					   style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all;">
+					   内容...</p>
+
+		            <div class="d-flex align-items-center gap-2 small">
+		                <span class="text-warning" th:text="'⭐' + ${board.rating}">⭐5</span>
+		                <span>❤️</span>
+		                <span>💬</span>
+		                <span class="ms-auto text-muted" th:text="${#temporals.format(board.createdAt, 'HH:mm')} + ' | 作成者'">12:24 | 作成者</span>
+		            </div>
+		        </div>
+
+		        <div>
+		            <img th:src="${board.imageUrl != null ? board.imageUrl : 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400'}"
+		                 class="rounded"
+		                 style="width: 80px; height: 80px; object-fit: cover">
+		        </div>
+		    </div>
+		</main>
+
+		<div class = "fixed-bottom d-flex justify-content-center mb-4">
+		    <a th:href="@{/board/write}" class = "btn btn-primary rounded-pill shadow px-4 py-2 fw-bold text-decoration-none">
+		        <span class = "me-2">投稿する✏️</span>
+		    </a>
 		</div>
+	</div>
+	</div>
+	</body>
+	<!--Bootstrap JS-->
+	<script src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<!--검색 기능 스크립트 추가-->
+	<script>
+		const searchIcon = document.getElementById('searchIcon');
+		const searchBar = document.getElementById('searchBar');
+		const searchInput = document.getElementById('searchInput');
+		const closeSearch = document.getElementById('closeSearch');
+		const searchButton = document.getElementById('searchButton');
 		
+		searchIcon.addEventListener('click', function(){
+			searchBar.style.display = 'block';
+			searchInput.focus();
+		});
 		
-	
-	
-</body>
+		closeSearch.addEventListener('click', function(){
+			searchBar.style.display = 'none';
+			searchInput.value = '';
+		});
+		
+		searchButton.addEventListener('click', function(){
+			performSearch();
+		});
+		
+		searchInput.addEventListener('keypress', function(){
+			if(e.key === 'Enter'){
+				performSearch();
+			}
+		});
+		
+		function performSearch(){
+			const keyword = searchInput.value.trim(); 
+			
+			if(keyword === ''){
+				alert('検索ワードを入力してください');
+				return;
+			}
+			    // 검색 페이지로 이동 (GET 방식)
+			    location.href = '/board/search?keyword=' + encodeURIComponent(keyword);
+			}
+			const regionData = {
+			        '北海道・東北': ['北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県'],
+			        '関東': ['東京都', '神奈川県', '千葉県', '埼玉県', '茨城県', '栃木県', '群馬県'],
+			        '中部': ['愛知県', '静岡県', '岐阜県', '三重県', '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県'],
+			        '近畿': ['大阪府', '兵庫県', '京都府', '滋賀県', '奈良県', '和歌山県'],
+			        '中国・四국': ['鳥取県', '島根県', '岡山県', '広島県', '山口県', '徳島県', '香川県', '愛媛県', '高知県'],
+			        '九州・沖縄': ['福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県']
+			    };
+				const regionDropdown = document.getElementById('regionDropdown');
+				const categoryDisplay = document.getElementById('categoryDisplay');
+					
+				if (regionDropdown) {
+				        Object.keys(regionData).forEach(region => {
+				            const li = document.createElement('li');
+				            li.className = 'dropdown-submenu position-relative';
+							
+							const prefecturesHtml = regionData[region].map(pref => 
+							                `<li><a class="dropdown-item ps-4" href="#" onclick="selectCategory('${pref}')">${pref}</a></li>`
+							            ).join('');
+
+										li.innerHTML = `
+										    <a class="dropdown-item dropdown-toggle" href="#" onclick="selectCategory('${region}')">${region}</a>
+										    <ul class="dropdown-menu start-100 top-0 shadow">
+										        ${prefecturesHtml}
+										    </ul>
+										`;
+							            regionDropdown.appendChild(li);
+							        });
+							    }
+								window.selectCategory = function(name) {
+								        if (categoryDisplay) {
+								            categoryDisplay.textContent = name;
+								        }
+
+										    // すべて 선택 시
+										    if (name === 'すべて') {
+										        location.href = '/board';
+										    }
+										    // 지방 선택 시 (北海道・東北, 関東 등)
+										    else if (['北海道・東北', '関東', '中部', '近畿', '中国・四国', '九州・沖縄'].includes(name)) {
+										        location.href = '/board?region=' + encodeURIComponent(name);
+										    }
+										    // 도도부현 선택 시
+										    else {
+										        location.href = '/board?prefecture=' + encodeURIComponent(name);
+										    }
+										};
+	</script>
+		
+
+
+
 </html>

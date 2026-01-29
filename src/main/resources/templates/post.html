@@ -2,85 +2,253 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/post.css}">
 </head>
 <body>
-
-<div class="page">
-
+	<div class="container-fluid px-0">
+	  <div class="mx-auto bg-white min-vh-100 border-start border-end"
+	       style="max-width:430px;">
     <!-- 게시글 카드 -->
-    <div class="post-card">
-        <div class="post-header">
+	<div class="bg-white px-3 py-3 border-bottom">
+		<div class="d-flex align-items-center gap-2 mb-2">
             <div class="profile"></div>
-            <div class="author">1234</div>
+            <div class="fw-semibold"> ユーザー</div>
         </div>
-
-        <div class="post-content">
-            게시글 내용입니다
+        <div class="mb-3" th:text="${post.content}">
+            ポスト内容です
         </div>
+		<div class="d-flex gap-3 text-muted small">
+			 <!-- 좋아요 버튼 -->
+			    <form th:action="@{/post/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
+			        <button type="submit" class="btn-action">
+			            <span th:text="${post.likedByMe ? '❤️ いいね！' : '🤍 いいね！'}">🤍 いいね！</span>
+			            <span th:text="${post.likeCount}">0</span>
+			        </button>
+			    </form>
+			    <!-- 댓글 버튼 -->
+			    <span onclick="toggleCommentSection()" style="cursor:pointer;">
+			        💬 コメント <span th:text="${commentCount}">0</span>
+			    </span>
+			</div>
+    </div>
 
-		<div class="post-actions">
-
-		    <!-- ❤️ 좋아요 버튼 -->
-			<form th:action="@{/post/like}" method="post">
-			    <button type="submit">
-			        <span th:text="${post.likedByMe ? '❤️ 좋아요' : '🤍 좋아요'}">🤍</span>
-			        <span th:text="${post.likeCount}">0</span>
-			    </button>
-			</form>
-
-
-		    <!-- 💬 댓글 수 -->
-		    <span>
-		        💬 댓글 <span th:text="${commentCount}">0</span>
-		    </span>
-
+    <!-- 댓글 섹션 -->
+    <div id="comment-section" style="display:none;">
+		<!-- 댓글 입력 -->
+		<div class="border-bottom px-3 py-3">
+		        <form th:action="@{/post/comment/add}" method="post" onsubmit="return checkLoginForAction(event)">
+		            <textarea id="commentInput" 
+		                      name="content" 
+		                      class="form-control mb-2" 
+		                      placeholder="コメントを入力してください"
+		                      onclick="checkLoginForClick(event)" 
+		                      required></textarea>
+							  <button type="submit"
+							          class="btn btn-primary w-100 fw-bold rounded-pill py-2">
+							    登録
+							  </button>
+		        </form>
 		</div>
 
-    </div>
+        <!-- 정렬 버튼 -->
+		<div class="px-3 py-3">  <!-- border-bottom 제거! -->
+		        <div class="d-flex justify-content-end gap-2">
+		            <button type="button" 
+		                    class="btn btn-sm btn-outline-secondary rounded-pill px-3" 
+		                    id="sort-newest" 
+		                    onclick="sortComments('newest')">
+		                新着順
+		            </button>
+		            <button type="button" 
+		                    class="btn btn-sm btn-outline-secondary rounded-pill px-3" 
+		                    id="sort-oldest" 
+		                    onclick="sortComments('oldest')">
+		                投稿順
+		            </button>
+		        </div>
+		    </div>
+			
+		<!-- 댓글 리스트 -->
+		<div class="comment-list">
+		    <!-- ✅ 수정: ${post.comments} → ${comments} -->
+		    <div class="comment px-3 py-3 border-bottom" th:each="comment : ${comments}">
 
-    <!-- 댓글 입력 -->
-    <div class="comment-form">
-        <textarea placeholder="댓글을 입력하세요"></textarea>
-        <button>등록</button>
-    </div>
-
-    <!-- 댓글 리스트 -->
-    <div class="comment-list">
-
-        <div class="comment">
-            <div class="comment-header">
-                <div class="profile small"></div>
-                <span class="author">유저</span>
-                <span class="time">방금</span>
-            </div>
-
-            <div class="comment-content">
-                댓글 내용
-            </div>
-
-            <div class="comment-actions">
-                ❤️ 0 · 💬 댓글 · ✏️ 수정 · 🗑 삭제
-            </div>
-
-            <!-- 대댓글 -->
-            <div class="reply">
-                <div class="comment-header">
-                    <div class="profile tiny"></div>
-                    <span class="author">유저</span>
-                    <span class="time">방금</span>
+				<div class="d-flex align-items-center gap-2 mb-2">
+				            <!-- 프로필 이미지 -->
+				            <div th:if="${comment.user != null && comment.user.profileImageUrl != null}"
+				                 class="profile small"
+				                 th:style="'background-image: url(' + ${comment.user.profileImageUrl} + '); background-size: cover; background-position: center;'">
+				            </div>
+				            <div th:unless="${comment.user != null && comment.user.profileImageUrl != null}"
+				                 class="profile small">
+				            </div>
+				            
+				            <!-- 사용자 이름 -->
+				            <span class="fw-semibold" 
+				                  th:text="${comment.user != null ? comment.user.name : comment.author}">
+				                ユーザー
+				            </span>
+				            
+				            <span class="text-muted small" 
+				                  th:text="${comment.createdAt != null ? #temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:30'}">
+				                2026-01-19 14:30
+				            </span>
+				        </div>
+                
+                <!-- 댓글 내용 -->
+                <div class="mb-2" th:text="${comment.content}" 
+                     th:id="'comment-content-' + ${comment.id}">
+                    コメント内容
                 </div>
-                <div class="comment-content">
-                    대댓글 내용
+                
+                <!-- 댓글 수정 폼 -->
+                <div class="edit-form" th:id="'edit-form-' + ${comment.id}">
+                    <form th:action="@{/post/comment/edit}" method="post" onsubmit="return checkLoginForAction(event)">
+                        <input type="hidden" name="commentId" th:value="${comment.id}">
+                        <textarea name="content" class="form-control mb-2" th:text="${comment.content}" required></textarea>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-sm btn-primary">保存</button>
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                    th:onclick="'toggleEdit(' + ${comment.id} + ')'">キャンセル</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- 댓글 액션 -->
+                <div class="comment-actions d-flex align-items-center gap-2">
+					 <!-- 좋아요 -->
+					    <form th:action="@{/post/comment/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
+					        <input type="hidden" name="commentId" th:value="${comment.id}">
+					        <button type="submit" class="btn-action">
+					            <span th:text="${comment.likedByMe ? '❤️' : '🤍'}">🤍</span>
+					            <span th:text="${comment.likeCount}">0</span>
+					        </button>
+					    </form>
+					    
+					    <span th:onclick="'toggleReply(' + ${comment.id} + ')'">💬 0</span>
+						<span th:onclick="'checkLoginAndToggleEdit(event,' + ${comment.id} + ')'">
+						    ✔️ 編集
+						</span>
+					    
+					    <!-- 삭제 -->
+					    <form th:action="@{/post/comment/delete}" method="post" 
+					          class="d-inline"
+							  onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
+					        <input type="hidden" name="commentId" th:value="${comment.id}">
+					        <button type="submit" class="btn-action">
+					            ✖️ 削除
+					        </button>
+					    </form>
+					</div>
+                
+					<!-- 대댓글 입력 폼 -->
+					<div class="reply-form" th:id="'reply-form-' + ${comment.id}">
+					    <form th:action="@{/post/comment/reply}" method="post" onsubmit="return checkLoginForAction(event)">
+					        <input type="hidden" name="parentId" th:value="${comment.id}">
+					        <textarea name="content" 
+					                  class="form-control mb-2" 
+					                  placeholder="コメントを入力してください"
+					                  onclick="checkLoginForClick(event)" 
+					                  required></textarea>
+					        <div class="d-flex gap-2">
+					            <button type="submit" class="btn btn-sm btn-danger">登録</button>
+					            <button type="button" class="btn btn-sm btn-secondary"
+					                    th:onclick="'toggleReply(' + ${comment.id} + ')'">キャンセル</button>
+					        </div>
+					    </form>
+					</div>
+                
+                <!-- 대댓글 목록 -->
+                <div class="reply bg-light rounded px-2 py-2 ms-4 mt-2" th:each="reply : ${comment.replies}">
+                  
+					<div class="d-flex align-items-center gap-2 mb-2">
+					       <!-- 프로필 이미지 -->
+					       <div th:if="${reply.user != null && reply.user.profileImageUrl != null}"
+					            class="profile tiny"
+					            th:style="'background-image: url(' + ${reply.user.profileImageUrl} + '); background-size: cover; background-position: center;'">
+					       </div>
+					       <div th:unless="${reply.user != null && reply.user.profileImageUrl != null}"
+					            class="profile tiny">
+					       </div>
+					       
+					       <!-- 사용자 이름 -->
+					       <span class="fw-semibold small" 
+					             th:text="${reply.user != null ? reply.user.name : reply.author}">
+					           ユーザー
+					       </span>
+					       
+					       <span class="text-muted small" 
+					             th:text="${reply.createdAt != null ? #temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:35'}">
+					           2026-01-19 14:35
+					       </span>
+					   </div>
+                    
+                    <!-- 대댓글 내용 -->
+                    <div class="mb-2 small" th:text="${reply.content}" 
+                         th:id="'reply-content-' + ${comment.id} + '-' + ${reply.id}">
+                        コメント内容
+                    </div>
+                    
+                    <!-- 대댓글 수정 폼 -->
+                    <div class="edit-form" th:id="'reply-edit-form-' + ${comment.id} + '-' + ${reply.id}">
+                        <form th:action="@{/post/comment/reply/edit}" method="post" onsubmit="return checkLoginForAction(event)">
+                            <input type="hidden" name="parentId" th:value="${comment.id}">
+                            <input type="hidden" name="replyId" th:value="${reply.id}">
+                            <textarea name="content" class="form-control mb-2" th:text="${reply.content}" required></textarea>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-sm btn-primary">保存</button>
+                                <button type="button" class="btn btn-sm btn-secondary"
+                                        th:onclick="'toggleReplyEdit(' + ${comment.id} + ',' + ${reply.id} + ')'">キャンセル</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+					<div class="comment-actions">
+					    <!-- 대댓글 좋아요 -->
+					    <form th:action="@{/post/comment/reply/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
+					        <input type="hidden" name="parentId" th:value="${comment.id}">
+					        <input type="hidden" name="replyId" th:value="${reply.id}">
+					        <button type="submit" class="btn-action">
+					            <span th:text="${reply.likedByMe ? '❤️' : '🤍'}">🤍</span>
+					            <span th:text="${reply.likeCount}">0</span>
+					        </button>
+					    </form>
+					    
+						<span th:onclick="'checkLoginAndToggleReplyEdit(event,' + ${comment.id} + ',' + ${reply.id} + ')'">
+						    ✔️ 編集
+						</span>
+
+					    
+					    <!-- 대댓글 삭제 -->
+					    <form th:action="@{/post/comment/reply/delete}" method="post" 
+					          class="d-inline"
+							  onsubmit="return checkLoginForAction(event) && confirm('정말 삭제하시겠습니까?');">
+					        <input type="hidden" name="parentId" th:value="${comment.id}">
+					        <input type="hidden" name="replyId" th:value="${reply.id}">
+					        <button type="submit" class="btn-action">
+					            ✖️ 削除
+					        </button>
+					    </form>
+					</div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 </div>
 
+<!-- ✅ 추가: 서버의 로그인 상태를 JavaScript 변수로 전달 -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const isLoggedIn = /*[[${isLoggedIn}]]*/ false;
+    /*]]>*/
+</script>
+
+<!-- Bootstrap JS -->
+<script th:src="@{/js/post.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

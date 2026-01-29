@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+	<head>
+		<meta charset = "UTF-8">
+		<meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+		<title>投稿作成- FoodBoard</title>
+		
+		<!--Bootstrap CSS-->
+		<link href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+		<style>
+					/* 앱 형태의 중앙 정렬 레이아웃 */
+					.mobile-container {
+					    max-width: 430px;    /* 최신 아이폰 프로 맥스 정도의 너비 */
+					    margin: 0 auto;      /* 화면 중앙 정렬 */
+					    min-height: 100vh;   /* 최소 높이를 화면 전체로 */
+					    background-color: #ffffff;
+					    border-left: 1px solid #f0f0f0;
+					    border-right: 1px solid #f0f0f0;
+					    display: flex;
+					    flex-direction: column;
+					    padding: 0;          /* 내부 여백 초기화 */
+					}
+
+					/* 스크롤 시 헤더 고정 (선택 사항) */
+					header {
+					    position: sticky;
+					    top: 0;
+					    z-index: 1020;
+					    width: 100%;
+					}
+					</style>	
+	</head>
+		<body>
+			<div class = "container-fluid px-0">
+				<div class="mobile-container">
+				<form th:action="@{/board/write}" method="post">
+				<!--주황색 헤더 부분-->
+				
+				<header class = "d-flex justify-content-between align-items-center py-3 px-3"
+						style = "background-color: #ffecd9; min-height: 85px;">
+					<!--뒤로 가기 버튼-->
+					<a th:href = "@{/board}"
+						class="d-inline-flex align-items-center" 
+					   	style="cursor: pointer; font-size: 24px; text-decoration: none; color: black; line-height: 1;">〈</a>
+					<h5 class = "mb-0 fw-bold">投稿</h5>
+					<button type="submit" class="btn p-0 fw-bold" style="font-size: 16px; color: black; border: none; background: none;">完了</button>
+		
+				</header>
+					
+				
+					
+						
+					<!--제목-->
+					<div class = "mt-3 px-3">
+						<input type = "text" name="title"
+								class = "form-control border-0 fs-5"
+								placeholder="タイトルを入力"><hr class="mt-1">
+					</div>
+					<!--지역 선택-->
+					<div class = "mt-3 px-3">
+						<div class = "border rounded p-3 bg-light border" style = "background-color: #f8f9fa;">
+							<div class = "small mb-2 text-muted">エリアを選択</div>
+							
+							<div class = "d-flex gap-2 mb-2">
+								<!--지방 선택-->
+								<select class = "form-select" id = "regionSelect" name="region">
+									<option value="" selected disabled>地方を選択</option>
+										<option value="北海道・東北">北海道・東北</option>
+										<option value="関東">関東</option>	
+									    <option value="中部">中部</option>
+									    <option value="近畿">近畿</option>
+									    <option value="中国・四国">中国・四国</option>
+									    <option value="九州・沖縄">九州・沖縄</option>
+									</select>
+								
+								<select class = "form-select" id = "prefectureSelect" name="prefecture">
+									<option selected>都道府県</option>
+									</select>
+						</div>
+								<!--경고 메시지 -->
+								<small class = "text-danger">※ 地域を選択してください</small>
+						</div>
+						</div>		
+							<!--별점 선택-->
+							<div class = "mt-3 px-3">
+								<div class = "border rounded p-3" style = "background-color: #f8f9fa;">
+									<div class = "mb-2">評価を選択</div>	
+									<div class = "d-flex gap-2">
+										<span class = "star" style = "cursor:pointer; font-size: 24px;">☆</span>
+										<span class = "star" style = "cursor:pointer; font-size: 24px;">☆</span>
+										<span class = "star" style = "cursor:pointer; font-size: 24px;">☆</span>
+										<span class = "star" style = "cursor:pointer; font-size: 24px;">☆</span>
+										<span class = "star" style = "cursor:pointer; font-size: 24px;">☆</span>
+										<input type="hidden" name="rating" id="ratingInput" value="0">	
+									</div>
+								</div>
+										
+							<div class = "mt-3 px-3">
+								<textarea name="content" class = "form-control border"
+											placeholder="内容を入力"
+											rows="10" style="resize: none;"></textarea>
+										</div>
+										
+										<!-- 이미지 업로드 영역 -->
+										<div class="mt-3 px-3 mb-5">
+										    <div class="border rounded p-3" style="background-color: #f8f9fa;">
+										        <div class="mb-2">画像を追加</div>
+										        
+										        <!-- 파일 선택 버튼 -->
+										        <input type="file" 
+										               id="imageInput" 
+										               accept="image/*" 
+										               capture="environment"
+										               style="display: none;">
+										        
+										        <button type="button" 
+										                class="btn btn-outline-secondary w-100 mb-2" 
+										                onclick="document.getElementById('imageInput').click()">
+										            📷 画像を選択
+										        </button>
+										        
+										        <!-- 드래그&드롭 영역 -->
+										        <div id="dropZone" 
+										             class="border border-2 border-dashed rounded p-4 text-center"
+										             style="cursor: pointer; background-color: white;">
+										            <p class="mb-0 text-muted small">
+														ドラッグ＆ドロップ / 貼り付け (Ctrl+V)
+													</p>
+												</div>
+										        
+										        <!-- 이미지 미리보기 -->
+										        <div id="imagePreview" style="display: none;" class="mt-3">
+										            <img id="previewImg" class="w-100 rounded" style="max-height: 300px; object-fit: cover;">
+										            <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeImage()">
+										                🗑️ 削除
+										            </button>
+										        </div>
+										        
+										        <!-- 실제 전송될 URL (hidden) -->
+										        <input type="hidden" name="imageUrl" id="imageUrl">
+										    </div>
+										</div>
+									</form> 
+								</div> 
+							</div>				
+								
+					  <!--Bootstrap JS-->
+					   <script src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+					   <script>
+						const stars = document.querySelectorAll('.star');
+						const ratingInput = document.getElementById('ratingInput');
+						stars.forEach(function(star, index){
+						            star.addEventListener('click', function(){
+						                const rating = index + 1;
+						                ratingInput.value = rating; 
+						                stars.forEach(function(s){ s.textContent = '☆'; });
+						                for (let i = 0; i <= index ; i++){ stars[i].textContent = '★'; }
+						            });
+						        });
+						
+						const regionData = {
+								'すべて': [],
+								'北海道・東北': ['北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県'],
+								'関東': ['東京都', '神奈川県', '千葉県', '埼玉県', '茨城県', '栃木県', '群馬県'],
+								'中部': ['愛知県', '静岡県', '岐阜県', '三重県', '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県'],
+								'近畿': ['大阪府', '兵庫県', '京都府', '滋賀県', '奈良県', '和歌山県'],
+								'中国・四国': ['鳥取県', '島根県', '岡山県', '広島県', '山口県', '徳島県', '香川県', '愛媛県', '高知県'],
+								'九州・沖縄': ['福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県']
+							};
+							
+							const regionSelect = document.getElementById('regionSelect');
+							const prefectureSelect = document.getElementById('prefectureSelect');
+							
+							regionSelect.addEventListener('change', function(){
+								const selectedRegion = this.value;
+								prefectureSelect.innerHTML = '<option value="" selected disabled>都道府県</option>';
+								const prefectures = regionData[selectedRegion];
+								
+								if(prefectures){
+									prefectures.forEach(function(prefecture){
+										const option = document.createElement('option');
+										option.value = prefecture;
+										option.textContent = prefecture; 
+										prefectureSelect.appendChild(option);
+										});
+									}
+							});
+						</script>
+						<script>
+						    const imageInput = document.getElementById('imageInput');
+						    const dropZone = document.getElementById('dropZone');
+						    const imagePreview = document.getElementById('imagePreview');
+						    const previewImg = document.getElementById('previewImg');
+						    const imageUrl = document.getElementById('imageUrl');
+						    
+						    // 파일 선택 시
+						    imageInput.addEventListener('change', function(e) {
+						        const file = e.target.files[0];
+						        if (file) {
+						            uploadImage(file);
+						        }
+						    });
+						    
+						    // 드래그 오버
+						    dropZone.addEventListener('dragover', function(e) {
+						        e.preventDefault();
+						        dropZone.style.backgroundColor = '#e9ecef';
+								dropZone.style.borderColor = '#ffc107';
+						    });
+						    
+						    // 드래그 leave
+						    dropZone.addEventListener('dragleave', function(e) {
+						        e.preventDefault();
+						        dropZone.style.backgroundColor = 'white';
+								dropZone.style.borderColor = '#dee2e6';
+							});
+						    
+						    // 드롭
+						    dropZone.addEventListener('drop', function(e) {
+						        e.preventDefault();
+						        dropZone.style.backgroundColor = 'white';
+								dropZone.style.borderColor = '#dee2e6';
+						        
+						        const file = e.dataTransfer.files[0];
+						        if (file && file.type.startsWith('image/')) {
+						            uploadImage(file);
+						        } else {
+						            alert('画像ファイルのみアップロード可能です');
+						        }
+						    });
+						    
+						    // 붙여넣기 (Ctrl+V)
+						    document.addEventListener('paste', function(e) {
+						        const items = e.clipboardData.items;
+						        for (let i = 0; i < items.length; i++) {
+						            if (items[i].type.startsWith('image/')) {
+						                const file = items[i].getAsFile();
+						                uploadImage(file);
+						                break;
+						            }
+						        }
+						    });
+						    
+						    // 이미지 업로드 함수
+							function uploadImage(file) {
+							        // 파일 크기 체크 (10MB)
+							        if (file.size > 10 * 1024 * 1024) {
+							            alert('ファイルサイズは10MB以下にしてください');
+							            return;
+							        }
+						        const formData = new FormData();
+						        formData.append('file', file);
+						        
+						        // 로딩 표시
+						        dropZone.innerHTML = '<p class="mb-0"><span class="spinner-border spinner-border-sm me-2"></span>アップロード中...</p>';
+						        
+						        fetch('/api/upload', {
+						            method: 'POST',
+						            body: formData
+						        })
+								.then(response => {
+								            if (!response.ok) {
+								                throw new Error('アップロード失敗');
+								            }
+								            return response.json();
+								        })
+						        .then(data => {
+						            if (data.url) {
+						                // 성공: 미리보기 표시
+						                previewImg.src = data.url;
+						                imageUrl.value = data.url;
+						                imagePreview.style.display = 'block';
+						                dropZone.style.display = 'none';
+						            } else {
+						                alert(data.error || 'アップロード失敗');
+						                resetDropZone();
+						            }
+						        })
+								.catch(error => {
+								           alert('アップロードエラー: ' + error.message);
+								           console.error('Upload error:', error);
+								           resetDropZone();
+								});
+						    }
+						    
+						    // 이미지 삭제
+						    function removeImage() {
+						        previewImg.src = '';
+						        imageUrl.value = '';
+								imageInput.value = '';
+						        imagePreview.style.display = 'none';
+						        dropZone.style.display = 'block';
+						        resetDropZone();
+						    }
+						    
+						    // 드롭존 리셋
+							function resetDropZone() {
+							       dropZone.style.backgroundColor = 'white';
+							       dropZone.style.borderColor = '#dee2e6';
+							       dropZone.innerHTML = `
+							           <p class="mb-0 text-muted small">
+							               ドラッグ＆ドロップ / 貼り付け (Ctrl+V)
+							           </p>
+							       `;
+							   }
+						</script>
+						
+				</body>
+				</html>	

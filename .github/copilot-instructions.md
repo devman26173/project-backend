@@ -15,7 +15,7 @@
 - **Additional Libraries**:
   - Lombok (코드 간소화)
   - SpringDoc OpenAPI (API 문서화)
-  - Thymeleaf (템플릿 엔진)
+  - Thymeleaf (서버 사이드 HTML 렌더링 - 일부 페이지용)
 
 ## 프로젝트 구조
 ```
@@ -52,9 +52,9 @@ src/main/java/com/example/join/
    - 상수: UPPER_SNAKE_CASE (예: `MAX_PAGE_SIZE`)
 
 4. **어노테이션**:
-   - Controller: `@RestController` 또는 `@Controller`
+   - Controller: `@RestController` (REST API) 또는 `@Controller` (HTML 뷰 반환)
    - Service: `@Service`
-   - Repository: `@Repository` (JPA는 자동)
+   - Repository: `@Repository` (Spring Data JPA 인터페이스는 자동으로 구현됨)
    - 트랜잭션: `@Transactional`
 
 ### API 설계

@@ -18,11 +18,14 @@ public class ProfileController {
 
 	@GetMapping("/profile")
 	public String profile(Model model) {
-
-		Profile profile = profileRepository
-				.findById(1L)
-				.orElse(null);
-
+		Profile profile = profileService.getProfile(1L);
+		model.addAttribute("profile", profile);
+		return "profile";
+	}
+	
+	@GetMapping("/profile/edit")
+	public String edit(Model model) {
+		Profile profile = profileService.getProfile(1L);
 		model.addAttribute("profile", profile);
 		return "profile"; // templates/home.html
 	}

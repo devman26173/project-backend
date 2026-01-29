@@ -19,10 +19,10 @@ public class ProfileService {
 	}
 
 	public void update(Profile form) {
-		Profile p = repository.findById(form.getId())
+		Profile p = repository.findById(form.getProfileId())
 				.orElseThrow(() -> new IllegalArgumentException("profile not founded"));
 		p.setIntroduction(form.getIntroduction());
-		p.setImagePath(form.getImagePath());
+		//p.setImagePath(form.getImagePath());
 		repository.save(p);
 	}
 

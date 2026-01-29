@@ -129,7 +129,7 @@
 					        </button>
 					    </form>
 					    
-					    <span th:onclick="'toggleReply(' + ${comment.id} + ')'">💬 0</span>
+					    <span th:onclick="'toggleReply(' + ${comment.id} + ')'">💬 <span th:text="${comment.replies.size()}">0</span></span>
 						<span th:onclick="'checkLoginAndToggleEdit(event,' + ${comment.id} + ')'">
 						    ✔️ 編集
 						</span>

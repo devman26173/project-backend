@@ -2,6 +2,7 @@ package com.example.join.service;
 
 import com.example.join.entity.FoodBoard;
 import com.example.join.repository.FoodBoardRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class FoodBoardService {
         this.foodboardRepository = foodboardRepository;
     }
     public List<FoodBoard> findAll() {
-        return foodboardRepository.findAll();
+        return foodboardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
     public void saveFood(FoodBoard foodBoard) {
         foodboardRepository.save(foodBoard);
@@ -48,7 +49,7 @@ public class FoodBoardService {
         // 해당 지방의 모든 도도부현 찾기
         List<String> prefectures = getPrefecturesByRegion(region);
         // 그 도도부현들의 게시글 모두 조회
-        return foodboardRepository.findByPrefectureIn(prefectures);
+        return foodboardRepository.findByPrefectureIn(prefectures, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     // 지방별 도도부현 매핑
@@ -66,7 +67,7 @@ public class FoodBoardService {
 
 // 도도부현별 조회
     public List<FoodBoard> findByPrefecture(String prefecture) {
-        return foodboardRepository.findByPrefecture(prefecture);
+        return foodboardRepository.findByPrefecture(prefecture, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
     
     

@@ -2,6 +2,7 @@ package com.example.join.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.join.entity.FoodBoard;
@@ -12,9 +13,9 @@ public interface FoodBoardRepository extends JpaRepository<FoodBoard, Long> {
     List<FoodBoard> findByRegion(String region);
     
     // 도도부현별 조회
-    List<FoodBoard> findByPrefecture(String prefecture);
+    List<FoodBoard> findByPrefecture(String prefecture, Sort sort);
     
  // 여러 도도부현 조회 (추가)
-    List<FoodBoard> findByPrefectureIn(List<String> prefectures);
+    List<FoodBoard> findByPrefectureIn(List<String> prefectures, Sort sort);
 }
 

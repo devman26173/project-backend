@@ -260,17 +260,22 @@
 						    
 						    // 단일 이미지 업로드
 						    function uploadSingleImage(file) {
+						        // 업로드 카운터 증가
+						        activeUploads++;
+						        
 						        // 파일 크기 체크
 						        if (file.size > 10 * 1024 * 1024) {
 						            alert('ファイルサイズは10MB以下にしてください');
+						            // 업로드 카운터 감소 및 로딩 숨기기
+						            activeUploads--;
+						            if (activeUploads === 0) {
+						                hideLoading();
+						            }
 						            return;
 						        }
 						        
 						        const formData = new FormData();
 						        formData.append('file', file);
-						        
-						        // 업로드 카운터 증가
-						        activeUploads++;
 						        
 						        fetch('/api/upload', {
 						            method: 'POST',

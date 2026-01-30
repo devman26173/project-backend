@@ -119,3 +119,37 @@ src/main/java/com/example/join/
   - 코드 가독성 및 유지보수성
 - 자동 리뷰 결과를 참고하여 코드를 개선하세요
 - PR 코멘트에서 Copilot에게 추가 질문을 할 수 있습니다 (@github-copilot 멘션)
+
+## Contributor 담당 파트
+프로젝트의 주요 기여자와 각자의 담당 영역입니다.
+
+### devman26173
+**역할**: 프로젝트 메인 개발자 및 전체 아키텍처 담당
+- **Backend 개발**:
+  - Spring Boot 애플리케이션 초기 설정 및 구성
+  - 모든 Controller, Service, Repository 레이어 구현
+  - JPA 엔티티 설계 및 데이터베이스 스키마 관리
+- **주요 기능 모듈**:
+  - User 관리 (회원가입, 로그인, 인증)
+  - Profile 관리 시스템
+  - Post 게시글 관리 (CRUD 및 댓글, 좋아요 기능)
+  - FoodBoard 음식 게시판 시스템
+  - Comment 댓글 관리
+  - Like 좋아요 기능
+  - Prefecture 지역 관리
+  - 파일 업로드 기능
+- **Frontend 개발**:
+  - Thymeleaf 템플릿 작성 (user-login, user-signup, home, post, profile, foodboard 등)
+  - CSS 스타일링 (login.css, signupform.css, post.css, foodboard.css, profilestyle.css 등)
+  - JavaScript 인터랙션 (post.js)
+- **인프라 및 설정**:
+  - Docker 설정 (Dockerfile, docker-compose.yml)
+  - Maven 빌드 구성 (pom.xml)
+  - 애플리케이션 설정 (application.properties, application-prod.yml)
+  - 프로젝트 문서화 (Readme.md)
+
+### copilot-swe-agent[bot]
+**역할**: AI 기반 개발 지원 및 문서화
+- GitHub Copilot Instructions 관리
+- 코드 리뷰 및 개선 제안
+- 개발 가이드라인 문서화

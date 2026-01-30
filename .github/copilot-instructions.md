@@ -150,47 +150,81 @@ src/main/java/com/example/join/
 
 ### devhyunju
 **역할**: FoodBoard 시스템 개발
-- **커밋한 파일**:
-  - Controller: `FoodBoardController.java`, `FileUploadController.java`
-  - Entity: `FoodBoard.java`
-  - Repository: `FoodBoardRepository.java`
-  - Service: `FoodBoardService.java`
-  - Templates: `foodboard.html`, `foodboard-edit.html`, `foodboard-view.html`, `foodboard-write.html`
-  - CSS: `foodboard.css`
+- **커밋한 파일** (14개):
+  - `src/main/java/com/example/join/JoinApplication.java`
+  - `src/main/java/com/example/join/controller/FileUploadController.java`
+  - `src/main/java/com/example/join/controller/FoodBoardController.java`
+  - `src/main/java/com/example/join/controller/UserController.java`
+  - `src/main/java/com/example/join/entity/FoodBoard.java`
+  - `src/main/java/com/example/join/repository/FoodBoardRepository.java`
+  - `src/main/java/com/example/join/service/FoodBoardService.java`
+  - `src/main/resources/application.properties`
+  - `src/main/resources/static/css/foodboard.css`
+  - `src/main/resources/templates/foodboard.html`
+  - `src/main/resources/templates/foodboard-edit.html`
+  - `src/main/resources/templates/foodboard-view.html`
+  - `src/main/resources/templates/foodboard-write.html`
+  - `src/main/resources/templates/user-login.html`
 - **주요 기여**: 파일 업로드 기능 구현
 
 ### goodsujin
 **역할**: 사용자 인증 및 회원가입 시스템 개발
-- **커밋한 파일**:
-  - Controller: `UserController.java`, `LoginController.java`, `SignupFormController.java`, `HomeController.java`
-  - Entity: `User.java`, `SignupForm.java`
-  - Service: `UserService.java`, `SignupFormService.java`
-  - Repository: `UserRepository.java`
-  - Templates: `user-login.html`, `user-signup.html`, `logout.html`, `login.html`, `signupform.html`
-  - CSS: `login.css`, `signupform.css`
+- **커밋한 파일** (20개):
+  - `src/main/java/com/example/join/JoinApplication.java`
+  - `src/main/java/com/example/join/controller/HomeController.java`
+  - `src/main/java/com/example/join/controller/LoginController.java`
+  - `src/main/java/com/example/join/controller/SignupFormController.java`
+  - `src/main/java/com/example/join/controller/UserController.java`
+  - `src/main/java/com/example/join/controller/signupformController.java`
+  - `src/main/java/com/example/join/entity/SignupForm.java`
+  - `src/main/java/com/example/join/entity/User.java`
+  - `src/main/java/com/example/join/repository/UserRepository.java`
+  - `src/main/java/com/example/join/service/SignupFormService.java`
+  - `src/main/java/com/example/join/service/UserService.java`
+  - `src/main/resources/application.properties`
+  - `src/main/resources/static/css/login.css`
+  - `src/main/resources/static/css/signupform.css`
+  - `src/main/resources/templates/foodboard.html`
+  - `src/main/resources/templates/login.html`
+  - `src/main/resources/templates/logout.html`
+  - `src/main/resources/templates/signupform.html`
+  - `src/main/resources/templates/user-login.html`
+  - `src/main/resources/templates/user-signup.html`
 
 ### java0731kk
 **역할**: Post 게시판 및 댓글/좋아요 기능 개발
-- **커밋한 파일**:
-  - Controller: `PostController.java`
-  - Entity: `Post.java`, `Comment.java`, `Like.java`
-  - Repository: `CommentRepository.java`, `LikeRepository.java`
-  - Service: `CommentService.java`
-  - Templates: `post.html`, `user-login.html`, `user-signup.html`
-  - CSS: `post.css`
-  - JavaScript: `post.js`
+- **커밋한 파일** (15개):
+  - `src/main/java/com/example/join/controller/PostController.java`
+  - `src/main/java/com/example/join/controller/UserController.java`
+  - `src/main/java/com/example/join/entity/Comment.java`
+  - `src/main/java/com/example/join/entity/Like.java`
+  - `src/main/java/com/example/join/entity/Post.java`
+  - `src/main/java/com/example/join/entity/User.java`
+  - `src/main/java/com/example/join/repository/CommentRepository.java`
+  - `src/main/java/com/example/join/repository/LikeRepository.java`
+  - `src/main/java/com/example/join/service/CommentService.java`
+  - `src/main/java/com/example/join/service/UserService.java`
+  - `src/main/resources/static/css/post.css`
+  - `src/main/resources/static/js/post.js`
+  - `src/main/resources/templates/post.html`
+  - `src/main/resources/templates/user-login.html`
+  - `src/main/resources/templates/user-signup.html`
 
 ### min_chang_isaac
 **역할**: Profile 관리 시스템 개발
-- **커밋한 파일**:
-  - Controller: `ProfileController.java`
-  - Entity: `Profile.java`, `FoodBoard.java` (수정), `User.java` (수정)
-  - Repository: `ProfileRepository.java`
-  - Service: `ProfileService.java`
-  - Templates: `profile.html`, `profile_edit.html`
-  - CSS: `profilestyle.css`
-  - Images: `profile.png`
-  - Build: `pom.xml` (의존성 추가)
+- **커밋한 파일** (12개):
+  - `pom.xml`
+  - `src/main/java/com/example/join/controller/ProfileController.java`
+  - `src/main/java/com/example/join/entity/FoodBoard.java`
+  - `src/main/java/com/example/join/entity/Profile.java`
+  - `src/main/java/com/example/join/entity/User.java`
+  - `src/main/java/com/example/join/repository/ProfileRepository.java`
+  - `src/main/java/com/example/join/service/ProfileService.java`
+  - `src/main/resources/static/css/profilestyle.css`
+  - `src/main/resources/static/images/profile.png`
+  - `src/main/resources/static/profilestyle.css`
+  - `src/main/resources/templates/profile.html`
+  - `src/main/resources/templates/profile_edit.html`
 
 ### copilot-swe-agent[bot]
 **역할**: AI 기반 개발 지원 및 문서화

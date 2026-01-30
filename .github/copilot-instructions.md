@@ -117,8 +117,15 @@ src/main/java/com/example/join/
   - 잠재적 버그
   - 성능 최적화 가능성
   - 코드 가독성 및 유지보수성
+  - **코드 오너십 검증**: 담당자가 아닌 사람이 특정 영역을 수정한 경우 명시적으로 표시
 - 자동 리뷰 결과를 참고하여 코드를 개선하세요
 - PR 코멘트에서 Copilot에게 추가 질문을 할 수 있습니다 (@github-copilot 멘션)
+
+### 코드 오너십 검증
+PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
+- 수정된 파일이 특정 contributor의 담당 영역인지 확인
+- 담당자가 아닌 사람이 담당 영역을 수정한 경우, **"⚠️ [파일명]: 이 파일은 [담당자]의 담당 영역입니다. 담당자가 아닌 [작성자]가 수정했습니다."** 형식으로 명시
+- 담당 영역은 아래 "Contributor 담당 파트" 섹션 참조
 
 ## Contributor 담당 파트
 프로젝트의 주요 기여자와 각자의 담당 영역입니다.
@@ -152,6 +159,11 @@ src/main/java/com/example/join/
 
 ### devhyunju
 **역할**: FoodBoard 시스템 개발
+- **담당 영역**:
+  - FoodBoard 관련 모든 파일 (Controller, Entity, Repository, Service)
+  - 파일 업로드 기능 (FileUploadController)
+  - FoodBoard 관련 템플릿 4개 (foodboard.html, foodboard-edit.html, foodboard-view.html, foodboard-write.html)
+  - FoodBoard CSS (foodboard.css)
 - **커밋한 파일** (14개):
   - `src/main/java/com/example/join/JoinApplication.java`
   - `src/main/java/com/example/join/controller/FileUploadController.java`
@@ -171,6 +183,11 @@ src/main/java/com/example/join/
 
 ### goodsujin
 **역할**: 사용자 인증 및 회원가입 시스템 개발
+- **담당 영역**:
+  - 사용자 인증 시스템 (Login, Signup)
+  - User/SignupForm 관련 전체 레이어 (Controller, Entity, Service, Repository)
+  - 로그인/회원가입 관련 템플릿 5개 (user-login.html, user-signup.html, login.html, signupform.html, logout.html)
+  - 로그인/회원가입 CSS (login.css, signupform.css)
 - **커밋한 파일** (20개):
   - `src/main/java/com/example/join/JoinApplication.java`
   - `src/main/java/com/example/join/controller/HomeController.java`
@@ -195,6 +212,12 @@ src/main/java/com/example/join/
 
 ### java0731kk
 **역할**: Post 게시판 및 댓글/좋아요 기능 개발
+- **담당 영역**:
+  - Post 게시판 시스템 (PostController)
+  - Comment, Like 기능 (Entity, Repository, Service)
+  - Post 템플릿 (post.html)
+  - Post CSS (post.css)
+  - Post JavaScript (post.js)
 - **커밋한 파일** (15개):
   - `src/main/java/com/example/join/controller/PostController.java`
   - `src/main/java/com/example/join/controller/UserController.java`
@@ -214,6 +237,10 @@ src/main/java/com/example/join/
 
 ### min_chang_isaac
 **역할**: Profile 관리 시스템 개발
+- **담당 영역**:
+  - Profile 관리 시스템 전체 (Controller, Entity, Repository, Service)
+  - Profile 템플릿 2개 (profile.html, profile_edit.html)
+  - Profile CSS (profilestyle.css)
 - **커밋한 파일** (12개):
   - `pom.xml`
   - `src/main/java/com/example/join/controller/ProfileController.java`

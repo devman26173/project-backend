@@ -12,12 +12,12 @@ public class Prefecture {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
-	private String Prefecture;
+	private String prefecture;
 	
 	public String getId() {
 		return id;
 	}
 	public String getPrefecture() {
-		return Prefecture;
+		return prefecture;
 	}
 }

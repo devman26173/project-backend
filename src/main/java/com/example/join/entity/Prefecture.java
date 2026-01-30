@@ -12,7 +12,7 @@ public class Prefecture {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String Prefecture;
+	private String prefecture;
 	
 	public Long getId() {
 		return id;

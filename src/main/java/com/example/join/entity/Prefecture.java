@@ -11,10 +11,10 @@ import jakarta.persistence.Table;
 public class Prefecture {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String id;
-	private String prefecture;
+	private Long id;
+	private String Prefecture;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 	public String getPrefecture() {

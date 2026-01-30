@@ -138,21 +138,6 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
 **역할**: 프로젝트 메인 개발자 및 전체 아키텍처 담당
 - **Backend 개발**:
   - Spring Boot 애플리케이션 초기 설정 및 구성
-  - 모든 Controller, Service, Repository 레이어 구현
-  - JPA 엔티티 설계 및 데이터베이스 스키마 관리
-- **주요 기능 모듈**:
-  - User 관리 (회원가입, 로그인, 인증)
-  - Profile 관리 시스템
-  - Post 게시글 관리 (CRUD 및 댓글, 좋아요 기능)
-  - FoodBoard 음식 게시판 시스템
-  - Comment 댓글 관리
-  - Like 좋아요 기능
-  - Prefecture 지역 관리
-  - 파일 업로드 기능
-- **Frontend 개발**:
-  - Thymeleaf 템플릿 작성 (user-login, user-signup, home, post, profile, foodboard 등)
-  - CSS 스타일링 (login.css, signupform.css, post.css, foodboard.css, profilestyle.css 등)
-  - JavaScript 인터랙션 (post.js)
 - **인프라 및 설정**:
   - Docker 설정 (Dockerfile, docker-compose.yml)
   - Maven 빌드 구성 (pom.xml)
@@ -166,22 +151,6 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
   - 파일 업로드 기능 (FileUploadController)
   - FoodBoard 관련 템플릿 4개 (foodboard.html, foodboard-edit.html, foodboard-view.html, foodboard-write.html)
   - FoodBoard CSS (foodboard.css)
-- **커밋한 파일** (14개):
-  - `src/main/java/com/example/join/JoinApplication.java`
-  - `src/main/java/com/example/join/controller/FileUploadController.java`
-  - `src/main/java/com/example/join/controller/FoodBoardController.java`
-  - `src/main/java/com/example/join/controller/UserController.java`
-  - `src/main/java/com/example/join/entity/FoodBoard.java`
-  - `src/main/java/com/example/join/repository/FoodBoardRepository.java`
-  - `src/main/java/com/example/join/service/FoodBoardService.java`
-  - `src/main/resources/application.properties`
-  - `src/main/resources/static/css/foodboard.css`
-  - `src/main/resources/templates/foodboard.html`
-  - `src/main/resources/templates/foodboard-edit.html`
-  - `src/main/resources/templates/foodboard-view.html`
-  - `src/main/resources/templates/foodboard-write.html`
-  - `src/main/resources/templates/user-login.html`
-- **주요 기여**: 파일 업로드 기능 구현
 
 ### goodsujin
 **역할**: 사용자 인증 및 회원가입 시스템 개발
@@ -190,27 +159,6 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
   - User/SignupForm 관련 전체 레이어 (Controller, Entity, Service, Repository)
   - 로그인/회원가입 관련 템플릿 5개 (user-login.html, user-signup.html, login.html, signupform.html, logout.html)
   - 로그인/회원가입 CSS (login.css, signupform.css)
-- **커밋한 파일** (20개):
-  - `src/main/java/com/example/join/JoinApplication.java`
-  - `src/main/java/com/example/join/controller/HomeController.java`
-  - `src/main/java/com/example/join/controller/LoginController.java`
-  - `src/main/java/com/example/join/controller/SignupFormController.java`
-  - `src/main/java/com/example/join/controller/UserController.java`
-  - `src/main/java/com/example/join/controller/signupformController.java`
-  - `src/main/java/com/example/join/entity/SignupForm.java`
-  - `src/main/java/com/example/join/entity/User.java`
-  - `src/main/java/com/example/join/repository/UserRepository.java`
-  - `src/main/java/com/example/join/service/SignupFormService.java`
-  - `src/main/java/com/example/join/service/UserService.java`
-  - `src/main/resources/application.properties`
-  - `src/main/resources/static/css/login.css`
-  - `src/main/resources/static/css/signupform.css`
-  - `src/main/resources/templates/foodboard.html`
-  - `src/main/resources/templates/login.html`
-  - `src/main/resources/templates/logout.html`
-  - `src/main/resources/templates/signupform.html`
-  - `src/main/resources/templates/user-login.html`
-  - `src/main/resources/templates/user-signup.html`
 
 ### java0731kk
 **역할**: Post 게시판 및 댓글/좋아요 기능 개발
@@ -220,22 +168,6 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
   - Post 템플릿 (post.html)
   - Post CSS (post.css)
   - Post JavaScript (post.js)
-- **커밋한 파일** (15개):
-  - `src/main/java/com/example/join/controller/PostController.java`
-  - `src/main/java/com/example/join/controller/UserController.java`
-  - `src/main/java/com/example/join/entity/Comment.java`
-  - `src/main/java/com/example/join/entity/Like.java`
-  - `src/main/java/com/example/join/entity/Post.java`
-  - `src/main/java/com/example/join/entity/User.java`
-  - `src/main/java/com/example/join/repository/CommentRepository.java`
-  - `src/main/java/com/example/join/repository/LikeRepository.java`
-  - `src/main/java/com/example/join/service/CommentService.java`
-  - `src/main/java/com/example/join/service/UserService.java`
-  - `src/main/resources/static/css/post.css`
-  - `src/main/resources/static/js/post.js`
-  - `src/main/resources/templates/post.html`
-  - `src/main/resources/templates/user-login.html`
-  - `src/main/resources/templates/user-signup.html`
 
 ### min_chang_isaac
 **역할**: Profile 관리 시스템 개발
@@ -243,19 +175,6 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
   - Profile 관리 시스템 전체 (Controller, Entity, Repository, Service)
   - Profile 템플릿 2개 (profile.html, profile_edit.html)
   - Profile CSS (profilestyle.css)
-- **커밋한 파일** (12개):
-  - `pom.xml`
-  - `src/main/java/com/example/join/controller/ProfileController.java`
-  - `src/main/java/com/example/join/entity/FoodBoard.java`
-  - `src/main/java/com/example/join/entity/Profile.java`
-  - `src/main/java/com/example/join/entity/User.java`
-  - `src/main/java/com/example/join/repository/ProfileRepository.java`
-  - `src/main/java/com/example/join/service/ProfileService.java`
-  - `src/main/resources/static/css/profilestyle.css`
-  - `src/main/resources/static/images/profile.png`
-  - `src/main/resources/static/profilestyle.css`
-  - `src/main/resources/templates/profile.html`
-  - `src/main/resources/templates/profile_edit.html`
 
 ### copilot-swe-agent[bot]
 **역할**: AI 기반 개발 지원 및 문서화

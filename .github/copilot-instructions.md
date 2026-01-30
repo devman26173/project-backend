@@ -148,8 +148,69 @@ src/main/java/com/example/join/
   - 애플리케이션 설정 (application.properties, application-prod.yml)
   - 프로젝트 문서화 (Readme.md)
 
+### devhyunju
+**역할**: FoodBoard 시스템 개발
+- **커밋한 파일**:
+  - `src/main/java/com/example/join/controller/FoodBoardController.java`
+  - `src/main/java/com/example/join/controller/FileUploadController.java`
+  - `src/main/java/com/example/join/entity/FoodBoard.java`
+  - `src/main/java/com/example/join/repository/FoodBoardRepository.java`
+  - `src/main/java/com/example/join/service/FoodBoardService.java`
+  - `src/main/resources/templates/foodboard*.html` (edit, view, write)
+  - `src/main/resources/static/css/foodboard.css`
+  - 파일 업로드 기능 구현
+
+### goodsujin
+**역할**: 사용자 인증 및 회원가입 시스템 개발
+- **커밋한 파일**:
+  - `src/main/java/com/example/join/controller/UserController.java`
+  - `src/main/java/com/example/join/controller/LoginController.java`
+  - `src/main/java/com/example/join/controller/SignupFormController.java`
+  - `src/main/java/com/example/join/entity/User.java`
+  - `src/main/java/com/example/join/entity/SignupForm.java`
+  - `src/main/java/com/example/join/service/UserService.java`
+  - `src/main/java/com/example/join/service/SignupFormService.java`
+  - `src/main/resources/templates/user-login.html`
+  - `src/main/resources/templates/user-signup.html`
+  - `src/main/resources/templates/logout.html`
+  - `src/main/resources/static/css/login.css`
+  - `src/main/resources/static/css/signupform.css`
+
+### java0731kk
+**역할**: Post 게시판 및 댓글/좋아요 기능 개발
+- **커밋한 파일**:
+  - `src/main/java/com/example/join/controller/PostController.java`
+  - `src/main/java/com/example/join/entity/Post.java`
+  - `src/main/java/com/example/join/entity/Comment.java`
+  - `src/main/java/com/example/join/entity/Like.java`
+  - `src/main/java/com/example/join/repository/CommentRepository.java`
+  - `src/main/java/com/example/join/repository/LikeRepository.java`
+  - `src/main/java/com/example/join/service/CommentService.java`
+  - `src/main/resources/templates/post.html`
+  - `src/main/resources/static/css/post.css`
+  - `src/main/resources/static/js/post.js`
+
+### min_chang_isaac
+**역할**: Profile 관리 시스템 개발
+- **커밋한 파일**:
+  - `src/main/java/com/example/join/controller/ProfileController.java`
+  - `src/main/java/com/example/join/entity/Profile.java`
+  - `src/main/java/com/example/join/repository/ProfileRepository.java`
+  - `src/main/java/com/example/join/service/ProfileService.java`
+  - `src/main/resources/templates/profile.html`
+  - `src/main/resources/templates/profile_edit.html`
+  - `src/main/resources/static/css/profilestyle.css`
+  - `src/main/resources/static/images/profile.png`
+  - `pom.xml` (의존성 추가)
+
 ### copilot-swe-agent[bot]
 **역할**: AI 기반 개발 지원 및 문서화
+- **커밋한 파일**:
+  - `.github/copilot-instructions.md`
+  - `.github/workflows/copilot-review.yml`
+  - `src/main/java/com/example/join/controller/ProfileController.java` (버그 수정)
+  - `src/main/resources/templates/foodboard.html` (템플릿 수정)
+  - `src/main/resources/templates/post.html` (템플릿 수정)
 - GitHub Copilot Instructions 관리
 - 코드 리뷰 및 개선 제안
 - 개발 가이드라인 문서화

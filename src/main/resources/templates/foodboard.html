@@ -124,15 +124,22 @@
 		            </div>
 		        </div>
 
-		        <div class="d-flex align-items-center gap-2 small">
-		            <span class="text-warning fw-bold" th:text="'⭐' + ${board.rating}">⭐5</span>
-		            <span class="text-danger">❤️</span>
-		            <span class="text-secondary">💬</span>
-		            <span class="ms-auto text-muted" 
-		                  th:text="${#temporals.format(board.createdAt, 'HH:mm') + ' | ' + (board.user != null ? board.user.username : '匿名')}">
-		                12:24 | 작성자
-		            </span>
-		        </div>
+				<div class="d-flex align-items-center gap-2 small">
+				    <span class="text-warning fw-bold d-flex align-items-center gap-1">
+				        <img src="https://img.icons8.com/ios-filled/20/ffc107/star.png" alt="별점" style="width:16px; height:16px;">
+				        <span th:text="${board.rating}">5</span>
+				    </span>
+				    <span class="d-flex align-items-center">
+				        <img src="https://img.icons8.com/ios/20/888888/like.png" alt="좋아요" style="width:16px; height:16px;">
+				    </span>
+				    <span class="d-flex align-items-center">
+				        <img src="https://img.icons8.com/ios/20/888888/comments.png" alt="댓글" style="width:16px; height:16px;">
+				    </span>
+				    <span class="ms-auto text-muted" 
+				          th:text="${#temporals.format(board.createdAt, 'HH:mm') + ' | ' + (board.user != null ? board.user.username : '匿名')}">
+				        12:24 | 작성자
+				    </span>
+				</div>
 		    </div>
 		</main>
 

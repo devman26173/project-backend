@@ -29,7 +29,7 @@
 
 					<!-- プロフィール文 -->
 					<p class="card-text" th:text="${profile.introduction}"></p>
-					<a th:href="@{/profile/edit}" class="btn btn-outline-primary mt-3">
+					<a th:href="@{/profile/{id}/edit(id=${profile.user.id})}" class="btn btn-outline-primary mt-3">
 						プロフィールを編集 </a>
 				</div>
 

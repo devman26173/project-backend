@@ -4,26 +4,42 @@ import org.springframework.stereotype.Service;
 
 import com.example.join.entity.Profile;
 import com.example.join.repository.ProfileRepository;
+import com.example.join.repository.UserRepository;
 
 @Service
 public class ProfileService {
 
-	private final ProfileRepository repository;
-
-	public ProfileService(ProfileRepository repository) {
-		this.repository = repository;
+	private final ProfileRepository profileRepository;
+	private final UserRepository userRepository;
+	
+	public ProfileService(ProfileRepository profileRepository,
+			UserRepository userRepository) {
+		this.profileRepository = profileRepository;
+		this.userRepository = userRepository;
 	}
 
-	public Profile getProfile(Long id) {
-		return repository.findById(id).orElseThrow();
+	//userIdからProfileを取得
+	public Profile getByUserId(Long userId) {
+	    return profileRepository.findByUserId(userId)
+	        .orElseGet(() -> {
+	            Profile p = new Profile();
+	            p.setUser(userRepository.findById(userId).orElseThrow());
+	            p.setIntroduction("");
+	            p.setImageUrl(null);
+	            return profileRepository.save(p);
+	        });
 	}
 
-	public void update(Profile form) {
-		Profile p = repository.findById(form.getProfileId())
-				.orElseThrow(() -> new IllegalArgumentException("profile not founded"));
-		p.setIntroduction(form.getIntroduction());
-		//p.setImagePath(form.getImagePath());
-		repository.save(p);
+
+	
+	//更新処理
+	public void updateProfile (Long userId, Profile formProfile) {
+		Profile profile = getByUserId(userId);
+		
+		profile.setIntroduction(formProfile.getImageUrl());
+		profile.setImageUrl(formProfile.getImageUrl());
+		
+		profileRepository.save(profile);
 	}
 
 }

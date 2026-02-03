@@ -25,7 +25,7 @@ jobs:
           echo "date=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
           echo "datetime=$(date '+%Y-%m-%d %H:%M')" >> $GITHUB_OUTPUT
 
-      - name: Get changed files
+      - name: Get changed files with details
         id: files
         uses: actions/github-script@v7
         with:
@@ -35,7 +35,34 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number
             });
-            return files.map(f => f.filename);
+
+            // 각 파일의 변경 정보 수집
+            const fileDetails = files.map(f => {
+              let changeType = '';
+              if (f.status === 'added') {
+                changeType = '추가';
+              } else if (f.status === 'removed') {
+                changeType = '삭제';
+              } else if (f.status === 'modified') {
+                changeType = '수정';
+              } else if (f.status === 'renamed') {
+                changeType = '이름변경';
+              } else {
+                changeType = '변경';
+              }
+
+              return {
+                filename: f.filename,
+                status: f.status,
+                changeType: changeType,
+                additions: f.additions,
+                deletions: f.deletions,
+                changes: f.changes,
+                patch: f.patch || ''
+              };
+            });
+
+            return fileDetails;
 
       - name: Update REVIEW_HISTORY.md
         env:
@@ -44,14 +71,31 @@ jobs:
           DATETIME: ${{ steps.pr-info.outputs.datetime }}
         run: |
           FILES='${{ steps.files.outputs.result }}'
-          
+
           echo "" >> .github/REVIEW_HISTORY.md
           echo "### PR #${PR_NUMBER} - ${DATETIME}" >> .github/REVIEW_HISTORY.md
-          
-          echo "$FILES" | jq -r '.[]' | while read -r file; do
-            echo "- \`${DATE} | ${file} | Copilot 자동 리뷰 진행 → 🔄 검토중\`" >> .github/REVIEW_HISTORY.md
+
+          # 각 파일의 상세 정보를 기록
+          echo "$FILES" | jq -c '.[]' | while read -r file_json; do
+            filename=$(echo "$file_json" | jq -r '.filename')
+            changeType=$(echo "$file_json" | jq -r '.changeType')
+            additions=$(echo "$file_json" | jq -r '.additions')
+            deletions=$(echo "$file_json" | jq -r '.deletions')
+
+            # 변경 내용 요약 생성
+            if [ "$additions" -gt 0 ] && [ "$deletions" -gt 0 ]; then
+              changeDesc="${changeType}: +${additions}줄 -${deletions}줄"
+            elif [ "$additions" -gt 0 ]; then
+              changeDesc="${changeType}: +${additions}줄"
+            elif [ "$deletions" -gt 0 ]; then
+              changeDesc="${changeType}: -${deletions}줄"
+            else
+              changeDesc="${changeType}"
+            fi
+
+            echo "- \`${DATE} | ${filename} | ${changeDesc} → 🔄 검토중\`" >> .github/REVIEW_HISTORY.md
           done
-          
+
           echo "" >> .github/REVIEW_HISTORY.md
           echo "---" >> .github/REVIEW_HISTORY.md
 
@@ -59,7 +103,7 @@ jobs:
         run: |
           git config --local user.name 'github-actions[bot]'
           git config --local user.email 'github-actions[bot]@users.noreply.github.com'
-          
+
           if git diff --quiet .github/REVIEW_HISTORY.md; then
             echo "No changes to commit"
           else
@@ -93,7 +137,7 @@ jobs:
               '  - ⚠️ 보안 이슈',
               '  - 🚀 성능 개선'
             ].join('\n');
-            
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,

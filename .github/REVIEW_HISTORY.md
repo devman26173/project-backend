@@ -72,3 +72,7 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-03 | src/main/resources/templates/profile_edit.html | 수정: +9줄 -4줄 (UI 요소 변경) → 🔄 검토중`
 
 ---
+
+### PR #92 - 2026-02-03 08:46
+
+---

@@ -26,7 +26,7 @@ public class ProfileService {
 	            p.setUser(userRepository.findById(userId)
 	                    .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId)));
 	            p.setIntroduction("");
-	            p.setImageUrl(null);
+	            p.setImagePath(null);
 	            return profileRepository.save(p);
 	        });
 	}
@@ -38,7 +38,7 @@ public class ProfileService {
 		Profile profile = getByUserId(userId);
 		
 		profile.setIntroduction(formProfile.getIntroduction());
-		profile.setImageUrl(formProfile.getImageUrl());
+		profile.setImagePath(formProfile.getImagePath());
 		
 		profileRepository.save(profile);
 	}

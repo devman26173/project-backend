@@ -66,3 +66,12 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 ### PR #87 - 2026-02-03 04:01
 
 ---
+
+### PR #89 - 2026-02-03 06:57
+**제목**: Sujin
+
+- `2026-02-03 | src/main/java/com/example/join/controller/UserController.java | 수정: +23줄 -2줄 (withdraw 메서드 추가, 유효성 검증) → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/service/UserService.java | 수정: +5줄 -1줄 (withdrawUser 메서드 추가, 유효성 검증) → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/user-withdraw.html | 추가: +53줄 (UI 요소 변경) → 🔄 검토중`
+
+---

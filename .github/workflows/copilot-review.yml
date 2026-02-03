@@ -57,12 +57,12 @@ jobs:
               if (f.patch) {
                 const patch = f.patch;
 
-                // 함수/메서드 추가 감지
-                const addedFunctions = patch.match(/^\+.*?(public|private|protected)?\s*(static)?\s*\w+\s+(\w+)\s*\(/gm);
+                // 함수/메서드 추가 감지 (개선: 더 엄격한 패턴)
+                const addedFunctions = patch.match(/^\+\s*(public|private|protected|static|\s)*\s+\w+\s+(\w+)\s*\([^)]*\)\s*\{?/gm);
                 // 클래스 추가 감지
-                const addedClasses = patch.match(/^\+.*?(class|interface|enum)\s+(\w+)/gm);
+                const addedClasses = patch.match(/^\+\s*(public|private|protected)?\s*(class|interface|enum)\s+(\w+)/gm);
                 // 삭제된 함수/메서드
-                const removedFunctions = patch.match(/^-.*?(public|private|protected)?\s*(static)?\s*\w+\s+(\w+)\s*\(/gm);
+                const removedFunctions = patch.match(/^-\s*(public|private|protected|static|\s)*\s+\w+\s+(\w+)\s*\([^)]*\)\s*\{?/gm);
                 // HTML 파일 여부 확인
                 const isHtmlFile = f.filename.endsWith('.html') || f.filename.endsWith('.htm');
                 // HTML 요소 변경 감지 (HTML 파일에서만)
@@ -72,21 +72,26 @@ jobs:
 
                 const summaryParts = [];
 
+                // 제외할 키워드 목록 (false positive 방지)
+                const excludeKeywords = ['if', 'while', 'for', 'switch', 'catch', 'function', 'return'];
+
                 if (addedClasses && addedClasses.length > 0) {
                   const className = addedClasses[0].match(/(class|interface|enum)\s+(\w+)/)?.[2];
                   if (className) summaryParts.push(`${className} 클래스 추가`);
                 }
 
                 if (addedFunctions && addedFunctions.length > 0) {
-                  const funcName = addedFunctions[0].match(/\s+(\w+)\s*\(/)?.[1];
-                  if (funcName && funcName !== 'function') {
+                  const matches = addedFunctions[0].match(/\s+(\w+)\s*\(/);
+                  const funcName = matches?.[1];
+                  if (funcName && !excludeKeywords.includes(funcName.toLowerCase())) {
                     summaryParts.push(`${funcName} 메서드 추가`);
                   }
                 }
 
                 if (removedFunctions && removedFunctions.length > 0) {
-                  const funcName = removedFunctions[0].match(/\s+(\w+)\s*\(/)?.[1];
-                  if (funcName && funcName !== 'function') {
+                  const matches = removedFunctions[0].match(/\s+(\w+)\s*\(/);
+                  const funcName = matches?.[1];
+                  if (funcName && !excludeKeywords.includes(funcName.toLowerCase())) {
                     summaryParts.push(`${funcName} 메서드 제거`);
                   }
                 }
@@ -99,14 +104,17 @@ jobs:
                   summaryParts.push('의존성 변경');
                 }
 
-                // 특정 키워드 기반 변경 감지
-                if (patch.includes('sort') || patch.includes('order') || patch.includes('Sort')) {
+                // 특정 키워드 기반 변경 감지 (개선: 더 구체적인 패턴)
+                // 정렬 로직: sorted, .sort(, Comparator 등
+                if (patch.match(/\.(sort|sorted)\(|Comparator\.|Collections\.sort|Arrays\.sort/i)) {
                   summaryParts.push('정렬 로직 변경');
                 }
-                if (patch.includes('validation') || patch.includes('validate') || patch.includes('required')) {
+                // 유효성 검증: validate 메서드나 ValidationException
+                if (patch.match(/validate\w*\(|ValidationException|@Valid|required\s*=/i)) {
                   summaryParts.push('유효성 검증');
                 }
-                if (patch.includes('security') || patch.includes('auth')) {
+                // 보안/인증: @Secured, authenticate, authorize 등
+                if (patch.match(/@Secured|@PreAuthorize|authenticate|authorize|SecurityContext/i)) {
                   summaryParts.push('보안/인증');
                 }
 

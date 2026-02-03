@@ -12,7 +12,7 @@ public class Profile {
 	private Long profileId;
 
 	@Column(name = "image_path")
-	private String imagePath; // プロフィール画像
+	private String imageUrl; // プロフィール画像
 
 	@Column(name = "introduction", length = 1000)
 	private String introduction; // 自己紹介
@@ -29,12 +29,12 @@ public class Profile {
 		this.profileId = profileId;
 	}
 
-	public String getImagePath() {
-		return imagePath;
+	public String getImageUrl() {
+		return imageUrl;
 	}
 
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public String getIntroduction() {

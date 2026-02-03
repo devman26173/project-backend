@@ -63,7 +63,7 @@
 							
 							<div class = "d-flex gap-2 mb-2">
 								<!--지방 선택-->
-								<select class = "form-select" id = "regionSelect" name="region" required>
+								<select class = "form-select" id = "regionSelect" name="region">
 									<option value="" selected disabled>地方を選択</option>
 										<option value="北海道・東北">北海道・東北</option>
 										<option value="関東">関東</option>	
@@ -73,11 +73,12 @@
 									    <option value="九州・沖縄">九州・沖縄</option>
 									</select>
 								
-								<select class = "form-select" id = "prefectureSelect" name="prefecture" required>
+								<select class = "form-select" id = "prefectureSelect" name="prefecture">
 									<option selected>都道府県</option>
 									</select>
 						</div>
-								
+								<!--경고 메시지 -->
+								<small class = "text-danger">※ 地域を選択してください</small>
 						</div>
 						</div>		
 							<!--별점 선택-->

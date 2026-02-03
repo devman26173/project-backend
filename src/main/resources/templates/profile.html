@@ -24,7 +24,7 @@
 
 				<!-- プロフィール画像 -->
 				<div th:if="${profile != null}">
-					<img th:src="${#strings.isEmpty(profile.imagePath) ? '/uploads/profile.png' : profile.imagePath}" class="rounded-circle mb-3"
+					<img th:src="${profile.imageUrl}" class="rounded-circle mb-3"
 						width="120" height="120" alt="profile">
 					<!-- プロフィール文 -->
 					<p class="card-text" th:text="${profile.introduction}"></p>

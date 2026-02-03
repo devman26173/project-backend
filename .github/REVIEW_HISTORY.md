@@ -51,3 +51,8 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-03 | .github/workflows/copilot-review.yml | Copilot 자동 리뷰 진행 → 🔄 검토중`
 
 ---
+
+### PR #85 - 2026-02-03 01:03
+- `2026-02-03 | src/main/resources/templates/user-signup.html | Copilot 자동 리뷰 진행 → 🔄 검토중`
+
+---

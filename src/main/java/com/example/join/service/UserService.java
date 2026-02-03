@@ -55,8 +55,12 @@ public class UserService {
         }
     }
     
-    // ✅ 이 메서드 추가!
+    // 
     public void logout(HttpSession session) {
         session.invalidate();
+    }
+    //db에서 사용자 삭제
+    public void withdrawUser(Long userId) {
+    	userRepository.deleteById(userId);;
     }
 }

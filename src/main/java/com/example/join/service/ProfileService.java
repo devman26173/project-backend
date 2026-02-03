@@ -27,21 +27,26 @@ public class ProfileService {
 	@Transactional
 	public Profile getByUserId(Long userId) {
 	    return profileRepository.findByUser_UserId(userId)
-	        .orElseGet(() -> {
-	            try {
-	                Profile p = new Profile();
-	                p.setUser(userRepository.findById(userId)
-	                        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId)));
-	                p.setIntroduction("");
-	                p.setImageUrl(null);
-	                return profileRepository.save(p);
-	            } catch (DataIntegrityViolationException e) {
-	                // 同時リクエストでunique制約違反が発生した場合、再度検索
-	                log.warn("Unique constraint violation for userId: {}. Retrying query.", userId);
-	                return profileRepository.findByUser_UserId(userId)
-	                    .orElseThrow(() -> new IllegalStateException("Profile creation failed for userId: " + userId, e));
-	            }
-	        });
+	        .orElseGet(() -> createProfileIfNotExists(userId));
+	}
+
+	//Profileが存在しない場合に作成（unique制約違反時は再検索）
+	@Transactional
+	private Profile createProfileIfNotExists(Long userId) {
+	    try {
+	        Profile p = new Profile();
+	        p.setUser(userRepository.findById(userId)
+	                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId)));
+	        p.setIntroduction("");
+	        p.setImageUrl(null);
+	        return profileRepository.save(p);
+	    } catch (DataIntegrityViolationException e) {
+	        // 同時リクエストでunique制約違反が発生した場合、再度検索
+	        log.warn("Unique constraint violation for userId: {}. Retrying query.", userId);
+	        return profileRepository.findByUser_UserId(userId)
+	            .orElseThrow(() -> new IllegalStateException(
+	                "Failed to retrieve profile after unique constraint violation for userId: " + userId, e));
+	    }
 	}
 
 

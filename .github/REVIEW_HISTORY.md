@@ -88,26 +88,17 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 
 ---
 
-### PR #90 - 2026-02-03 08:45
-**제목**: Minchang
+### PR #94 - 2026-02-03 08:47
+**제목**: [WIP] Address feedback from review comments on 'Minchang' PR
 
-- `2026-02-03 | .github/REVIEW_HISTORY.md | 수정: +13줄 -7줄 → 🔄 검토중`
-- `2026-02-03 | src.zip | 추가 → 🔄 검토중`
-- `2026-02-03 | src/main/java/com/example/join/controller/PostController.java | 수정: +3줄 -3줄 → 🔄 검토중`
-- `2026-02-03 | src/main/java/com/example/join/controller/ProfileController.java | 수정: +32줄 -10줄 (showProfile 메서드 추가, profile 메서드 제거) → 🔄 검토중`
-- `2026-02-03 | src/main/java/com/example/join/entity/Profile.java | 수정: +29줄 -27줄 (setProfileId 메서드 추가, Profile 메서드 제거) → 🔄 검토중`
-- `2026-02-03 | src/main/java/com/example/join/entity/User.java | 수정: +58줄 -56줄 (getUserId 메서드 추가, getId 메서드 제거) → 🔄 검토중`
-- `2026-02-03 | src/main/java/com/example/join/repository/ProfileRepository.java | 수정: +4줄 -1줄 (의존성 변경) → 🔄 검토중`
-- `2026-02-03 | src/main/java/com/example/join/service/ProfileService.java | 수정: +29줄 -12줄 (ProfileService 메서드 추가, ProfileService 메서드 제거) → 🔄 검토중`
-- `2026-02-03 | src/main/resources/static/uploads/profile.png | 이름변경: src/main/resources/static/images/profile.png → src/main/resources/static/uploads/profile.png → 🔄 검토중`
-- `2026-02-03 | src/main/resources/templates/profile.html | 수정: +2줄 -3줄 (UI 요소 변경) → 🔄 검토중`
-- `2026-02-03 | src/main/resources/templates/profile_edit.html | 수정: +10줄 -5줄 (UI 요소 변경) → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/profile.html | 수정: +6줄 -15줄 (UI 요소 변경) → 🔄 검토중`
 
 ---
 
-### PR #91 - 2026-02-03 08:46
-**제목**: [WIP] WIP addressing feedback on Minchang pull request
+### PR #94 - 2026-02-03 08:48
+**제목**: Remove unreachable null check in profile.html template
 
-- `2026-02-03 | src/main/java/com/example/join/service/ProfileService.java | 수정: +18줄 -4줄 (getOrCreateProfile 메서드 추가) → 🔄 검토중`
+- `2026-02-03 | .github/REVIEW_HISTORY.md | 수정: +3줄 -20줄 → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/profile.html | 수정: +6줄 -15줄 (UI 요소 변경) → 🔄 검토중`
 
 ---

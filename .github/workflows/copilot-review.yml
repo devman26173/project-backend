@@ -24,6 +24,7 @@ jobs:
           echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
           echo "date=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
           echo "datetime=$(date '+%Y-%m-%d %H:%M')" >> $GITHUB_OUTPUT
+          echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
 
       - name: Get changed files with details
         id: files
@@ -51,6 +52,67 @@ jobs:
                 changeType = '변경';
               }
 
+              // patch에서 주요 변경 내용 추출
+              let changeSummary = '';
+              if (f.patch) {
+                const patch = f.patch;
+
+                // 함수/메서드 추가 감지
+                const addedFunctions = patch.match(/^\+.*?(public|private|protected)?\s*(static)?\s*\w+\s+(\w+)\s*\(/gm);
+                // 클래스 추가 감지
+                const addedClasses = patch.match(/^\+.*?(class|interface|enum)\s+(\w+)/gm);
+                // 삭제된 함수/메서드
+                const removedFunctions = patch.match(/^-.*?(public|private|protected)?\s*(static)?\s*\w+\s+(\w+)\s*\(/gm);
+                // HTML 파일 여부 확인
+                const isHtmlFile = f.filename.endsWith('.html') || f.filename.endsWith('.htm');
+                // HTML 요소 변경 감지 (HTML 파일에서만)
+                const htmlChanges = isHtmlFile ? patch.match(/^\+.*?<(\w+)[^>]*>/gm) : null;
+                // import/require 변경
+                const importChanges = patch.match(/^\+.*?(import|require|use)\s+/gm);
+
+                const summaryParts = [];
+
+                if (addedClasses && addedClasses.length > 0) {
+                  const className = addedClasses[0].match(/(class|interface|enum)\s+(\w+)/)?.[2];
+                  if (className) summaryParts.push(`${className} 클래스 추가`);
+                }
+
+                if (addedFunctions && addedFunctions.length > 0) {
+                  const funcName = addedFunctions[0].match(/\s+(\w+)\s*\(/)?.[1];
+                  if (funcName && funcName !== 'function') {
+                    summaryParts.push(`${funcName} 메서드 추가`);
+                  }
+                }
+
+                if (removedFunctions && removedFunctions.length > 0) {
+                  const funcName = removedFunctions[0].match(/\s+(\w+)\s*\(/)?.[1];
+                  if (funcName && funcName !== 'function') {
+                    summaryParts.push(`${funcName} 메서드 제거`);
+                  }
+                }
+
+                if (htmlChanges && htmlChanges.length > 0) {
+                  summaryParts.push('UI 요소 변경');
+                }
+
+                if (importChanges && importChanges.length > 0) {
+                  summaryParts.push('의존성 변경');
+                }
+
+                // 특정 키워드 기반 변경 감지
+                if (patch.includes('sort') || patch.includes('order') || patch.includes('Sort')) {
+                  summaryParts.push('정렬 로직 변경');
+                }
+                if (patch.includes('validation') || patch.includes('validate') || patch.includes('required')) {
+                  summaryParts.push('유효성 검증');
+                }
+                if (patch.includes('security') || patch.includes('auth')) {
+                  summaryParts.push('보안/인증');
+                }
+
+                changeSummary = summaryParts.slice(0, 2).join(', ');
+              }
+
               return {
                 filename: f.filename,
                 previousFilename: f.previous_filename || '',
@@ -59,7 +121,8 @@ jobs:
                 additions: f.additions || 0,
                 deletions: f.deletions || 0,
                 changes: f.changes || 0,
-                patch: f.patch || ''
+                patch: f.patch || '',
+                changeSummary: changeSummary
               };
             });
 
@@ -70,11 +133,16 @@ jobs:
           PR_NUMBER: ${{ steps.pr-info.outputs.pr_number }}
           DATE: ${{ steps.pr-info.outputs.date }}
           DATETIME: ${{ steps.pr-info.outputs.datetime }}
+          PR_TITLE: ${{ steps.pr-info.outputs.pr_title }}
         run: |
           FILES='${{ steps.files.outputs.result }}'
 
           echo "" >> .github/REVIEW_HISTORY.md
           echo "### PR #${PR_NUMBER} - ${DATETIME}" >> .github/REVIEW_HISTORY.md
+          if [ -n "$PR_TITLE" ]; then
+            echo "**제목**: ${PR_TITLE}" >> .github/REVIEW_HISTORY.md
+            echo "" >> .github/REVIEW_HISTORY.md
+          fi
 
           # 각 파일의 상세 정보를 기록
           echo "$FILES" | jq -c '.[]' | while read -r file_json; do
@@ -83,6 +151,7 @@ jobs:
             changeType=$(echo "$file_json" | jq -r '.changeType')
             additions=$(echo "$file_json" | jq -r '.additions // 0')
             deletions=$(echo "$file_json" | jq -r '.deletions // 0')
+            changeSummary=$(echo "$file_json" | jq -r '.changeSummary')
 
             # 이름변경의 경우 특별 처리
             if [ "$changeType" = "이름변경" ] && [ -n "$previousFilename" ]; then
@@ -97,6 +166,11 @@ jobs:
                 changeDesc="${changeType}: -${deletions}줄"
               else
                 changeDesc="${changeType}"
+              fi
+
+              # 변경 내용 요약 추가
+              if [ -n "$changeSummary" ] && [ "$changeSummary" != "null" ]; then
+                changeDesc="${changeDesc} (${changeSummary})"
               fi
             fi
 

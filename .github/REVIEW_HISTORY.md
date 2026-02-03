@@ -72,12 +72,35 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 
 ---
 
-### PR #86 - 2026-02-03 03:56
-- `2026-02-03 | src/main/resources/templates/foodboard-view.html | Copilot 자동 리뷰 진행 → 🔄 검토중`
-- `2026-02-03 | src/main/resources/templates/foodboard-write.html | Copilot 자동 리뷰 진행 → 🔄 검토중`
+### PR #90 - 2026-02-03 08:25
+**제목**: Minchang
+
+- `2026-02-03 | src.zip | 추가 → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/controller/PostController.java | 수정: +3줄 -3줄 → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/controller/ProfileController.java | 수정: +32줄 -10줄 (showProfile 메서드 추가, profile 메서드 제거) → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/entity/Profile.java | 수정: +29줄 -27줄 (setProfileId 메서드 추가, Profile 메서드 제거) → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/entity/User.java | 수정: +58줄 -56줄 (getUserId 메서드 추가, getId 메서드 제거) → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/repository/ProfileRepository.java | 수정: +4줄 -1줄 (의존성 변경) → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/service/ProfileService.java | 수정: +28줄 -12줄 (ProfileService 메서드 추가, ProfileService 메서드 제거) → 🔄 검토중`
+- `2026-02-03 | src/main/resources/static/uploads/profile.png | 이름변경: src/main/resources/static/images/profile.png → src/main/resources/static/uploads/profile.png → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/profile.html | 수정: +2줄 -3줄 (UI 요소 변경) → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/profile_edit.html | 수정: +9줄 -4줄 (UI 요소 변경) → 🔄 검토중`
 
 ---
 
-### PR #87 - 2026-02-03 04:01
+### PR #90 - 2026-02-03 08:45
+**제목**: Minchang
+
+- `2026-02-03 | .github/REVIEW_HISTORY.md | 수정: +13줄 -7줄 → 🔄 검토중`
+- `2026-02-03 | src.zip | 추가 → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/controller/PostController.java | 수정: +3줄 -3줄 → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/controller/ProfileController.java | 수정: +32줄 -10줄 (showProfile 메서드 추가, profile 메서드 제거) → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/entity/Profile.java | 수정: +29줄 -27줄 (setProfileId 메서드 추가, Profile 메서드 제거) → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/entity/User.java | 수정: +58줄 -56줄 (getUserId 메서드 추가, getId 메서드 제거) → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/repository/ProfileRepository.java | 수정: +4줄 -1줄 (의존성 변경) → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/service/ProfileService.java | 수정: +29줄 -12줄 (ProfileService 메서드 추가, ProfileService 메서드 제거) → 🔄 검토중`
+- `2026-02-03 | src/main/resources/static/uploads/profile.png | 이름변경: src/main/resources/static/images/profile.png → src/main/resources/static/uploads/profile.png → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/profile.html | 수정: +2줄 -3줄 (UI 요소 변경) → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/profile_edit.html | 수정: +10줄 -5줄 (UI 요소 변경) → 🔄 검토중`
 
 ---

@@ -8,6 +8,9 @@ import com.example.join.entity.Profile;
 import com.example.join.repository.ProfileRepository;
 import com.example.join.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class ProfileService {
 
@@ -20,35 +23,40 @@ public class ProfileService {
 		this.userRepository = userRepository;
 	}
 
-	//userIdからProfileを取得
+	//userIdからProfileを取得（同時リクエスト対応）
 	@Transactional
 	public Profile getByUserId(Long userId) {
 	    return profileRepository.findByUser_UserId(userId)
-	        .orElseGet(() -> {
-	            try {
-	                Profile p = new Profile();
-	                p.setUser(userRepository.findById(userId)
-	                        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId)));
-	                p.setIntroduction("");
-	                p.setImageUrl(null);
-	                return profileRepository.save(p);
-	            } catch (DataIntegrityViolationException e) {
-	                // 동시 요청으로 인한 유니크 제약 위반 시 재조회
-	                return profileRepository.findByUser_UserId(userId)
-	                    .orElseThrow(() -> new IllegalStateException("Profile creation failed for userId: " + userId, e));
-	            }
-	        });
+	        .orElseGet(() -> createProfileIfNotExists(userId));
+	}
+
+	//Profileが存在しない場合に作成（unique制約違反時は再検索）
+	@Transactional
+	private Profile createProfileIfNotExists(Long userId) {
+	    try {
+	        Profile p = new Profile();
+	        p.setUser(userRepository.findById(userId)
+	                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId)));
+	        p.setIntroduction("");
+	        p.setImageUrl(null);
+	        return profileRepository.save(p);
+	    } catch (DataIntegrityViolationException e) {
+	        // 同時リクエストでunique制約違反が発生した場合、再度検索
+	        log.warn("Unique constraint violation for userId: {}. Retrying query.", userId);
+	        return profileRepository.findByUser_UserId(userId)
+	            .orElseThrow(() -> new IllegalStateException(
+	                "Failed to retrieve profile after unique constraint violation for userId: " + userId, e));
+	    }
 	}
 
 
 	
-	//更新処理
-	@Transactional
+	//更新処理（Profileが存在しない場合は作成してから更新）
 	public void updateProfile (Long userId, Profile formProfile) {
-		Profile profile = getByUserId(userId);
+		Profile profile = getOrCreateProfile(userId);
 		
 		profile.setIntroduction(formProfile.getIntroduction());
-		profile.setImageUrl(formProfile.getImageUrl());
+		profile.setImagePath(formProfile.getImagePath());
 		
 		profileRepository.save(profile);
 	}

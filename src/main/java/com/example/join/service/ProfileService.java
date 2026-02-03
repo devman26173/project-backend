@@ -20,7 +20,7 @@ public class ProfileService {
 
 	//userIdからProfileを取得
 	public Profile getByUserId(Long userId) {
-	    return profileRepository.findByUserId(userId)
+	    return profileRepository.findByUser_UserId(userId)
 	        .orElseGet(() -> {
 	            Profile p = new Profile();
 	            p.setUser(userRepository.findById(userId).orElseThrow());
@@ -36,7 +36,7 @@ public class ProfileService {
 	public void updateProfile (Long userId, Profile formProfile) {
 		Profile profile = getByUserId(userId);
 		
-		profile.setIntroduction(formProfile.getImageUrl());
+		profile.setIntroduction(formProfile.getIntroduction());
 		profile.setImageUrl(formProfile.getImageUrl());
 		
 		profileRepository.save(profile);

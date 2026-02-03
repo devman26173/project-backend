@@ -104,3 +104,10 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-03 | src/main/resources/templates/profile_edit.html | 수정: +10줄 -5줄 (UI 요소 변경) → 🔄 검토중`
 
 ---
+
+### PR #91 - 2026-02-03 08:46
+**제목**: [WIP] WIP addressing feedback on Minchang pull request
+
+- `2026-02-03 | src/main/java/com/example/join/service/ProfileService.java | 수정: +18줄 -4줄 (getOrCreateProfile 메서드 추가) → 🔄 검토중`
+
+---

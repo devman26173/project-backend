@@ -51,12 +51,12 @@ public class ProfileService {
 
 
 	
-	//更新処理
+	//更新処理（Profileが存在しない場合は作成してから更新）
 	public void updateProfile (Long userId, Profile formProfile) {
-		Profile profile = getByUserId(userId);
+		Profile profile = getOrCreateProfile(userId);
 		
 		profile.setIntroduction(formProfile.getIntroduction());
-		profile.setImageUrl(formProfile.getImageUrl());
+		profile.setImagePath(formProfile.getImagePath());
 		
 		profileRepository.save(profile);
 	}

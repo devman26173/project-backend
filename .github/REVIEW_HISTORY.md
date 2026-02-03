@@ -68,3 +68,16 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-03 | src/main/resources/templates/profile_edit.html | Copilot 자동 리뷰 진행 → 🔄 검토중`
 
 ---
+
+### PR #96 - 2026-02-03 09:26
+- `2026-02-03 | .github/REVIEW_HISTORY.md | Copilot 자동 리뷰 진행 → 🔄 검토중`
+- `2026-02-03 | .github/workflows/copilot-review.yml | Copilot 자동 리뷰 진행 → 🔄 검토중`
+- `2026-02-03 | VERIFICATION_REPORT.md | Copilot 자동 리뷰 진행 → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/entity/Profile.java | Copilot 자동 리뷰 진행 → 🔄 검토중`
+- `2026-02-03 | src/main/java/com/example/join/service/ProfileService.java | Copilot 자동 리뷰 진행 → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/foodboard-view.html | Copilot 자동 리뷰 진행 → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/foodboard-write.html | Copilot 자동 리뷰 진행 → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/profile.html | Copilot 자동 리뷰 진행 → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/profile_edit.html | Copilot 자동 리뷰 진행 → 🔄 검토중`
+
+---

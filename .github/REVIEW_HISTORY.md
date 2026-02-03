@@ -45,3 +45,9 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 <!-- 이 아래에 새로운 리뷰 기록을 추가하세요 -->
 <!-- 형식: 날짜 | 파일명 | 리뷰/수정 내역 -->
 
+
+### PR #84 - 2026-02-03 00:58
+- `2026-02-03 | .github/REVIEW_HISTORY.md | Copilot 자동 리뷰 진행 → 🔄 검토중`
+- `2026-02-03 | .github/workflows/copilot-review.yml | Copilot 자동 리뷰 진행 → 🔄 검토중`
+
+---

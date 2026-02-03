@@ -61,6 +61,6 @@ public class UserService {
     }
     //db에서 사용자 삭제
     public void withdrawUser(Long userId) {
-    	userRepository.deleteById(userId);;
+    	userRepository.deleteById(userId);
     }
 }

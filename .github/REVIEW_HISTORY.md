@@ -94,3 +94,11 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-03 | src/main/resources/templates/profile.html | 수정: +6줄 -15줄 (UI 요소 변경) → 🔄 검토중`
 
 ---
+
+### PR #94 - 2026-02-03 08:48
+**제목**: Remove unreachable null check in profile.html template
+
+- `2026-02-03 | .github/REVIEW_HISTORY.md | 수정: +3줄 -20줄 → 🔄 검토중`
+- `2026-02-03 | src/main/resources/templates/profile.html | 수정: +6줄 -15줄 (UI 요소 변경) → 🔄 검토중`
+
+---

@@ -112,3 +112,10 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-03 | src/main/resources/templates/profile_edit.html | 수정: +1줄 -1줄 → 🔄 검토중`
 
 ---
+
+### PR #93 - 2026-02-03 08:50
+**제목**: Fix race condition in ProfileService.getByUserId() with transactional retry
+
+- `2026-02-03 | src/main/java/com/example/join/service/ProfileService.java | 수정: +25줄 -21줄 (createProfileIfNotExists 메서드 추가, getOrCreateProfile 메서드 제거) → 🔄 검토중`
+
+---

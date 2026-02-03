@@ -23,12 +23,21 @@
 			<div Class="card-body text-center">
 
 				<!-- プロフィール画像 -->
-				<img th:src="${#strings.isEmpty(profile.imageUrl) ? '/uploads/profile.png' : profile.imageUrl}" class="rounded-circle mb-3"
-					width="120" height="120" alt="profile">
-				<!-- プロフィール文 -->
-				<p class="card-text" th:text="${profile.introduction}"></p>
-				<a th:href="@{/profile/{userId}/edit(userId=${profile.user.userId})}" class="btn btn-outline-primary mt-3">
-					プロフィールを編集 </a>
+				<div th:if="${profile != null}">
+					<img th:src="${#strings.isEmpty(profile.imagePath) ? '/uploads/profile.png' : profile.imagePath}" class="rounded-circle mb-3"
+						width="120" height="120" alt="profile">
+					<!-- プロフィール文 -->
+					<p class="card-text" th:text="${profile.introduction}"></p>
+					<a th:href="@{/profile/{userId}/edit(userId=${profile.user.userId})}" class="btn btn-outline-primary mt-3">
+						プロフィールを編集 </a>
+				</div>
+
+
+
+
+				<div th:if="${profile == null}">
+					<p class="text-muted text-center">プロフィールが見当たりません。</p>
+				</div>
 
 			</div>
 		</div>

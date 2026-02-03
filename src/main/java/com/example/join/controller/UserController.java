@@ -116,14 +116,14 @@ public class UserController {
     @PostMapping("/withdraw")
     public String withdrawSubmit(HttpSession session) {
     	User loginUser = (User) session.getAttribute("loginUser");
-    	if(loginUser ==null) {
+    	if (loginUser == null) {
     		return "redirect:/login";
     	}
-    //회원탈퇴 처리
-    userService.withdrawUser(loginUser.getId());
-    //세션삭제
-    session.invalidate();
-    //로그인 페이지로
-    return "redirect:/login";
+    	//회원탈퇴 처리
+    	userService.withdrawUser(loginUser.getId());
+    	//세션삭제
+    	session.invalidate();
+    	//로그인 페이지로
+    	return "redirect:/login";
     }
 }

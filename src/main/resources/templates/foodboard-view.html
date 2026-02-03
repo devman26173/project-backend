@@ -77,9 +77,9 @@
 				    	</span>
 						</div>
 				    <div class="small text-muted">
-				        <span th:text="${board.user != null ? board.user.username : '匿名'}"></span>
-				        <span>|</span>
 				        <span th:text="${#temporals.format(board.createdAt, 'MM/dd HH:mm')}"></span>
+				        <span>|</span>
+				        <span th:text="${board.user != null ? board.user.username : '匿名'}"></span>
 				    </div>
 				</div>
 			    

@@ -23,7 +23,8 @@ public class ProfileService {
 	    return profileRepository.findByUser_UserId(userId)
 	        .orElseGet(() -> {
 	            Profile p = new Profile();
-	            p.setUser(userRepository.findById(userId).orElseThrow());
+	            p.setUser(userRepository.findById(userId)
+	                    .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId)));
 	            p.setIntroduction("");
 	            p.setImageUrl(null);
 	            return profileRepository.save(p);

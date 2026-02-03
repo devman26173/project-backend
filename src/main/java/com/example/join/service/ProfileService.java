@@ -18,8 +18,21 @@ public class ProfileService {
 		this.userRepository = userRepository;
 	}
 
-	//userIdからProfileを取得
+	//userIdからProfileを取得（読み取り専用 - DBへの書き込みなし）
 	public Profile getByUserId(Long userId) {
+	    return profileRepository.findByUser_UserId(userId)
+	        .orElseGet(() -> {
+	            // DB保存なしで基本プロフィールオブジェクトを返す
+	            Profile p = new Profile();
+	            p.setUser(userRepository.findById(userId).orElseThrow());
+	            p.setIntroduction("");
+	            p.setImageUrl(null);
+	            return p;
+	        });
+	}
+	
+	//userIdからProfileを取得または作成（書き込み操作）
+	public Profile getOrCreateProfile(Long userId) {
 	    return profileRepository.findByUser_UserId(userId)
 	        .orElseGet(() -> {
 	            Profile p = new Profile();
@@ -32,9 +45,9 @@ public class ProfileService {
 
 
 	
-	//更新処理
+	//更新処理（Profileが存在しない場合は作成してから更新）
 	public void updateProfile (Long userId, Profile formProfile) {
-		Profile profile = getByUserId(userId);
+		Profile profile = getOrCreateProfile(userId);
 		
 		profile.setIntroduction(formProfile.getIntroduction());
 		profile.setImageUrl(formProfile.getImageUrl());

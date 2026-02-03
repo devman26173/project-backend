@@ -53,11 +53,12 @@ jobs:
 
               return {
                 filename: f.filename,
+                previousFilename: f.previous_filename || '',
                 status: f.status,
                 changeType: changeType,
-                additions: f.additions,
-                deletions: f.deletions,
-                changes: f.changes,
+                additions: f.additions || 0,
+                deletions: f.deletions || 0,
+                changes: f.changes || 0,
                 patch: f.patch || ''
               };
             });
@@ -78,19 +79,25 @@ jobs:
           # 각 파일의 상세 정보를 기록
           echo "$FILES" | jq -c '.[]' | while read -r file_json; do
             filename=$(echo "$file_json" | jq -r '.filename')
+            previousFilename=$(echo "$file_json" | jq -r '.previousFilename')
             changeType=$(echo "$file_json" | jq -r '.changeType')
-            additions=$(echo "$file_json" | jq -r '.additions')
-            deletions=$(echo "$file_json" | jq -r '.deletions')
+            additions=$(echo "$file_json" | jq -r '.additions // 0')
+            deletions=$(echo "$file_json" | jq -r '.deletions // 0')
 
-            # 변경 내용 요약 생성
-            if [ "$additions" -gt 0 ] && [ "$deletions" -gt 0 ]; then
-              changeDesc="${changeType}: +${additions}줄 -${deletions}줄"
-            elif [ "$additions" -gt 0 ]; then
-              changeDesc="${changeType}: +${additions}줄"
-            elif [ "$deletions" -gt 0 ]; then
-              changeDesc="${changeType}: -${deletions}줄"
+            # 이름변경의 경우 특별 처리
+            if [ "$changeType" = "이름변경" ] && [ -n "$previousFilename" ]; then
+              changeDesc="${changeType}: ${previousFilename} → ${filename}"
             else
-              changeDesc="${changeType}"
+              # 변경 내용 요약 생성
+              if [ "$additions" -gt 0 ] && [ "$deletions" -gt 0 ]; then
+                changeDesc="${changeType}: +${additions}줄 -${deletions}줄"
+              elif [ "$additions" -gt 0 ]; then
+                changeDesc="${changeType}: +${additions}줄"
+              elif [ "$deletions" -gt 0 ]; then
+                changeDesc="${changeType}: -${deletions}줄"
+              else
+                changeDesc="${changeType}"
+              fi
             fi
 
             echo "- \`${DATE} | ${filename} | ${changeDesc} → 🔄 검토중\`" >> .github/REVIEW_HISTORY.md

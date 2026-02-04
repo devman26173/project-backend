@@ -65,8 +65,6 @@ public class UserController {
         }
         return "redirect:/login";
     }
-    
-    // ✅ 이 메서드 추가 (빠져있었어요!)
     @PostMapping("/login")
     public String loginSubmit(
         @RequestParam String username,
@@ -103,6 +101,29 @@ public class UserController {
     		return "redirect:/login";
     	}
     	userService.logout(session);
+    	return "redirect:/login";
+    }
+    
+    //회원탈퇴
+    @GetMapping("/withdraw")
+    public String withdraw(HttpSession session, Model model) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	if (loginUser == null) { //로그인 안했으면 로그인 페이지로
+    		return "redirect:/login";
+    	}
+		return "user-withdraw";
+    }
+    @PostMapping("/withdraw")
+    public String withdrawSubmit(HttpSession session) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	if (loginUser == null) {
+    		return "redirect:/login";
+    	}
+    	//회원탈퇴 처리
+    	userService.withdrawUser(loginUser.getId());
+    	//세션삭제
+    	session.invalidate();
+    	//로그인 페이지로
     	return "redirect:/login";
     }
 }

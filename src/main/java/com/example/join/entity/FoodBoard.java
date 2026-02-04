@@ -1,7 +1,5 @@
 package com.example.join.entity;
-
 import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -24,6 +22,17 @@ public class FoodBoard {
 @ManyToOne
 @JoinColumn(name = "user_id")
    	private User user;
+
+//✅ 추가: 좋아요 관련 필드 (DB 컬럼 아님, 조회시에만 사용)
+@Transient
+private Integer likeCount = 0;
+
+@Transient
+private Boolean likedByMe = false;
+
+@Transient
+private Integer commentCount = 0; 
+
 	
 @PrePersist
 	public void prePersist() {
@@ -104,6 +113,31 @@ public User getUser() {
 public void setUser(User user) {
     this.user = user;
 }
+//✅ 추가: likeCount getter/setter
+public Integer getLikeCount() {
+    return likeCount;
+}
+public void setLikeCount(Integer likeCount) {
+    this.likeCount = likeCount;
+}
 
-  
+// ✅ 추가: likedByMe getter/setter
+public Boolean getLikedByMe() {
+    return likedByMe;
+}
+public void setLikedByMe(Boolean likedByMe) {
+    this.likedByMe = likedByMe;
+}
+
+
+public Integer getCommentCount() {
+	return commentCount;
+}
+
+
+public void setCommentCount(Integer commentCount) {
+	this.commentCount = commentCount;
+}
+
+
 }

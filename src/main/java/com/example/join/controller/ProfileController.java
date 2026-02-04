@@ -26,7 +26,7 @@ public class ProfileController {
 			@PathVariable Long userId,
 			Model model
 			){
-				Profile profile = profileService.getByUserId(userId);
+				Profile profile = profileService.getOrCreateProfile(userId);
 				model.addAttribute("profile", profile);
 				return "profile";
 	}
@@ -34,7 +34,7 @@ public class ProfileController {
 	//プロフィール編集ページを表示
 	@GetMapping("/{userId}/edit")
 	public String editForm(@PathVariable Long userId, Model model) {
-	    Profile profile = profileService.getByUserId(userId);
+	    Profile profile = profileService.getOrCreateProfile(userId);
 	    model.addAttribute("profile", profile);
 	    return "profile_edit";
 	}

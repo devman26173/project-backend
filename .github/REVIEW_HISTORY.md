@@ -294,3 +294,10 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-04 | src/main/resources/templates/profile_edit.html | 수정: +3줄 -1줄 (UI 요소 변경) → 🔄 검토중`
 
 ---
+
+### PR #110 - 2026-02-04 03:30
+**제목**: update foodbardcontroller method to call userid
+
+- `2026-02-04 | src/main/java/com/example/join/controller/FoodBoardController.java | 수정: +4줄 -4줄 → 🔄 검토중`
+
+---

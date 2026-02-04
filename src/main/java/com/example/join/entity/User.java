@@ -17,12 +17,12 @@ public class User {
     private String password;
     private String region;
     private String prefecture;
-  
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Profile profile;
     
     // ✅ 추가: 프로필 이미지 URL
     private String profileImageUrl;
+    
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Profile profile;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
@@ -32,9 +32,6 @@ public class User {
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FoodBoard> foodBoards = new ArrayList<>();
-    
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Profile profile;
 
     public Long getUserId() {
         return userId;
@@ -42,6 +39,28 @@ public class User {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+    
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
     public String getRegion() {
     	return region;
     }

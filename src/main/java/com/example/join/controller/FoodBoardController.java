@@ -195,7 +195,7 @@ public class FoodBoardController {
         }
         
         Comment comment = commentService.findById(commentId);
-        if (comment != null && comment.getUser().getId().equals(loginUser.getId())) {
+        if (comment != null && comment.getUser().getUserId().equals(loginUser.getUserId())) {
             comment.setContent(content);
             commentService.save(comment);
         }
@@ -212,7 +212,7 @@ public class FoodBoardController {
         }
         
         Comment comment = commentService.findById(commentId);
-        if (comment != null && comment.getUser().getId().equals(loginUser.getId())) {
+        if (comment != null && comment.getUser().getUserId().equals(loginUser.getUserId())) {
             Long postId = comment.getPostId();
             commentService.delete(comment);
             return "redirect:/board/view/" + postId;
@@ -273,7 +273,7 @@ public class FoodBoardController {
         Comment reply = commentService.findById(replyId);
         Comment parent = commentService.findById(parentId);
         
-        if (reply != null && reply.getUser().getId().equals(loginUser.getId())) {
+        if (reply != null && reply.getUser().getUserId().equals(loginUser.getUserId())) {
             commentService.delete(reply);
         }
         
@@ -294,7 +294,7 @@ public class FoodBoardController {
         Comment reply = commentService.findById(replyId);
         Comment parent = commentService.findById(parentId);
         
-        if (reply != null && reply.getUser().getId().equals(loginUser.getId())) {
+        if (reply != null && reply.getUser().getUserId().equals(loginUser.getUserId())) {
             reply.setContent(content);
             commentService.save(reply);
         }

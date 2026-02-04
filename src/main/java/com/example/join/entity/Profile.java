@@ -1,5 +1,6 @@
 package com.example.join.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,12 +12,13 @@ public class Profile {
 	@Column(name = "profile_id")
 	private Long profileId;
 
-	@Column(name = "image_path")
+	@Column(name = "image_url")
 	private String imageUrl; // プロフィール画像
 
 	@Column(name = "introduction", length = 1000)
 	private String introduction; // 自己紹介
 
+	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;

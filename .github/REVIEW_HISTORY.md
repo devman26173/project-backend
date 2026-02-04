@@ -301,3 +301,11 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-04 | src/main/java/com/example/join/controller/FoodBoardController.java | 수정: +4줄 -4줄 → 🔄 검토중`
 
 ---
+
+### PR #110 - 2026-02-04 03:31
+**제목**: update foodbardcontroller method to call userid
+
+- `2026-02-04 | .github/REVIEW_HISTORY.md | 수정: +3줄 -3줄 → 🔄 검토중`
+- `2026-02-04 | src/main/java/com/example/join/controller/FoodBoardController.java | 수정: +4줄 -4줄 → 🔄 검토중`
+
+---

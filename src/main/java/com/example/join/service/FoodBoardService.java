@@ -68,6 +68,20 @@ public class FoodBoardService {
     public List<FoodBoard> findByPrefecture(String prefecture) {
         return foodboardRepository.findByPrefecture(prefecture);
     }
-    
-    
+
+ // 각 지역별 첫 번째 게시물 가져오기
+    public Map<String, FoodBoard> getFirstPostByRegion() {
+        Map<String, FoodBoard> regionPosts = new HashMap<>();
+        List<String> regions = List.of("北海道・東北", "関東", "中部", "近畿", "中国・四国", "九州・沖縄");
+
+        for (String region : regions) {
+            FoodBoard post = foodboardRepository.findFirstByRegionOrderByCreatedAtDesc(region);
+            if (post != null) {
+                regionPosts.put(region, post);
+            }
+        }
+
+        return regionPosts;
+    }
+
 }

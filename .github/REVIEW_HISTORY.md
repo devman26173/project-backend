@@ -279,3 +279,18 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-04 | src/main/java/com/example/join/controller/ProfileController.java | 수정: +1줄 (의존성 변경) → 🔄 검토중`
 
 ---
+
+### PR #106 - 2026-02-04 03:13
+**제목**: Update application-dev.properties
+
+- `2026-02-04 | application-prod.yml | 추가: +9줄 → 🔄 검토중`
+- `2026-02-04 | src.zip | 삭제 → 🔄 검토중`
+- `2026-02-04 | src/main/java/com/example/join/controller/ProfileController.java | 수정: +10줄 -51줄 (editForm 메서드 추가, validateUserAccess 메서드 제거) → 🔄 검토중`
+- `2026-02-04 | src/main/java/com/example/join/repository/ProfileRepository.java | 수정: +1줄 -1줄 → 🔄 검토중`
+- `2026-02-04 | src/main/java/com/example/join/service/ProfileService.java | 수정: +14줄 -29줄 (getByUserId 메서드 추가, getOrCreateProfile 메서드 제거) → 🔄 검토중`
+- `2026-02-04 | src/main/resources/application-dev.properties | 추가: +13줄 → 🔄 검토중`
+- `2026-02-04 | src/main/resources/application-prod.properties | 이름변경: src/main/resources/application-prod.yml → src/main/resources/application-prod.properties → 🔄 검토중`
+- `2026-02-04 | src/main/resources/templates/profile.html | 수정: +1줄 -3줄 (UI 요소 변경) → 🔄 검토중`
+- `2026-02-04 | src/main/resources/templates/profile_edit.html | 수정: +3줄 -1줄 (UI 요소 변경) → 🔄 검토중`
+
+---

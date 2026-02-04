@@ -11,14 +11,13 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private Long postId;        // 어느 게시글의 댓글인지
-    private Long parentId;      // 대댓글인 경우 부모 댓글 ID (null이면 댓글)
+    private Long postId;        // FoodBoard의 ID를 저장
+    private Long parentId;      // 대댓글인 경우 부모 댓글 ID
     
     private String content;
     private String author;	// 임시로 유지
     private LocalDateTime createdAt;
     
-    // ✅ 추가: User와 연결
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -32,14 +31,23 @@ public class Comment {
     @Transient
     private List<Comment> replies = new ArrayList<>();
     
+    // ✅ 기본 생성자
     public Comment() {}
     
+    // ✅ 생성자 추가 (PostController에서 사용)
     public Comment(Long id, Long postId, String content, String author) {
         this.id = id;
         this.postId = postId;
         this.content = content;
         this.author = author;
         this.createdAt = LocalDateTime.now();
+    }
+    
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
     }
     
     // Getter / Setter
@@ -61,7 +69,6 @@ public class Comment {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     
-    // ✅ 추가: User getter/setter
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
     

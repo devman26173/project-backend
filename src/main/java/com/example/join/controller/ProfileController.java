@@ -6,6 +6,7 @@ import com.example.join.service.ProfileService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +44,7 @@ public class ProfileController {
 	@PostMapping("/{userId}/edit")
 	public String editProfile(
 			@PathVariable Long userId,
-			Profile formProfile
+			@ModelAttribute Profile formProfile
 		) {
 			profileService.updateProfile(userId, formProfile);
 			return "redirect:/profile/" + userId;

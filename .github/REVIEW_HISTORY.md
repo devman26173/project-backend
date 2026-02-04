@@ -109,3 +109,11 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 ### PR #98 - 2026-02-04 01:22
 
 ---
+
+### PR #98 - 2026-02-04 01:27
+**제목**: [WIP] WIP address feedback from review on pull request Sujin
+
+- `2026-02-04 | .github/REVIEW_HISTORY.md | 수정: +4줄 → 🔄 검토중`
+- `2026-02-04 | src/main/java/com/example/join/entity/User.java | 수정: +31줄 -1줄 (setComments 메서드 추가) → 🔄 검토중`
+
+---

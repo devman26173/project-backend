@@ -4,6 +4,7 @@ import com.example.join.entity.User;
 import com.example.join.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +61,7 @@ public class UserService {
         session.invalidate();
     }
     //db에서 사용자 삭제
+    @Transactional
     public void withdrawUser(Long userId) {
     	userRepository.deleteById(userId);
     }

@@ -42,7 +42,6 @@ public class ProfileService {
 	    Profile profile = new Profile();
 	    profile.setUser(user);
 	    profile.setIntroduction("");
-	    profile.setImageUrl(null);
 	    
 	    return profileRepository.save(profile);
 	}

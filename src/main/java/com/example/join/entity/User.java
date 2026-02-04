@@ -7,10 +7,11 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
+    private Long userId;
+
     private String username;
     private String name;
     private String password;
@@ -20,33 +21,41 @@ public class User {
     // ✅ 추가: 프로필 이미지 URL
     private String profileImageUrl;
     
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Profile profile;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodBoard> foodBoards = new ArrayList<>();
 
-    // Getter / Setter
-    public Long getId() {
-		  return id;
+    public Long getUserId() {
+        return userId;
     }
-    public void setId(Long id) {
-	    this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
     public String getUsername() {
-    	return username;
+        return username;
     }
     public void setUsername(String username) {
-    	this.username = username;
+        this.username = username;
     }
     public String getName() {
-    	return name;
+        return name;
     }
     public void setName(String name) {
-    	this.name = name;
+        this.name = name;
     }
     public String getPassword() {
-	    return password;
+        return password;
     }
-    public void setPassword(String password){
-	    this.password = password;
+    public void setPassword(String password) {
+        this.password = password;
     }
     public String getRegion() {
     	return region;
@@ -73,5 +82,26 @@ public class User {
     }
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+    
+    public List<Comment> getComments() {
+        return comments;
+    }
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+    
+    public List<FoodBoard> getFoodBoards() {
+        return foodBoards;
+    }
+    public void setFoodBoards(List<FoodBoard> foodBoards) {
+        this.foodBoards = foodBoards;
+    }
+    
+    public Profile getProfile() {
+        return profile;
+    }
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }

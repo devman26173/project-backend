@@ -256,3 +256,11 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-04 | src/main/resources/templates/profile_edit.html | 수정: +9줄 -6줄 (UI 요소 변경) → 🔄 검토중`
 
 ---
+
+### PR #102 - 2026-02-04 01:55
+**제목**: Add authentication and authorization to ProfileController
+
+- `2026-02-04 | src/main/java/com/example/join/controller/ProfileController.java | 수정: +49줄 -4줄 (validateUserAccess 메서드 추가, editForm 메서드 제거) → 🔄 검토중`
+- `2026-02-04 | src/main/java/com/example/join/entity/User.java | 수정: -4줄 (getUsername 메서드 제거) → 🔄 검토중`
+
+---

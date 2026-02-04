@@ -46,7 +46,7 @@ public class ProfileController {
 			Model model,
 			HttpSession session
 			){
-				Profile profile = profileService.getByUserId(userId);
+				Profile profile = profileService.getOrCreateProfile(userId);
 				model.addAttribute("profile", profile);
 				
 				// 로그인한 사용자 정보 전달 (편집 버튼 표시 여부 등에 활용)

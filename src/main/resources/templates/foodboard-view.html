@@ -198,7 +198,8 @@
 
 			<!--댓글 섹션 추가 -->
 			<div class="border-top comment-section">  <!-- ✅ comment-section 클래스 추가 -->
-			    <!-- 댓글 입력 -->
+			<div id="commentSection" class="border-top comment-section">
+				<!-- 댓글 입력 -->
 			    <div class="border-top bg-white px-3 py-3" style="position: sticky; bottom: 0; z-index: 100; border-bottom: 1px solid #dee2e6;">
 				    <form th:action="@{/board/comment/add}" method="post" onsubmit="return checkLoginForAction(event)">
 				        <input type="hidden" name="boardId" th:value="${board.id}">
@@ -237,7 +238,7 @@
 							</button>
 				        </div>
 				    </div>
-			    
+			    </div>
 			    <!-- 댓글 리스트 -->
 			    <div class="comment-list">
 			        <div class="comment px-3 py-3 border-bottom" th:each="comment : ${comments}">

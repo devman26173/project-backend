@@ -240,20 +240,28 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 
 ---
 
-### PR #100 - 2026-02-04 01:49
-**제목**: Minchang
+### PR #101 - 2026-02-04 01:48
+**제목**: [WIP] Address feedback from review on "Minchang" pull request
 
-- `2026-02-04 | .github/REVIEW_HISTORY.md | 수정: +104줄 -4줄 → 🔄 검토중`
-- `2026-02-04 | src.zip | 추가 → 🔄 검토중`
-- `2026-02-04 | src/main/java/com/example/join/controller/PostController.java | 수정: +3줄 -3줄 → 🔄 검토중`
-- `2026-02-04 | src/main/java/com/example/join/controller/ProfileController.java | 수정: +29줄 -10줄 (showProfile 메서드 추가, profile 메서드 제거) → 🔄 검토중`
-- `2026-02-04 | src/main/java/com/example/join/entity/Profile.java | 수정: +29줄 -27줄 (setProfileId 메서드 추가, Profile 메서드 제거) → 🔄 검토중`
-- `2026-02-04 | src/main/java/com/example/join/entity/User.java | 수정: +11줄 -26줄 (getUserId 메서드 추가, getId 메서드 제거) → 🔄 검토중`
-- `2026-02-04 | src/main/java/com/example/join/repository/ProfileRepository.java | 수정: +4줄 -1줄 (의존성 변경) → 🔄 검토중`
-- `2026-02-04 | src/main/java/com/example/join/service/ProfileService.java | 수정: +29줄 -12줄 (ProfileService 메서드 추가, ProfileService 메서드 제거) → 🔄 검토중`
-- `2026-02-04 | src/main/resources/static/uploads/profile.png | 이름변경: src/main/resources/static/images/profile.png → src/main/resources/static/uploads/profile.png → 🔄 검토중`
-- `2026-02-04 | src/main/resources/templates/profile.html | 수정: +4줄 -3줄 (UI 요소 변경) → 🔄 검토중`
-- `2026-02-04 | src/main/resources/templates/profile_edit.html | 수정: +9줄 -6줄 (UI 요소 변경) → 🔄 검토중`
+- `2026-02-04 | ProfileService.java | 수정: ProfileService 리팩토링 - 조회/생성 책임 분리 → ✅ 수정완료`
+- `2026-02-04 | ProfileController.java | 수정: getOrCreateProfile 메서드 사용 → ✅ 수정완료`
+
+**리뷰 피드백 반영**:
+- ✅ getByUserId를 Optional<Profile> 반환으로 변경 (순수 조회)
+- ✅ getOrCreateProfile 메서드 추가 (@Transactional 적용)
+- ✅ createDefaultProfile 메서드로 생성 로직 분리
+- ✅ 동시성 문제 방지 및 단일 책임 원칙 준수
+- ✅ 불필요한 null 할당 제거
+- ✅ 보안 검사 통과 (CodeQL)
+
+---
+
+### PR #103 - 2026-02-04 02:00
+**제목**: Refactor ProfileService: Separate read and create responsibilities
+
+- `2026-02-04 | .github/REVIEW_HISTORY.md | 수정: +13줄 -22줄 → 🔄 검토중`
+- `2026-02-04 | src/main/java/com/example/join/controller/ProfileController.java | 수정: +1줄 -1줄 → 🔄 검토중`
+- `2026-02-04 | src/main/java/com/example/join/service/ProfileService.java | 수정: +28줄 -14줄 (getOrCreateProfile 메서드 추가, getByUserId 메서드 제거) → 🔄 검토중`
 
 ---
 

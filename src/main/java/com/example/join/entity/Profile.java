@@ -11,7 +11,7 @@ public class Profile {
 	@Column(name = "profile_id")
 	private Long profileId;
 
-	@Column(name = "image_path")
+	@Column(name = "image_url")
 	private String imageUrl; // プロフィール画像
 
 	@Column(name = "introduction", length = 1000)

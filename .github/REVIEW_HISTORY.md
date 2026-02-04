@@ -330,3 +330,10 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-04 | .github/REVIEW_HISTORY.md | 수정: +7줄 → 🔄 검토중`
 
 ---
+
+### PR #118 - 2026-02-04 06:56
+**제목**: 📝 Update REVIEW_HISTORY.md for PR #116
+
+- `2026-02-04 | .github/REVIEW_HISTORY.md | 수정: +2줄 -9줄 → 🔄 검토중`
+
+---

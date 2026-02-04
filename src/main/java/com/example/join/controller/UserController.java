@@ -120,7 +120,7 @@ public class UserController {
     		return "redirect:/login";
     	}
     	//회원탈퇴 처리
-    	userService.withdrawUser(loginUser.getId());
+    	userService.withdrawUser(loginUser.getUserId());
     	//세션삭제
     	session.invalidate();
     	//로그인 페이지로

@@ -7,15 +7,19 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
+    private Long userId;
+
     private String username;
     private String name;
     private String password;
     private String region;
     private String prefecture;
+  
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Profile profile;
     
     // ✅ 추가: 프로필 이미지 URL
     private String profileImageUrl;
@@ -32,30 +36,11 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
 
-    // Getter / Setter
-    public Long getId() {
-		  return id;
+    public Long getUserId() {
+        return userId;
     }
-    public void setId(Long id) {
-	    this.id = id;
-    }
-    public String getUsername() {
-    	return username;
-    }
-    public void setUsername(String username) {
-    	this.username = username;
-    }
-    public String getName() {
-    	return name;
-    }
-    public void setName(String name) {
-    	this.name = name;
-    }
-    public String getPassword() {
-	    return password;
-    }
-    public void setPassword(String password){
-	    this.password = password;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
     public String getRegion() {
     	return region;

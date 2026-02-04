@@ -30,7 +30,7 @@ public class PostController {
         
      // ✅ 추가: 임시 User 생성
         User tempUser = new User();
-        tempUser.setId(1L);
+        tempUser.setUserId(1L);
         tempUser.setUsername("1234");
         
         // ✅ Post 설정
@@ -109,7 +109,7 @@ public class PostController {
             // ✅ User 연결
             if (loginUser != null) {
                 newComment.setUser(loginUser);
-                newComment.setAuthor(loginUser.getName());  // 이름도 설정
+                newComment.setAuthor(loginUser.getUsername());  // 이름도 설정
             }
             
             commentService.save(newComment);
@@ -184,7 +184,7 @@ public class PostController {
             // ✅ User 연결
             if (loginUser != null) {
                 reply.setUser(loginUser);
-                reply.setAuthor(loginUser.getName());  // 이름도 설정
+                reply.setAuthor(loginUser.getUsername());  // 이름도 설정
             }
             
             commentService.save(reply);

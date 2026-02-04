@@ -39,9 +39,6 @@ public class ProfileController {
 	    return "profile_edit";
 	}
 	
-	
-	
-	
 	//編集内容保存
 	@PostMapping("/{userId}/edit")
 	public String editProfile(

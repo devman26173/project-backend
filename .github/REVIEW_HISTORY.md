@@ -256,3 +256,10 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-04 | src/main/resources/templates/profile_edit.html | 수정: +9줄 -6줄 (UI 요소 변경) → 🔄 검토중`
 
 ---
+
+### PR #104 - 2026-02-04 02:01
+**제목**: [WIP] Address feedback from review on 'Minchang' PR
+
+- `2026-02-04 | src/main/java/com/example/join/controller/ProfileController.java | 수정: +2줄 -1줄 (의존성 변경) → 🔄 검토중`
+
+---

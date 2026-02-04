@@ -132,3 +132,10 @@ PR이 생성되거나 업데이트될 때마다 **GitHub Actions workflow**가 �
 - `2026-02-04 | src/main/java/com/example/join/entity/User.java | 수정: +31줄 -1줄 (setComments 메서드 추가) → 🔄 검토중`
 
 ---
+
+### PR #99 - 2026-02-04 01:30
+**제목**: Add @Transactional to withdrawUser method
+
+- `2026-02-04 | src/main/java/com/example/join/service/UserService.java | 수정: +2줄 (의존성 변경, 유효성 검증) → 🔄 검토중`
+
+---

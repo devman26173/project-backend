@@ -20,8 +20,17 @@ public class User {
     // ✅ 추가: 프로필 이미지 URL
     private String profileImageUrl;
     
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodBoard> foodBoards = new ArrayList<>();
+    
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Profile profile;
 
     // Getter / Setter
     public Long getId() {
@@ -73,5 +82,26 @@ public class User {
     }
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+    
+    public List<Comment> getComments() {
+        return comments;
+    }
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+    
+    public List<FoodBoard> getFoodBoards() {
+        return foodBoards;
+    }
+    public void setFoodBoards(List<FoodBoard> foodBoards) {
+        this.foodBoards = foodBoards;
+    }
+    
+    public Profile getProfile() {
+        return profile;
+    }
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }

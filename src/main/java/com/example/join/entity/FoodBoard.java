@@ -29,6 +29,10 @@ private Integer likeCount = 0;
 
 @Transient
 private Boolean likedByMe = false;
+
+@Transient
+private Integer commentCount = 0; 
+
 	
 @PrePersist
 	public void prePersist() {
@@ -124,5 +128,16 @@ public Boolean getLikedByMe() {
 public void setLikedByMe(Boolean likedByMe) {
     this.likedByMe = likedByMe;
 }
+
+
+public Integer getCommentCount() {
+	return commentCount;
+}
+
+
+public void setCommentCount(Integer commentCount) {
+	this.commentCount = commentCount;
+}
+
 
 }

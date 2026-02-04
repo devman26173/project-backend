@@ -195,32 +195,38 @@ public class FoodBoardController {
     
     // ========== 댓글 관련 기능 ==========
     
- // ✅ 댓글 추가 - 게시글 상세 페이지로
+    // ✅ 댓글 추가 - 게시글 상세 페이지로
     @PostMapping("/board/comment/add")
     public String addComment(@RequestParam Long boardId,
-                            @RequestParam String content,
-                            HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
-        if (loginUser == null) {
-        	return "redirect:/board/view/" + boardId;  // ✅ 게시글 상세 페이지로
-        }
-        
-        Comment comment = new Comment();
-        comment.setPostId(boardId);
-        comment.setContent(content);
-        comment.setUser(loginUser);
-        comment.setAuthor(loginUser.getUsername());
-        comment.setCreatedAt(java.time.LocalDateTime.now());
-        
-        commentService.save(comment);
-        
-        return "redirect:/board/view/" + boardId;
-    }
+            				 @RequestParam String content,
+            				 @RequestParam(required = false) String returnUrl,
+            				 HttpSession session) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	if (loginUser == null) {
+    			return "redirect:/login";
+    	}
+
+    	Comment comment = new Comment();
+    	comment.setPostId(boardId);
+    	comment.setContent(content);
+    	comment.setUser(loginUser);
+    	comment.setAuthor(loginUser.getUsername());
+    	comment.setCreatedAt(java.time.LocalDateTime.now());
+
+    	commentService.save(comment);
+
+    	// returnUrl이 있으면 그쪽으로, 없으면 기본 페이지로
+    	if (returnUrl != null && returnUrl.equals("post")) {
+    			return "redirect:/post/" + boardId;
+    	}
+    			return "redirect:/board/view/" + boardId;
+    	}
     
     // 댓글 수정
     @PostMapping("/board/comment/edit")
     public String editComment(@RequestParam Long commentId,
                              @RequestParam String content,
+                             @RequestParam(required = false) String returnUrl,
                              HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
@@ -233,12 +239,17 @@ public class FoodBoardController {
             commentService.save(comment);
         }
         
-        return "redirect:/board/view/" + comment.getPostId();  // ✅ 게시글 상세 페이지로
+        if (returnUrl != null && returnUrl.equals("post")) {
+            return "redirect:/post/" + comment.getPostId();
+        }
+        return "redirect:/board/view/" + comment.getPostId();
     }
     
     // 댓글 삭제
     @PostMapping("/board/comment/delete")
-    public String deleteComment(@RequestParam Long commentId, HttpSession session) {
+    public String deleteComment(@RequestParam Long commentId, 
+    							@RequestParam(required = false) String returnUrl,	
+    							HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -248,7 +259,12 @@ public class FoodBoardController {
         if (comment != null && comment.getUser().getUserId().equals(loginUser.getUserId())) {
             Long postId = comment.getPostId();
             commentService.delete(comment);
-            return "redirect:/board/view/" + postId;
+            
+        if (returnUrl != null && returnUrl.equals("post")) {
+            return "redirect:/post/" + postId;
+        }
+        	return "redirect:/board/view/" + postId;
+        	
         }
         
         return "redirect:/board";
@@ -256,7 +272,9 @@ public class FoodBoardController {
     
     // 댓글 좋아요
     @PostMapping("/board/comment/like")
-    public String likeComment(@RequestParam Long commentId, HttpSession session) {
+    public String likeComment(@RequestParam Long commentId, 
+    						  @RequestParam(required = false) String returnUrl,
+    						  HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login";
@@ -265,6 +283,9 @@ public class FoodBoardController {
         Comment comment = commentService.findById(commentId);
         postService.toggleLike(commentId, "COMMENT", loginUser.getUsername());
         
+        if (returnUrl != null && returnUrl.equals("post")) {
+            return "redirect:/post/" + comment.getPostId();
+        }
         return "redirect:/board/view/" + comment.getPostId();
     }
     
@@ -272,6 +293,7 @@ public class FoodBoardController {
     @PostMapping("/board/comment/reply")
     public String addReply(@RequestParam Long parentId,
                           @RequestParam String content,
+                          @RequestParam(required = false) String returnUrl,
                           HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
@@ -290,6 +312,9 @@ public class FoodBoardController {
         
         commentService.save(reply);
         
+        if (returnUrl != null && returnUrl.equals("post")) {
+            return "redirect:/post/" + parent.getPostId();
+        }
         return "redirect:/board/view/" + parent.getPostId();
     }
     
@@ -297,6 +322,7 @@ public class FoodBoardController {
     @PostMapping("/board/comment/reply/delete")
     public String deleteReply(@RequestParam Long parentId,
                              @RequestParam Long replyId,
+                             @RequestParam(required = false) String returnUrl,
                              HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
@@ -310,6 +336,9 @@ public class FoodBoardController {
             commentService.delete(reply);
         }
         
+        if (returnUrl != null && returnUrl.equals("post")) {
+            return "redirect:/post/" + parent.getPostId();
+        }
         return "redirect:/board/view/" + parent.getPostId();
     }
     
@@ -318,6 +347,7 @@ public class FoodBoardController {
     public String editReply(@RequestParam Long parentId,
                            @RequestParam Long replyId,
                            @RequestParam String content,
+                           @RequestParam(required = false) String returnUrl,
                            HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
@@ -332,6 +362,9 @@ public class FoodBoardController {
             commentService.save(reply);
         }
         
+        if (returnUrl != null && returnUrl.equals("post")) {
+            return "redirect:/post/" + parent.getPostId();
+        }
         return "redirect:/board/view/" + parent.getPostId();
     }
     
@@ -339,6 +372,7 @@ public class FoodBoardController {
     @PostMapping("/board/comment/reply/like")
     public String likeReply(@RequestParam Long parentId,
                            @RequestParam Long replyId,
+                           @RequestParam(required = false) String returnUrl,
                            HttpSession session) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
@@ -348,6 +382,9 @@ public class FoodBoardController {
         Comment parent = commentService.findById(parentId);
         postService.toggleLike(replyId, "COMMENT", loginUser.getUsername());
         
+        if (returnUrl != null && returnUrl.equals("post")) {
+            return "redirect:/post/" + parent.getPostId();
+        }
         return "redirect:/board/view/" + parent.getPostId();
     }
     
@@ -367,6 +404,7 @@ public class FoodBoardController {
             postService.isLiked(boardId, "BOARD", currentUserId));
         
         model.addAttribute("board", board);
+        model.addAttribute("post", board);
         
         // 댓글 목록 가져오기
         List<Comment> comments = commentService.findByPostId(boardId);

@@ -79,19 +79,20 @@
     <div id="comment-section" style="display:none;">
 		<!-- 댓글 입력 -->
 		<div class="border-bottom px-3 py-3">
-			<form th:action="@{/board/comment/add}" method="post" onsubmit="return checkLoginForAction(event)">
+			<form th:action=			"@{/board/comment/add}" method="post" onsubmit="return checkLoginForAction(event)">
 			    <input type="hidden" name="boardId" th:value="${post.id}">
-		            <textarea id="commentInput" 
-		                      name="content" 
-		                      class="form-control mb-2" 
-		                      placeholder="コメントを入力してください"
-		                      onclick="checkLoginForClick(event)" 
-		                      required></textarea>
-							  <button type="submit"
-							          class="btn btn-primary w-100 fw-bold rounded-pill py-2">
-							    登録
-							  </button>
-		        </form>
+			    <input type="hidden" name="returnUrl" value="post">  <!-- ✅ 추가 -->
+			    <textarea id="commentInput" 
+			              name="content" 
+			              class="form-control mb-2" 
+			              placeholder="コメントを入力してください"
+			              onclick="checkLoginForClick(event)" 
+			              required></textarea>
+			    <button type="submit"
+			            class="btn btn-primary w-100 fw-bold rounded-pill py-2">
+			      登록
+			    </button>
+			</form>
 		</div>
 
         <!-- 정렬 버튼 -->
@@ -149,6 +150,7 @@
                 <div class="edit-form" th:id="'edit-form-' + ${comment.id}">
                     <form th:action="@{/board/comment/edit}" method="post" onsubmit="return checkLoginForAction(event)">
                         <input type="hidden" name="commentId" th:value="${comment.id}">
+						<input type="hidden" name="returnUrl" value="post">  <!-- ✅ 추가 -->
                         <textarea name="content" class="form-control mb-2" th:text="${comment.content}" required></textarea>
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-sm btn-primary">保存</button>
@@ -163,6 +165,7 @@
 					 <!-- 좋아요 -->
 					 <form th:action="@{/board/comment/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
 					         <input type="hidden" name="commentId" th:value="${comment.id}">
+							 <input type="hidden" name="returnUrl" value="post">  <!-- ✅ 추가 -->
 					         <button type="submit" class="btn-action d-flex align-items-center gap-1">
 					             <img th:src="${comment.likedByMe ? 'https://img.icons8.com/ios-filled/18/ff6b6b/like.png' : 'https://img.icons8.com/ios/18/888888/like.png'}" 
 					                  alt="いいね" 
@@ -181,15 +184,19 @@
 						         <span th:text="${comment.replies.size()}">0</span>
 						     </span>
 						     
-						     <span th:onclick="'checkLoginAndToggleEdit(event,' + ${comment.id} + ')'" style="cursor:pointer;">
-						         ✔️ 編集
-						     </span>
+						     <span th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
+							       th:onclick="'checkLoginAndToggleEdit(event,' + ${comment.id} + ')'" 
+							       style="cursor:pointer;">
+							     ✔️ 編集
+							 </span>
 						     
 						     <!-- 삭제 -->
-						     <form th:action="@{/board/comment/delete}" method="post"
-						           class="d-inline"
-						           onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
+						     <form th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
+							       th:action="@{/board/comment/delete}" method="post"
+							       class="d-inline"
+							       onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
 						         <input type="hidden" name="commentId" th:value="${comment.id}">
+								 <input type="hidden" name="returnUrl" value="post">  <!-- ✅ 추가 -->
 						         <button type="submit" class="btn-action">
 						             ✖️ 削除
 						         </button>
@@ -200,6 +207,7 @@
 					<div class="reply-form" th:id="'reply-form-' + ${comment.id}">
 					    <form th:action="@{/board/comment/reply}" method="post" onsubmit="return checkLoginForAction(event)">
 					        <input type="hidden" name="parentId" th:value="${comment.id}">
+							<input type="hidden" name="returnUrl" value="post">  <!-- ✅ 추가 -->
 					        <textarea name="content" 
 					                  class="form-control mb-2" 
 					                  placeholder="コメントを入力してください"
@@ -249,6 +257,7 @@
                         <form th:action="@{/board/comment/reply/edit}" method="post" onsubmit="return checkLoginForAction(event)">
                             <input type="hidden" name="parentId" th:value="${comment.id}">
                             <input type="hidden" name="replyId" th:value="${reply.id}">
+							<input type="hidden" name="returnUrl" value="post">  <!-- ✅ 추가 -->
                             <textarea name="content" class="form-control mb-2" th:text="${reply.content}" required></textarea>
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-sm btn-primary">保存</button>
@@ -263,6 +272,7 @@
 						<form th:action="@{/board/comment/reply/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
 						        <input type="hidden" name="parentId" th:value="${comment.id}">
 						        <input type="hidden" name="replyId" th:value="${reply.id}">
+								<input type="hidden" name="returnUrl" value="post">  <!-- ✅ 추가 -->
 						        <button type="submit" class="btn-action d-flex align-items-center gap-1">
 						            <img th:src="${reply.likedByMe ? 'https://img.icons8.com/ios-filled/16/ff6b6b/like.png' : 'https://img.icons8.com/ios/16/888888/like.png'}" 
 						                 alt="いいね" 
@@ -271,16 +281,20 @@
 						        </button>
 						    </form>
 						    
-						    <span th:onclick="'checkLoginAndToggleReplyEdit(event,' + ${comment.id} + ',' + ${reply.id} + ')'" style="cursor:pointer;">
-						        ✔️ 編集
-						    </span>
+						    <span th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
+							      th:onclick="'checkLoginAndToggleReplyEdit(event,' + ${comment.id} + ',' + ${reply.id} + ')'" 
+							      style="cursor:pointer;">
+							    ✔️ 編集
+							</span>
 						    
 						    <!-- 대댓글 삭제 -->
-						    <form th:action="@{/board/comment/reply/delete}" method="post" 
-						          class="d-inline"
-						          onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
+						    <form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
+							      th:action="@{/board/comment/reply/delete}" method="post" 
+							      class="d-inline"
+							      onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
 						        <input type="hidden" name="parentId" th:value="${comment.id}">
 						        <input type="hidden" name="replyId" th:value="${reply.id}">
+								<input type="hidden" name="returnUrl" value="post">  <!-- ✅ 추가 -->
 						        <button type="submit" class="btn-action">
 						            ✖️ 削除
 						        </button>

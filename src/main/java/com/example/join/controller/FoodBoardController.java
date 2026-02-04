@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.example.join.entity.FoodBoard;
 import com.example.join.entity.User;
+import com.example.join.repository.CommentRepository;
+import com.example.join.repository.LikeRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,31 +25,61 @@ public class FoodBoardController {
 	private final FoodBoardService foodBoardService;
     private final CommentService commentService;
     private final PostService postService;
+    private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 	
     public FoodBoardController(FoodBoardService foodBoardService, 
     							CommentService commentService,
-    							PostService postService) {
+    							PostService postService, 
+    							CommentRepository commentRepository, 
+    							LikeRepository likeRepository) {
     	this.foodBoardService = foodBoardService;
     	this.commentService = commentService;
     	this.postService = postService;
+    	this.commentRepository = commentRepository;
+    	this.likeRepository = likeRepository;
     }
 
 	@GetMapping("/board")
 	public String home(@RequestParam(required = false) String region,
 	                   @RequestParam(required = false) String prefecture,
+	                   HttpSession session,
 	                   Model model) {
+		
+		List<FoodBoard> boards;
 	    
 	    // 지역 필터링
 	    if (prefecture != null && !prefecture.isEmpty()) {
-	        model.addAttribute("boards", foodBoardService.findByPrefecture(prefecture));
+	        boards = foodBoardService.findByPrefecture(prefecture);
 	        model.addAttribute("currentCategory", prefecture); // 현재 선택된 카테고리
 	    } else if (region != null && !region.isEmpty()) {
-	        model.addAttribute("boards", foodBoardService.findByRegion(region));
+	    	boards = foodBoardService.findByRegion(region);
 	        model.addAttribute("currentCategory", region); // 현재 선택된 카테고리
 	    } else {
-	        model.addAttribute("boards", foodBoardService.findAll());
+	        boards = foodBoardService.findAll();
 	        model.addAttribute("currentCategory", "すべて"); // 기본값
 	    }
+	    
+	    //로그인 유저 정보 가져오기
+	    User loginUser = (User) session.getAttribute("loginUser");
+	    String currentUserId = loginUser != null?loginUser.getUsername() : null;
+	    
+	    //각 게시글의 좋아요 수와 댓글 수 설정
+	    for (FoodBoard board : boards) {
+	    	//댓글 수 
+	    	long commentCount = commentRepository.countByPostId(board.getId());
+	    	board.setCommentCount((int) commentCount);
+	    	
+	    	//좋아요 수 
+	    	board.setLikeCount(postService.getLikeCount(board.getId(), "BOARD"));
+	    	
+	    	//내가 좋아요 눌렀는지 여부 설정
+	    	board.setLikedByMe(currentUserId != null &&
+	    		postService.isLiked(board.getId(), "BOARD", currentUserId));	
+	    }
+	    
+	    model.addAttribute("boards", boards);
+	    
 	    
 	    return "foodboard";
 	}
@@ -195,7 +228,7 @@ public class FoodBoardController {
         }
         
         Comment comment = commentService.findById(commentId);
-        if (comment != null && comment.getUser().getId().equals(loginUser.getId())) {
+        if (comment != null && comment.getUser().getUserId().equals(loginUser.getUserId())) {
             comment.setContent(content);
             commentService.save(comment);
         }
@@ -212,7 +245,7 @@ public class FoodBoardController {
         }
         
         Comment comment = commentService.findById(commentId);
-        if (comment != null && comment.getUser().getId().equals(loginUser.getId())) {
+        if (comment != null && comment.getUser().getUserId().equals(loginUser.getUserId())) {
             Long postId = comment.getPostId();
             commentService.delete(comment);
             return "redirect:/board/view/" + postId;
@@ -273,7 +306,7 @@ public class FoodBoardController {
         Comment reply = commentService.findById(replyId);
         Comment parent = commentService.findById(parentId);
         
-        if (reply != null && reply.getUser().getId().equals(loginUser.getId())) {
+        if (reply != null && reply.getUser().getUserId().equals(loginUser.getUserId())) {
             commentService.delete(reply);
         }
         
@@ -294,7 +327,7 @@ public class FoodBoardController {
         Comment reply = commentService.findById(replyId);
         Comment parent = commentService.findById(parentId);
         
-        if (reply != null && reply.getUser().getId().equals(loginUser.getId())) {
+        if (reply != null && reply.getUser().getUserId().equals(loginUser.getUserId())) {
             reply.setContent(content);
             commentService.save(reply);
         }

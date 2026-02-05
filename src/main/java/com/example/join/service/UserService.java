@@ -22,6 +22,13 @@ public class UserService {
     }
     
     public void registerUser(String username, String name, String password, String region, String prefecture) {
+    	//입력한 username이 이미 db에 있는지 확인
+    	Optional<User> existingUser = userRepository.findByUsername(username);
+    	//중복된 ID면 예외 발생
+    	if (existingUser.isPresent()) {
+    		throw new IllegalArgumentException("このIDは既に使用されています。");
+    	}
+    	//중복 아니면 회원가입 진행
         User user = new User();
         user.setUsername(username);
         user.setName(name);

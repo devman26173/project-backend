@@ -17,52 +17,45 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class FileUploadController {
-
-    @Value("${file.upload-dir:src/main/resources/static/uploads}")
-    private String uploadDir;
-
+	
+	private final R2Service r2Service;
+	
+	public FileUploadController(R2Service r2Service) {
+		this.r2Service = r2Service;
+	}
+	
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
-        Map<String, String> response = new HashMap<>();
+    	@RequestParam(value = "file", required = false) MultipartFile file) {
+    	Map<String, String> response = new HashMap<>();
         
         try {
             // 파일이 비어있는지 확인
-            if (file.isEmpty()) {
-                response.put("error", "파일이 비어있습니다");
-                return ResponseEntity.badRequest().body(response);
-            }
+        	if (file == null || file.isEmpty()) {
+        	    response.put("url", ""); // 빈 주소를 돌려줌
+        	    return ResponseEntity.ok(response); // 에러가 아니라 '성공'으로 응답
+        	}
             
+            // 파일 크기 체크 (10MB)
+            if(file.getSize() > 10 * 1024 * 1024) {
+            	response.put("error", "ファイルサイズは10MB以下にしてください");
+            	return ResponseEntity.badRequest().body(response);
+            }
             // 이미지 파일인지 확인
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
-                response.put("error", "이미지 파일만 업로드 가능합니다");
+                response.put("error", "画像ファイルのみアップロード可能です");
                 return ResponseEntity.badRequest().body(response);
             }
             
-            // 업로드 디렉토리 생성
-            File uploadPath = new File(uploadDir);
-            if (!uploadPath.exists()) {
-                uploadPath.mkdirs();
-            }
-            
-            // 고유한 파일명 생성 (UUID 사용)
-            String originalFilename = file.getOriginalFilename();
-            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String savedFilename = UUID.randomUUID().toString() + extension;
-            
-            // 파일 저장
-            Path path = Paths.get(uploadDir + File.separator + savedFilename);
-            Files.write(path, file.getBytes());
-            
-            // 저장된 파일의 URL 반환
-            String fileUrl = "/uploads/" + savedFilename;
+            String fileUrl = r2Service.uploadFile(file);
             response.put("url", fileUrl);
-            
             return ResponseEntity.ok(response);
             
-        } catch (IOException e) {
-            response.put("error", "파일 업로드 실패: " + e.getMessage());
+        } catch (Exception e) {
+            response.put("error", "アップロード失敗: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
     }
+}
 }

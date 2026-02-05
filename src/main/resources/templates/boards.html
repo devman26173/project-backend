@@ -44,7 +44,7 @@
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             background: white;
         }
 
@@ -73,7 +73,7 @@
 
         .card-image-container {
             width: 100%;
-            height: 100px;
+            height: 50px;
             overflow: hidden;
             background-color: #f8f9fa;
             display: flex;
@@ -89,7 +89,7 @@
 
         .no-image-placeholder {
             width: 100%;
-            height: 100px;
+            height: 50px;
             background-color: white;
             display: flex;
             align-items: center;
@@ -100,45 +100,45 @@
         }
 
         .card-content {
-            padding: 12px;
+            padding: 8px;
             cursor: pointer;
         }
 
         .card-title {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: #333;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
         .card-text {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #666;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .card-meta {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
+            gap: 6px;
+            font-size: 0.7rem;
             color: #888;
         }
 
         .prefecture-badge {
             background-color: #e3f2fd;
             color: #1976d2;
-            padding: 3px 10px;
-            border-radius: 10px;
-            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 0.7rem;
             font-weight: 500;
         }
 
@@ -169,7 +169,7 @@
         <main class="p-3">
             <!-- 北海道・東北 -->
             <div class="region-card" th:if="${regionPosts.containsKey('北海道・東北')}">
-                <div class="region-header" th:onclick="'location.href=\'/board?region=' + encodeURIComponent('北海道・東北') + '\''">
+                <div class="region-header" onclick="event.stopPropagation(); location.href='/board?region=' + encodeURIComponent('北海道・東北');">
                     <span class="region-name">北海道・東北</span>
                 </div>
                 <div th:with="post=${regionPosts.get('北海道・東北')}"
@@ -185,7 +185,7 @@
                     </div>
 
                     <div class="card-content">
-                        <div class="mb-2">
+                        <div class="mb-1">
                             <span class="prefecture-badge" th:text="${post.prefecture}">[都道府県]</span>
                         </div>
                         <h5 class="card-title" th:text="${post.title}">タイトル</h5>
@@ -199,7 +199,7 @@
 
             <!-- 関東 -->
             <div class="region-card" th:if="${regionPosts.containsKey('関東')}">
-                <div class="region-header" th:onclick="'location.href=\'/board?region=' + encodeURIComponent('関東') + '\''">
+                <div class="region-header" onclick="event.stopPropagation(); location.href='/board?region=' + encodeURIComponent('関東');">
                     <span class="region-name">関東</span>
                 </div>
                 <div th:with="post=${regionPosts.get('関東')}"
@@ -213,7 +213,7 @@
                     </div>
 
                     <div class="card-content">
-                        <div class="mb-2">
+                        <div class="mb-1">
                             <span class="prefecture-badge" th:text="${post.prefecture}">[都道府県]</span>
                         </div>
                         <h5 class="card-title" th:text="${post.title}">タイトル</h5>
@@ -227,7 +227,7 @@
 
             <!-- 中部 -->
             <div class="region-card" th:if="${regionPosts.containsKey('中部')}">
-                <div class="region-header" th:onclick="'location.href=\'/board?region=' + encodeURIComponent('中部') + '\''">
+                <div class="region-header" onclick="event.stopPropagation(); location.href='/board?region=' + encodeURIComponent('中部');">
                     <span class="region-name">中部</span>
                 </div>
                 <div th:with="post=${regionPosts.get('中部')}"
@@ -241,7 +241,7 @@
                     </div>
 
                     <div class="card-content">
-                        <div class="mb-2">
+                        <div class="mb-1">
                             <span class="prefecture-badge" th:text="${post.prefecture}">[都道府県]</span>
                         </div>
                         <h5 class="card-title" th:text="${post.title}">タイトル</h5>
@@ -255,7 +255,7 @@
 
             <!-- 近畿 -->
             <div class="region-card" th:if="${regionPosts.containsKey('近畿')}">
-                <div class="region-header" th:onclick="'location.href=\'/board?region=' + encodeURIComponent('近畿') + '\''">
+                <div class="region-header" onclick="event.stopPropagation(); location.href='/board?region=' + encodeURIComponent('近畿');">
                     <span class="region-name">近畿</span>
                 </div>
                 <div th:with="post=${regionPosts.get('近畿')}"
@@ -269,7 +269,7 @@
                     </div>
 
                     <div class="card-content">
-                        <div class="mb-2">
+                        <div class="mb-1">
                             <span class="prefecture-badge" th:text="${post.prefecture}">[都道府県]</span>
                         </div>
                         <h5 class="card-title" th:text="${post.title}">タイトル</h5>
@@ -283,7 +283,7 @@
 
             <!-- 中国・四国 -->
             <div class="region-card" th:if="${regionPosts.containsKey('中国・四国')}">
-                <div class="region-header" th:onclick="'location.href=\'/board?region=' + encodeURIComponent('中国・四国') + '\''">
+                <div class="region-header" onclick="event.stopPropagation(); location.href='/board?region=' + encodeURIComponent('中国・四国');">
                     <span class="region-name">中国・四国</span>
                 </div>
                 <div th:with="post=${regionPosts.get('中国・四国')}"
@@ -297,7 +297,7 @@
                     </div>
 
                     <div class="card-content">
-                        <div class="mb-2">
+                        <div class="mb-1">
                             <span class="prefecture-badge" th:text="${post.prefecture}">[都道府県]</span>
                         </div>
                         <h5 class="card-title" th:text="${post.title}">タイトル</h5>
@@ -311,7 +311,7 @@
 
             <!-- 九州・沖縄 -->
             <div class="region-card" th:if="${regionPosts.containsKey('九州・沖縄')}">
-                <div class="region-header" th:onclick="'location.href=\'/board?region=' + encodeURIComponent('九州・沖縄') + '\''">
+                <div class="region-header" onclick="event.stopPropagation(); location.href='/board?region=' + encodeURIComponent('九州・沖縄');">
                     <span class="region-name">九州・沖縄</span>
                 </div>
                 <div th:with="post=${regionPosts.get('九州・沖縄')}"
@@ -325,7 +325,7 @@
                     </div>
 
                     <div class="card-content">
-                        <div class="mb-2">
+                        <div class="mb-1">
                             <span class="prefecture-badge" th:text="${post.prefecture}">[都道府県]</span>
                         </div>
                         <h5 class="card-title" th:text="${post.title}">タイトル</h5>

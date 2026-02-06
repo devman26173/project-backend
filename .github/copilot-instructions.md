@@ -108,6 +108,12 @@ src/main/java/com/example/join/
   - docs: 문서 수정
   - test: 테스트 코드 추가/수정
 
+## Merge 메시지 형식
+- PR merge 시 다음 형식을 사용하세요: `Merge PR/{owner}/{branch_name} (#{pr_number})`
+- 예시: `Merge PR/devman26173/feature/button_of_home_page (#128)`
+- 자세한 가이드: [MERGE_MESSAGE_GUIDE.md](.github/MERGE_MESSAGE_GUIDE.md)
+- 자동 merge: PR에 `auto-merge` 라벨 추가
+
 ## Pull Request 리뷰
 - **PR 리뷰는 커밋 메시지가 어떤 언어로 작성되었든 항상 한국어로 작성해야 합니다**
 - GitHub Copilot은 PR에 대한 자동 코드 리뷰를 제공합니다

@@ -35,7 +35,8 @@ PR에 `auto-merge` 라벨을 추가하면 자동으로 위 형식으로 merge됩
 (.github/workflows/auto-merge.yml 워크플로우 사용)
 
 ## 주의사항
-- 기본 merge 메시지가 `Merge pull request #{number} from {owner}/{repo}:{branch}` 형식으로 생성되므로, 반드시 수동으로 수정해야 합니다.
+- 기본 merge 메시지가 `Merge pull request #{number} from {owner}/{branch}` 형식으로 생성됩니다 (fork의 경우 `{owner}/{repo}:{branch}` 포함).
+- 반드시 수동으로 수정하여 `Merge PR/{owner}/{branch} (#{number})` 형식으로 변경해야 합니다.
 - 일관된 형식 유지를 위해 모든 PR merge 시 이 가이드를 따라주세요.
 - `auto-merge` 라벨 사용 시 권한이 있는 사용자만 추가하도록 주의하세요.
 - Branch protection rules를 설정하여 merge 전 필수 리뷰를 요구하는 것을 권장합니다.

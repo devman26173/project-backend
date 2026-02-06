@@ -42,14 +42,24 @@ jobs:
           git checkout $BASE_BRANCH
 
           # Perform merge with custom message
-          if ! git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER; then
-            echo "::error::Merge conflict detected. Please resolve conflicts manually."
+          if ! git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER 2>&1 | tee merge_output.txt; then
+            if grep -q "CONFLICT" merge_output.txt; then
+              echo "::error::Merge conflict detected. Please resolve conflicts manually and merge again."
+            else
+              echo "::error::Merge failed. Please check the error message above."
+            fi
             exit 1
           fi
 
           # Push the changes
-          if ! git push origin $BASE_BRANCH; then
-            echo "::error::Failed to push changes. This may be due to branch protection rules or concurrent modifications."
+          if ! git push origin $BASE_BRANCH 2>&1 | tee push_output.txt; then
+            if grep -q "protected" push_output.txt; then
+              echo "::error::Failed to push: Branch is protected. Please check branch protection rules."
+            elif grep -q "non-fast-forward" push_output.txt; then
+              echo "::error::Failed to push: Non-fast-forward update rejected. Someone else may have pushed changes."
+            else
+              echo "::error::Failed to push changes. Please check the error message above."
+            fi
             exit 1
           fi
 

@@ -93,7 +93,7 @@ public class UserController {
         	
         	return "user-signup";
         }
-        userService.registerUser(username, name, password, region, prefecture);
+        
         
         // returnUrl이 있으면 login 페이지로 리다이렉트할 때 함께 전달
         if (returnUrl != null && !returnUrl.isEmpty()) {

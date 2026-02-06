@@ -213,21 +213,35 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- 지역 선택 스크립트 -->
-    <script>
-        document.getElementById('regionSelect').addEventListener('change', function() {
-            // 모든 도도부현 숨기기
-            document.querySelectorAll('.prefecture-group').forEach(function(el) {
-                el.classList.add('d-none');
-            });
-            
-            // 선택한 지역의 도도부현 보이기
-            if (this.value) {
-                const selectedPrefecture = document.getElementById('prefecture-' + this.value);
-                if (selectedPrefecture) {
-                    selectedPrefecture.classList.remove('d-none');
-                }
-            }
-        });
-    </script>
+	<script>
+	    document.getElementById('regionSelect').addEventListener('change', function() {
+	        // 모든 도도부현 숨기기
+	        document.querySelectorAll('.prefecture-group').forEach(function(el) {
+	            el.classList.add('d-none');
+	        });
+	        
+	        // 선택한 지역의 도도부현 보이기
+	        if (this.value) {
+	            const selectedPrefecture = document.getElementById('prefecture-' + this.value);
+	            if (selectedPrefecture) {
+	                selectedPrefecture.classList.remove('d-none');
+	            }
+	        }
+	    });
+
+	    // 페이지 로드 시 실행 (에러 발생 등으로 페이지가 다시 로드될 때 대응)
+	    window.addEventListener('DOMContentLoaded', function() {
+	        const regionSelect = document.getElementById('regionSelect');
+	        const selectedRegion = regionSelect.value;
+	        
+	        if (selectedRegion) {
+	            // 선택된 지역의 도도부현 자동 표시
+	            const prefectureDiv = document.getElementById('prefecture-' + selectedRegion);
+	            if (prefectureDiv) {
+	                prefectureDiv.classList.remove('d-none');
+	            }
+	        }
+	    });
+	</script>
 </body>
 </html>

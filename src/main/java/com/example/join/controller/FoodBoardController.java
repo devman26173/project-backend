@@ -66,8 +66,8 @@ public class FoodBoardController {
 	    
 	    //각 게시글의 좋아요 수와 댓글 수 설정
 	    for (FoodBoard board : boards) {
-	    	//댓글 수 
-	    	long commentCount = commentRepository.countByPostId(board.getId());
+	    	//댓글 수 (부모 댓글만, 대댓글 제외)
+	    	long commentCount = commentRepository.countByPostIdAndParentIdIsNull(board.getId());
 	    	board.setCommentCount((int) commentCount);
 	    	
 	    	//좋아요 수 
@@ -286,7 +286,7 @@ public class FoodBoardController {
         if (returnUrl != null && returnUrl.equals("post")) {
             return "redirect:/post/" + comment.getPostId();
         }
-        return "redirect:/board/view/" + comment.getPostId();
+        return "redirect:/board/view/" + comment.getPostId() + "#comment-" + commentId;
     }
     
     // 대댓글 추가
@@ -385,7 +385,7 @@ public class FoodBoardController {
         if (returnUrl != null && returnUrl.equals("post")) {
             return "redirect:/post/" + parent.getPostId();
         }
-        return "redirect:/board/view/" + parent.getPostId();
+        return "redirect:/board/view/" + parent.getPostId() + "#comment-" + parentId;
     }
     
     // ✅ 추가: 댓글 전용 페이지 (POST 페이지)

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -19,8 +20,10 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("message", "Hello Thymeleaf!");
-        return "home"; // templates/home.html
+    	List<String> prefectures = List.of("北海道・東北","関東","中部","近畿","中国・四国","九州・沖縄");
+		model.addAttribute("prefectures", prefectures);
+    	model.addAttribute("message", "Hello Thymeleaf!");
+        return "home"; 
     }
 
     @GetMapping("/boards")
@@ -29,4 +32,10 @@ public class HomeController {
         model.addAttribute("regionPosts", regionPosts);
         return "boards";
     }
+    
+    public void prefecture(Model model) {		
+		List<String> prefectures = List.of("北海道・東北","関東","中部","近畿","中国・四国","九州・沖縄");
+		model.addAttribute("prefectures", prefectures);
+	}
+    
 }

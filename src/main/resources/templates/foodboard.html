@@ -11,6 +11,10 @@
 	<link rel = "stylesheet" th:href = "@{/css/foodboard.css}">
 		
 	<style>
+		body {
+		    overflow: hidden;
+		}
+
 		.dropdown-submenu:hover > .dropdown-menu {
 			display: block;
 		}
@@ -18,7 +22,7 @@
 		.mobile-container {
 		    max-width: 430px;    /* 최신 아이폰 프로 맥스 정도의 너비 */
 		    margin: 0 auto;      /* 화면 중앙 정렬 */
-		    min-height: 100vh;   /* 최소 높이를 화면 전체로 */
+		    height: 100vh;       /* 높이를 화면 전체로 고정 */
 		    background-color: #ffffff;
 		    border-left: 1px solid #f0f0f0;
 		    border-right: 1px solid #f0f0f0;
@@ -33,6 +37,13 @@
 		    top: 0;
 		    z-index: 1020;
 		    width: 100%;
+		    flex-shrink: 0;
+		}
+
+		main {
+		    flex: 1;
+		    overflow-y: auto;
+		    overflow-x: hidden;
 		}
 	</style>
 </head>
@@ -103,15 +114,15 @@
 		</div>
 
 		<main class="p-0 pb-5">
-		    <div th:each="board : ${boards}" class="p-3 border-bottom" style="background-color: white">
+		    <div th:each="board : ${boards}" class="p-2 border-bottom" style="background-color: white">
 		        <div class="d-flex mb-2">
-		            <div class="flex-grow-1 pe-3" style="min-width: 0;">
+		            <div class="flex-grow-1 pe-2" style="min-width: 0;">
 		                <div class="small text-secondary mb-1" th:text="'[' + ${board.prefecture} + ']'">[東京都]</div>
-		                
+
 		                <a th:href="@{/board/view/{id}(id=${board.id})}" class="text-decoration-none text-dark">
 		                    <h6 class="fw-bold mb-1 text-truncate" th:text="${board.title}">제목</h6>
-		                    <p class="small text-muted mb-0" 
-		                       th:text="${board.content}" 
+		                    <p class="small text-muted mb-0"
+		                       th:text="${board.content}"
 		                       style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all;">
 		                       내용...</p>
 		                </a>
@@ -120,15 +131,11 @@
 		            <div th:if="${board.imageUrls != null and !board.imageUrls.isEmpty()}" class="flex-shrink-0">
 		                <img th:src="${board.imageUrls.split(',')[0]}"
 		                     class="rounded"
-		                     style="width: 80px; height: 80px; object-fit: cover">
+		                     style="width: 40px; height: 40px; object-fit: cover">
 		            </div>
 		        </div>
 
 				<div class="d-flex align-items-center gap-2 small">
-				    <span class="text-warning fw-bold d-flex align-items-center gap-1">
-				        <img src="https://img.icons8.com/ios-filled/20/ffc107/star.png" alt="별점" style="width:16px; height:16px;">
-				        <span th:text="${board.rating}">5</span>
-				    </span>
 				    <span class="d-flex align-items-center gap-1">
 				        <img th:src="${board.likedByMe ?
 							'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' :
@@ -140,7 +147,7 @@
 				        <img src="https://img.icons8.com/ios/20/888888/comments.png" alt="댓글" style="width:16px; height:16px;">
 						<span th:text="${board.commentCount}">0</span>
 				    </span>
-				    <span class="ms-auto text-muted" 
+				    <span class="ms-auto text-muted"
 				          th:text="${#temporals.format(board.createdAt, 'HH:mm') + ' | ' + (board.user != null ? board.user.username : '匿名')}">
 				        12:24 | 작성자
 				    </span>

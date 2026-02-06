@@ -22,5 +22,7 @@ public interface FoodBoardRepository extends JpaRepository<FoodBoard, Long> {
 
  // 지역별 최신 게시물 조회
     FoodBoard findFirstByRegionOrderByCreatedAtDesc(String region);
+    
+    List<FoodBoard> findTop10ByUser_UserIdOrderByCreatedAtDesc(Long userId);
 }
 

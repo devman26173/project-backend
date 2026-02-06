@@ -75,7 +75,8 @@
 		    cursor: pointer;
 		}
 
-		.comment-actions span:hover {
+		.comment-actions span:hover,
+		.comment-actions button:hover {
 		    opacity: 0.7;
 		}
 		
@@ -199,10 +200,9 @@
 			</div>
 
 			<!--댓글 섹션 추가 -->
-			<div class="border-top comment-section">  <!-- ✅ comment-section 클래스 추가 -->
-			<div id="commentSection" class="border-top comment-section">
+			<div id="commentSection" class="comment-section">
 				<!-- 댓글 입력 -->
-			    <div class="border-top bg-white px-3 py-3" style="position: sticky; bottom: 0; z-index: 100; border-bottom: 1px solid #dee2e6;">
+			    <div class="bg-white px-3 py-3" style="position: sticky; bottom: 0; z-index: 100; border-top: 1px solid #dee2e6;">
 				    <form th:action="@{/board/comment/add}" method="post" onsubmit="return checkLoginForAction(event)">
 				        <input type="hidden" name="boardId" th:value="${board.id}">
 				        <textarea id="commentInput" 
@@ -243,7 +243,9 @@
 			    </div>
 			    <!-- 댓글 리스트 -->
 			    <div class="comment-list">
-			        <div class="comment px-3 py-3 border-bottom" th:each="comment : ${comments}">
+					<div class="comment px-3 py-3 border-bottom"
+					     th:each="comment : ${comments}"
+					     th:id="'comment-' + ${comment.id}">
 			            <div class="d-flex align-items-center gap-2 mb-2">
 			                <!-- 프로필 이미지 -->
 			                <div th:if="${comment.user != null && comment.user.profileImageUrl != null}"
@@ -299,23 +301,28 @@
 			                </form>
 			                
 			                <!-- 대댓글 수 표시 -->
-			                <span th:onclick="'toggleReply(' + ${comment.id} + ')'" 
-			                      class="d-flex align-items-center gap-1" 
-			                      style="cursor:pointer;">
-								  <img src="https://img.icons8.com/ios/20/888888/comments.png" alt="reply" style="vertical-align: middle;">
-								  <span th:text="${comment.replies != null ? comment.replies.size() : 0}">0</span>
+							<span th:onclick="'toggleReply(' + ${comment.id} + ')'"
+							      class="d-flex align-items-center gap-1"
+							      style="cursor:pointer;">
+							    <img src="https://img.icons8.com/ios/20/888888/comments.png">
+							    <span th:text="${comment.replies.size()}">0</span>
+							</span>
 			                
-								  <span th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
-								        th:onclick="'checkLoginAndToggleEdit(event,' + ${comment.id} + ')'" 
-								        style="cursor:pointer;">
-								      <img src="https://img.icons8.com/ios/20/888888/edit.png" alt="edit" style="vertical-align: middle;"> 編集
-								  </span>
+							<!-- 수정 -->
+						  <span th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
+						  th:onclick="'event.stopPropagation(); checkLoginAndToggleEdit(event,' + ${comment.id} + ')'"
+						        style="cursor:pointer;">
+								<img src="https://img.icons8.com/ios/20/888888/edit.png"
+							         alt="edit"
+							         style="vertical-align: middle;">
+							    <span>編集</span>
+						  </span>
 			                
 			                <!-- 삭제 -->
-			                <form th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
+							<form th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
 							      th:action="@{/board/comment/delete}" method="post" 
 							      class="d-inline"
-							      onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
+							      onsubmit="event.stopPropagation(); return checkLoginForAction(event) && confirm('本当に削除しますか?');">
 			                    <input type="hidden" name="commentId" th:value="${comment.id}">
 								<button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
 								    <img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
@@ -402,18 +409,21 @@
 			                        <span th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
 									      th:onclick="'checkLoginAndToggleReplyEdit(event,' + ${comment.id} + ',' + ${reply.id} + ')'" 
 									      style="cursor:pointer;">
-									    ✔️ 編集
+										  <img src="https://img.icons8.com/ios/20/888888/edit.png"
+										       alt="edit"
+										       style="vertical-align: middle;">
+										  <span>編集</span>
 									</span>
 			                        
 			                        <!-- 대댓글 삭제 -->
 			                        <form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
 									      th:action="@{/board/comment/reply/delete}" method="post" 
 									      class="d-inline"
-									      onsubmit="return checkLoginForAction(event) && confirm('本当に削除しますか?');">
+									      onsubmit="event.stopPropagation(); return checkLoginForAction(event) && confirm('本当に削除しますか?');"
 			                            <input type="hidden" name="parentId" th:value="${comment.id}">
 			                            <input type="hidden" name="replyId" th:value="${reply.id}">
 			                            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
-			                                ✖️ 削除
+											<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
 			                            </button>
 			                        </form>
 			                    </div>
@@ -452,28 +462,36 @@
 						  
 				// ==== 댓글 수정 함수 ====  
 				function toggleEdit(commentId) {
-				        const content = document.getElementById('comment-content-' + commentId);
-				        const form = document.getElementById('edit-form-' + commentId);
-				        
-				        if (form.style.display === 'none' || form.style.display === '') {
-				            content.style.display = 'none';
-				            form.style.display = 'block';
-				        } else {
-				            content.style.display = 'block';
-				            form.style.display = 'none';
-				        }
-				    }
+				    const content = document.getElementById('comment-content-' + commentId);
+				    const form = document.getElementById('edit-form-' + commentId);
+				    const replyForm = document.getElementById('reply-form-' + commentId);
+				    
+					// ✅ 대댓글 입력창 강제 닫기
+					    if (replyForm) {
+					        replyForm.style.display = 'none';
+					    }
+
+					    if (form.style.display === 'none' || form.style.display === '') {
+					        content.style.display = 'none';
+					        form.style.display = 'block';
+					    } else {
+					        content.style.display = 'block';
+					        form.style.display = 'none';
+					    }
+					}
 						    
 				function checkLoginAndToggleEdit(event, commentId) {
-				        if (!isLoggedIn) {
-				            event.preventDefault();
-				            if (confirm('ログインが必要です。ログインページに移動しますか？')) {
-				                location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
-				            }
-				        } else {
-				            toggleEdit(commentId);
-				        }
-				    }
+					event.stopPropagation(); // ✅ 추가
+					
+			        if (!isLoggedIn) {
+			            event.preventDefault();
+			            if (confirm('ログインが必要です。ログインページに移動しますか？')) {
+			                location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
+			            }
+			        } else {
+			            toggleEdit(commentId);
+			        }
+			    }
 						
 				// ==== 대댓글 입력 함수 ====    
 				function toggleReply(commentId) {

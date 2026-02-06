@@ -35,9 +35,13 @@ jobs:
           # Create unique temporary files
           MERGE_OUTPUT=$(mktemp)
           PUSH_OUTPUT=$(mktemp)
-          trap 'rm -f "$MERGE_OUTPUT" "$PUSH_OUTPUT"' EXIT
+          trap 'rm -f "$MERGE_OUTPUT" "$PUSH_OUTPUT"' EXIT INT TERM ERR
 
           # Validate input to prevent command injection
+          if ! echo "$PR_NUMBER" | grep -qE '^[0-9]+$'; then
+            echo "::error::Invalid PR number: $PR_NUMBER"
+            exit 1
+          fi
           if ! echo "$REPO_OWNER" | grep -qE '^[a-zA-Z0-9_-]+$'; then
             echo "::error::Invalid repository owner name: $REPO_OWNER"
             exit 1
@@ -92,8 +96,10 @@ jobs:
 
       - name: Cleanup temporary branch
         if: always()
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          git branch -D pr-${{ github.event.pull_request.number }} 2>/dev/null || true
+          git branch -D pr-$PR_NUMBER 2>/dev/null || true
 
       - name: Remove auto-merge label
         if: success()

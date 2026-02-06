@@ -13,105 +13,82 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'auto-merge')
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Merge with custom message
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_HEAD: ${{ github.event.pull_request.head.ref }}
-          REPO_OWNER: ${{ github.event.pull_request.head.repo.owner.login }}
-          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
-        run: |
-          # Create unique temporary files
-          MERGE_OUTPUT=$(mktemp)
-          PUSH_OUTPUT=$(mktemp)
-          trap 'rm -f "$MERGE_OUTPUT" "$PUSH_OUTPUT"' EXIT INT TERM ERR
-
-          # Validate input to prevent command injection
-          if ! echo "$PR_NUMBER" | grep -qE '^[0-9]+$'; then
-            echo "::error::Invalid PR number: $PR_NUMBER"
-            exit 1
-          fi
-          if ! echo "$REPO_OWNER" | grep -qE '^[a-zA-Z0-9_-]+$'; then
-            echo "::error::Invalid repository owner name: $REPO_OWNER"
-            exit 1
-          fi
-          if ! echo "$PR_HEAD" | grep -qE '^[a-zA-Z0-9_/-]+$'; then
-            echo "::error::Invalid branch name: $PR_HEAD"
-            exit 1
-          fi
-          if ! echo "$BASE_BRANCH" | grep -qE '^[a-zA-Z0-9_/-]+$'; then
-            echo "::error::Invalid base branch name: $BASE_BRANCH"
-            exit 1
-          fi
-
-          # Fetch the PR branch
-          if ! git fetch origin pull/$PR_NUMBER/head:pr-$PR_NUMBER; then
-            echo "::error::Failed to fetch PR #${PR_NUMBER}. The PR may not exist or there may be network issues."
-            exit 1
-          fi
-
-          # Create custom merge message
-          MERGE_MESSAGE="Merge PR/${REPO_OWNER}/${PR_HEAD} (#${PR_NUMBER})"
-
-          # Checkout base branch
-          if ! git checkout "$BASE_BRANCH"; then
-            echo "::error::Failed to checkout base branch: $BASE_BRANCH"
-            exit 1
-          fi
-
-          # Perform merge with custom message
-          if ! git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER 2>&1 | tee "$MERGE_OUTPUT"; then
-            if grep -q "CONFLICT" "$MERGE_OUTPUT"; then
-              echo "::error::Merge conflict detected. Please resolve conflicts manually and merge again."
-            else
-              echo "::error::Merge failed. Please check the error message above."
-            fi
-            exit 1
-          fi
-
-          # Push the changes
-          if ! git push origin "$BASE_BRANCH" 2>&1 | tee "$PUSH_OUTPUT"; then
-            if grep -q "protected" "$PUSH_OUTPUT"; then
-              echo "::error::Failed to push: Branch is protected. Please check branch protection rules."
-            elif grep -q "non-fast-forward" "$PUSH_OUTPUT"; then
-              echo "::error::Failed to push: Non-fast-forward update rejected. Someone else may have pushed changes."
-            else
-              echo "::error::Failed to push changes. Please check the error message above."
-            fi
-            exit 1
-          fi
-
-          echo "::notice::Successfully merged PR #${PR_NUMBER} with custom message format"
-
-      - name: Cleanup temporary branch
-        if: always()
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          git branch -D pr-$PR_NUMBER 2>/dev/null || true
-
-      - name: Remove auto-merge label
-        if: success()
+      - name: Check PR is mergeable
+        id: check_mergeable
         uses: actions/github-script@v7
         with:
           script: |
-            await github.rest.issues.removeLabel({
+            const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
-              name: 'auto-merge'
+              pull_number: context.issue.number
             });
+            
+            if (pr.mergeable === false) {
+              core.setFailed('PR has conflicts and cannot be merged');
+              return;
+            }
+            
+            if (pr.mergeable_state === 'blocked') {
+              core.setFailed('PR is blocked (may need reviews or status checks)');
+              return;
+            }
+            
+            console.log(`PR #${pr.number} is mergeable`);
+            core.setOutput('pr_number', pr.number);
+            core.setOutput('head_ref', pr.head.ref);
+            core.setOutput('owner', pr.head.repo.owner.login);
+
+      - name: Merge PR with custom message
+        id: merge_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.issue.number;
+            const headRef = '${{ github.event.pull_request.head.ref }}';
+            const owner = '${{ github.event.pull_request.head.repo.owner.login }}';
+            
+            // Create custom merge message
+            const mergeMessage = `Merge PR/${owner}/${headRef} (#${prNumber})`;
+            
+            try {
+              const result = await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                commit_title: mergeMessage,
+                commit_message: '',
+                merge_method: 'merge'
+              });
+              
+              if (result.data.merged) {
+                console.log(`✅ Successfully merged PR #${prNumber} with custom message format`);
+                core.setOutput('merge_success', 'true');
+              } else {
+                core.setFailed(`Failed to merge PR #${prNumber}`);
+              }
+            } catch (error) {
+              core.setFailed(`Merge failed: ${error.message}`);
+              throw error;
+            }
+
+      - name: Remove auto-merge label
+        if: steps.merge_pr.outputs.merge_success == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: 'auto-merge'
+              });
+              console.log('✅ Successfully removed auto-merge label');
+            } catch (error) {
+              // Label might already be removed, log but don't fail
+              console.log(`Note: Could not remove label: ${error.message}`);
+            }
 
       - name: Comment on failure
         if: failure()
@@ -122,5 +99,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: '⚠️ Auto-merge failed. Please check the workflow logs and merge manually.'
+              body: '⚠️ Auto-merge 실패\n\n워크플로우 로그를 확인하고 수동으로 merge해주세요.\n\n**주의**: `auto-merge` 라벨은 merge가 성공할 때까지 유지됩니다.'
             });

@@ -16,5 +16,7 @@ public interface FoodBoardRepository extends JpaRepository<FoodBoard, Long> {
     
  // 여러 도도부현 조회 (추가)
     List<FoodBoard> findByPrefectureIn(List<String> prefectures);
+
+    List<FoodBoard> findTop10ByUser_UserIdOrderByCreatedAtDesc(Long userId);
 }
 

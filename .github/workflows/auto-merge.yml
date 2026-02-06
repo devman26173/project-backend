@@ -1,0 +1,55 @@
+name: Auto Merge with Custom Message
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'auto-merge')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge with custom message
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD: ${{ github.event.pull_request.head.ref }}
+          REPO_OWNER: ${{ github.event.pull_request.head.repo.owner.login }}
+        run: |
+          # Fetch the PR branch
+          git fetch origin pull/$PR_NUMBER/head:pr-$PR_NUMBER
+          
+          # Create custom merge message
+          MERGE_MESSAGE="Merge PR/${REPO_OWNER}/${PR_HEAD} (#${PR_NUMBER})"
+          
+          # Perform merge with custom message
+          git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER
+          
+          # Push the changes
+          git push origin main
+
+      - name: Remove auto-merge label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'auto-merge'
+            });

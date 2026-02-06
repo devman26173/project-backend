@@ -17,3 +17,6 @@
 ‐ Backend：Spring boot
 <br>
 ‐ DB：MySQL
+
+## 開発ガイド
+‐ [Merge メッセージ形式ガイド](.github/MERGE_MESSAGE_GUIDE.md)

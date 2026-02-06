@@ -9,6 +9,7 @@
 <body>
 	<div class="mobile-container d-flex justify-content-center align-items-center" style="padding-bottom: 70px;">
 		<div class="home-page-component d-flex flex-column align-items-center">
+			<h1 class="mb-4 text-center fw-bold">ようこそ！</h1>
 			<img th:src="@{/images/japan_map.webp}"
 				 alt="japan map image"
 				 class="border border-2 rounded mb-3"
@@ -28,7 +29,7 @@
                     </li>
 				</ul>
 			</div>
-			<div class="d-flex flex-column align-items-center">
+			<div th:if="${session.loginUser == null }"class="d-flex flex-column align-items-center">
 			    <button type="button"
 						class="btn btn-outline-secondary">
 						<a href="/login" style="text-decoration: none; color: inherit;" />
@@ -40,6 +41,7 @@
 						非会員で
 				</button>
 			</div>
+			<div th:if="${session.loginUser != null}"></div>
 		</div>
 	</div>
 

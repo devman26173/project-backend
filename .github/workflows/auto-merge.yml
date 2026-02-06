@@ -30,18 +30,22 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_HEAD: ${{ github.event.pull_request.head.ref }}
           REPO_OWNER: ${{ github.event.pull_request.head.repo.owner.login }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
         run: |
           # Fetch the PR branch
           git fetch origin pull/$PR_NUMBER/head:pr-$PR_NUMBER
-          
+
           # Create custom merge message
           MERGE_MESSAGE="Merge PR/${REPO_OWNER}/${PR_HEAD} (#${PR_NUMBER})"
-          
+
+          # Checkout base branch
+          git checkout $BASE_BRANCH
+
           # Perform merge with custom message
           git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER
-          
+
           # Push the changes
-          git push origin main
+          git push origin $BASE_BRANCH
 
       - name: Remove auto-merge label
         uses: actions/github-script@v7

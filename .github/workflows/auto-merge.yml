@@ -57,7 +57,7 @@ jobs:
                 repo: context.repo.repo,
                 pull_number: prNumber,
                 commit_title: mergeMessage,
-                commit_message: '',
+                commit_message: '', // Empty body to keep commit message clean
                 merge_method: 'merge'
               });
               
@@ -69,7 +69,6 @@ jobs:
               }
             } catch (error) {
               core.setFailed(`Merge failed: ${error.message}`);
-              throw error;
             }
 
       - name: Remove auto-merge label

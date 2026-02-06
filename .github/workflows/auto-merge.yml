@@ -37,14 +37,30 @@ jobs:
           PUSH_OUTPUT=$(mktemp)
           trap "rm -f $MERGE_OUTPUT $PUSH_OUTPUT" EXIT
 
+          # Validate input to prevent command injection
+          if ! echo "$REPO_OWNER" | grep -qE '^[a-zA-Z0-9_-]+$'; then
+            echo "::error::Invalid repository owner name: $REPO_OWNER"
+            exit 1
+          fi
+          if ! echo "$PR_HEAD" | grep -qE '^[a-zA-Z0-9_/-]+$'; then
+            echo "::error::Invalid branch name: $PR_HEAD"
+            exit 1
+          fi
+
           # Fetch the PR branch
-          git fetch origin pull/$PR_NUMBER/head:pr-$PR_NUMBER
+          if ! git fetch origin pull/$PR_NUMBER/head:pr-$PR_NUMBER; then
+            echo "::error::Failed to fetch PR #${PR_NUMBER}. The PR may not exist or there may be network issues."
+            exit 1
+          fi
 
           # Create custom merge message
           MERGE_MESSAGE="Merge PR/${REPO_OWNER}/${PR_HEAD} (#${PR_NUMBER})"
 
           # Checkout base branch
-          git checkout $BASE_BRANCH
+          if ! git checkout $BASE_BRANCH; then
+            echo "::error::Failed to checkout base branch: $BASE_BRANCH"
+            exit 1
+          fi
 
           # Perform merge with custom message
           if ! git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER 2>&1 | tee "$MERGE_OUTPUT"; then

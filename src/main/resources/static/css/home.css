@@ -1,3 +1,6 @@
+body{
+	background-color: #f9f9f9;
+}
 .home-page-layout {
 	min-height: 100vh;
 	display: flex;
@@ -6,10 +9,20 @@
 }
 
 .home-page-component {
-    width: 60%; /* 기존보다 너비를 넓게 설정 */
-    max-width: 800px; /* 최대 너비 제한 */
+    width: 60%; 
+    max-width: 800px;
 }
 
 .home-page-component .btn {
-    width:150px; /* 버튼 너비를 기존보다 더 넓게 설정 */
+    width:150px; 
+}
+
+.mobile-container {
+    max-width: 430px;    
+    margin: 0 auto;      
+    height: 100vh;       
+    background-color: #ffffff;
+    border-left: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+    padding: 0;          
 }

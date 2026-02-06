@@ -42,12 +42,21 @@ jobs:
           git checkout $BASE_BRANCH
 
           # Perform merge with custom message
-          git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER
+          if ! git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER; then
+            echo "::error::Merge conflict detected. Please resolve conflicts manually."
+            exit 1
+          fi
 
           # Push the changes
-          git push origin $BASE_BRANCH
+          if ! git push origin $BASE_BRANCH; then
+            echo "::error::Failed to push changes. This may be due to branch protection rules or concurrent modifications."
+            exit 1
+          fi
+
+          echo "::notice::Successfully merged PR #${PR_NUMBER} with custom message format"
 
       - name: Remove auto-merge label
+        if: success()
         uses: actions/github-script@v7
         with:
           script: |
@@ -56,4 +65,16 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               name: 'auto-merge'
+            });
+
+      - name: Comment on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '⚠️ Auto-merge failed. Please check the workflow logs and merge manually.'
             });

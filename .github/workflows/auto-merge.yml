@@ -35,7 +35,7 @@ jobs:
           # Create unique temporary files
           MERGE_OUTPUT=$(mktemp)
           PUSH_OUTPUT=$(mktemp)
-          trap "rm -f $MERGE_OUTPUT $PUSH_OUTPUT" EXIT
+          trap 'rm -f "$MERGE_OUTPUT" "$PUSH_OUTPUT"' EXIT
 
           # Validate input to prevent command injection
           if ! echo "$REPO_OWNER" | grep -qE '^[a-zA-Z0-9_-]+$'; then
@@ -44,6 +44,10 @@ jobs:
           fi
           if ! echo "$PR_HEAD" | grep -qE '^[a-zA-Z0-9_/-]+$'; then
             echo "::error::Invalid branch name: $PR_HEAD"
+            exit 1
+          fi
+          if ! echo "$BASE_BRANCH" | grep -qE '^[a-zA-Z0-9_/-]+$'; then
+            echo "::error::Invalid base branch name: $BASE_BRANCH"
             exit 1
           fi
 
@@ -57,7 +61,7 @@ jobs:
           MERGE_MESSAGE="Merge PR/${REPO_OWNER}/${PR_HEAD} (#${PR_NUMBER})"
 
           # Checkout base branch
-          if ! git checkout $BASE_BRANCH; then
+          if ! git checkout "$BASE_BRANCH"; then
             echo "::error::Failed to checkout base branch: $BASE_BRANCH"
             exit 1
           fi
@@ -73,7 +77,7 @@ jobs:
           fi
 
           # Push the changes
-          if ! git push origin $BASE_BRANCH 2>&1 | tee "$PUSH_OUTPUT"; then
+          if ! git push origin "$BASE_BRANCH" 2>&1 | tee "$PUSH_OUTPUT"; then
             if grep -q "protected" "$PUSH_OUTPUT"; then
               echo "::error::Failed to push: Branch is protected. Please check branch protection rules."
             elif grep -q "non-fast-forward" "$PUSH_OUTPUT"; then

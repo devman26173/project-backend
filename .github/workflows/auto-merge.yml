@@ -42,8 +42,8 @@ jobs:
           git checkout $BASE_BRANCH
 
           # Perform merge with custom message
-          if ! git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER 2>&1 | tee merge_output.txt; then
-            if grep -q "CONFLICT" merge_output.txt; then
+          if ! git merge --no-ff -m "$MERGE_MESSAGE" pr-$PR_NUMBER 2>&1 | tee /tmp/merge_output.txt; then
+            if grep -q "CONFLICT" /tmp/merge_output.txt; then
               echo "::error::Merge conflict detected. Please resolve conflicts manually and merge again."
             else
               echo "::error::Merge failed. Please check the error message above."
@@ -52,10 +52,10 @@ jobs:
           fi
 
           # Push the changes
-          if ! git push origin $BASE_BRANCH 2>&1 | tee push_output.txt; then
-            if grep -q "protected" push_output.txt; then
+          if ! git push origin $BASE_BRANCH 2>&1 | tee /tmp/push_output.txt; then
+            if grep -q "protected" /tmp/push_output.txt; then
               echo "::error::Failed to push: Branch is protected. Please check branch protection rules."
-            elif grep -q "non-fast-forward" push_output.txt; then
+            elif grep -q "non-fast-forward" /tmp/push_output.txt; then
               echo "::error::Failed to push: Non-fast-forward update rejected. Someone else may have pushed changes."
             else
               echo "::error::Failed to push changes. Please check the error message above."
@@ -64,6 +64,11 @@ jobs:
           fi
 
           echo "::notice::Successfully merged PR #${PR_NUMBER} with custom message format"
+
+      - name: Cleanup temporary branch
+        if: always()
+        run: |
+          git branch -D pr-${{ github.event.pull_request.number }} 2>/dev/null || true
 
       - name: Remove auto-merge label
         if: success()

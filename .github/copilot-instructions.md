@@ -108,6 +108,12 @@ src/main/java/com/example/join/
   - docs: 문서 수정
   - test: 테스트 코드 추가/수정
 
+## Merge 메시지 형식
+- PR merge 시 다음 형식을 사용하세요: `Merge PR/{owner}/{branch_name} (#{pr_number})`
+- 예시: `Merge PR/devman26173/feature/button_of_home_page (#128)`
+- 자세한 가이드: [MERGE_MESSAGE_GUIDE.md](.github/MERGE_MESSAGE_GUIDE.md)
+- 자동 merge: PR에 `auto-merge` 라벨 추가
+
 ## Pull Request 리뷰
 - **PR 리뷰는 커밋 메시지가 어떤 언어로 작성되었든 항상 한국어로 작성해야 합니다**
 - GitHub Copilot은 PR에 대한 자동 코드 리뷰를 제공합니다
@@ -120,13 +126,6 @@ src/main/java/com/example/join/
   - 코드 오너십 검증
 - 자동 리뷰 결과를 참고하여 코드를 개선하세요
 - PR 코멘트에서 Copilot에게 추가 질문을 할 수 있습니다 (@github-copilot 멘션)
-
-### PR 리뷰 기록 관리
-- **모든 Copilot PR 리뷰는 `.github/REVIEW_HISTORY.md`에 기록해야 합니다**
-- **기록 형식**: `날짜 | 파일명 | 리뷰/수정 내역` (한 줄로 간단하게)
-- **예시**: `2024-01-01 | Controller.java | 예외 처리 추가 → ✅ 수정완료`
-- **상태 아이콘**: ✅ 완료, 🔄 검토중, ❌ 미수정, ⚠️ 보안, 🚀 성능
-- 리뷰 기록은 향후 코드 품질 개선 및 팀 학습에 활용됩니다
 
 ### 코드 오너십 검증
 PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:

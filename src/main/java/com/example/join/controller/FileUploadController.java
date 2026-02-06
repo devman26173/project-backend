@@ -1,68 +1,87 @@
-package com.example.join.controller;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-@RestController
-@RequestMapping("/api")
-public class FileUploadController {
-
-    @Value("${file.upload-dir:src/main/resources/static/uploads}")
-    private String uploadDir;
-
-    @PostMapping("/upload")
-    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
-        Map<String, String> response = new HashMap<>();
-        
-        try {
-            // 파일이 비어있는지 확인
-            if (file.isEmpty()) {
-                response.put("error", "파일이 비어있습니다");
-                return ResponseEntity.badRequest().body(response);
-            }
-            
-            // 이미지 파일인지 확인
-            String contentType = file.getContentType();
-            if (contentType == null || !contentType.startsWith("image/")) {
-                response.put("error", "이미지 파일만 업로드 가능합니다");
-                return ResponseEntity.badRequest().body(response);
-            }
-            
-            // 업로드 디렉토리 생성
-            File uploadPath = new File(uploadDir);
-            if (!uploadPath.exists()) {
-                uploadPath.mkdirs();
-            }
-            
-            // 고유한 파일명 생성 (UUID 사용)
-            String originalFilename = file.getOriginalFilename();
-            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String savedFilename = UUID.randomUUID().toString() + extension;
-            
-            // 파일 저장
-            Path path = Paths.get(uploadDir + File.separator + savedFilename);
-            Files.write(path, file.getBytes());
-            
-            // 저장된 파일의 URL 반환
-            String fileUrl = "/uploads/" + savedFilename;
-            response.put("url", fileUrl);
-            
-            return ResponseEntity.ok(response);
-            
-        } catch (IOException e) {
-            response.put("error", "파일 업로드 실패: " + e.getMessage());
-            return ResponseEntity.status(500).body(response);
-        }
-    }
-}
+//package com.example.join.controller;
+//
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.multipart.MultipartFile;
+//import software.amazon.awssdk.core.sync.RequestBody;
+//import software.amazon.awssdk.services.s3.S3Client;
+//import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+//
+//import java.util.HashMap;
+//import java.util.Map;
+//import java.util.UUID;
+//
+//@RestController
+//@RequestMapping("/api")
+//public class FileUploadController {
+//	
+//	private final S3Client r2Client;
+//	
+//	@Value("${cloudflare.r2.bucket-name}")
+//	private String bucketName;
+//	
+//	@Value("${cloudflare.r2.public-url}")
+//	private String publicUrl; 
+//	
+//	public FileUploadController(S3Client r2Client) {
+//		this.r2Client = r2Client; 
+//	}
+//	
+//	@PostMapping("/upload")
+//	public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
+//		Map<String, String> response = new HashMap<>();
+//		
+//		try {
+//			// 파일 검증
+//			if (file.isEmpty()) {
+//				response.put("error", "ファイルが空です");
+//				return ResponseEntity.badRequest().body(response);
+//			}
+//			
+//			// 이미지 파일인지 확인
+//			String contentType = file.getContentType();
+//			if (contentType == null || !contentType.startsWith("image/")) {
+//				response.put("error", "画像ファイルのみアップロード可能です");
+//				return ResponseEntity.badRequest().body(response);
+//			}
+//			
+//			// 파일 크기 체크 (10MB)
+//			if (file.getSize() > 10 * 1024 * 1024) {
+//				response.put("error", "ファイルサイズは10MB以下にしてください");
+//				return ResponseEntity.badRequest().body(response);
+//			}
+//			
+//			// 고유한 key 생성
+//			String originalFilename = file.getOriginalFilename();
+//			String extension = "";
+//			if (originalFilename != null && originalFilename.contains(".")) {
+//				extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+//			}
+//			String key = "foodboard/" + UUID.randomUUID().toString() + extension;
+//			
+//			// R2에 업로드
+//			r2Client.putObject(
+//				PutObjectRequest.builder()
+//					.bucket(bucketName)
+//					.key(key)
+//					.contentType(file.getContentType())
+//					.build(),
+//				RequestBody.fromBytes(file.getBytes())
+//			);
+//			
+//			// key만 반환 (DB 저장용)
+//			response.put("key", key);
+//			
+//			// URL도 같이 반환 (미리보기용)
+//			response.put("url", publicUrl + "/" + key);
+//			
+//			return ResponseEntity.ok(response);
+//			
+//		} catch (Exception e) {
+//			response.put("error", "アップロード中にエラーが発生しました");
+//			e.printStackTrace();
+//			return ResponseEntity.status(500).body(response);
+//		}
+//	}
+//}

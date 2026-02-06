@@ -1,19 +1,22 @@
 # 日本の地域別コミュニティ
 ## チームメンバー
-‐ リーダー：キム・テヒョン
+- リーダー：キム・テヒョン
 <br>
-‐ … 担当：
+- … 担当：
 <br>
-‐ … 担当：
+- … 担当：
 <br>
-‐ … 担当：
+- … 担当：
 <br>
-‐ … 担当：
+- … 担当：
 <br>
 
 ## 技術スタック
-‐ Frontend：React
+- Frontend：React
 <br>
-‐ Backend：Spring boot
+- Backend：Spring boot
 <br>
-‐ DB：MySQL
+- DB：MySQL
+
+## 開発ガイド
+- [Merge メッセージ形式ガイド](.github/MERGE_MESSAGE_GUIDE.md)

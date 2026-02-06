@@ -17,12 +17,21 @@ public class User {
     private String password;
     private String region;
     private String prefecture;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    
+    // ✅ 추가: 프로필 이미지 URL
+    private String profileImageUrl;
+    
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Profile profile;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodBoard> foodBoards = new ArrayList<>();
 
     public Long getUserId() {
         return userId;
@@ -30,50 +39,69 @@ public class User {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getRegion() {
+    	return region;
+    }
+    public void setRegion(String region) {
+    	this.region = region;
+    }
+    public String getPrefecture() {
+    	return prefecture;
+    }
+    public void setPrefecture(String prefecture) {
+    	this.prefecture = prefecture;
+    }
+    
+    // ✅ 추가: profileImageUrl getter/setter
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+    public List<Post> getPosts() {
+        return posts;
+    }
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+    
+    public List<Comment> getComments() {
+        return comments;
+    }
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+    
+    public List<FoodBoard> getFoodBoards() {
+        return foodBoards;
+    }
+    public void setFoodBoards(List<FoodBoard> foodBoards) {
+        this.foodBoards = foodBoards;
+    }
+    
     public Profile getProfile() {
         return profile;
     }
     public void setProfile(Profile profile) {
         this.profile = profile;
     }
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getRegion() {
-		return region;
-	}
-	public void setRegion(String region) {
-		this.region = region;
-	}
-	public String getPrefecture() {
-		return prefecture;
-	}
-	public void setPrefecture(String prefecture) {
-		this.prefecture = prefecture;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public List<Post> getPosts() {
-		return posts;
-	}
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}
-
-	
-    // 他 getter / setter
 }

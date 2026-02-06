@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.join.entity.Prefecture;
 
-public interface PrefectureRepository extends JpaRepository<Prefecture, String> {
+public interface PrefectureRepository extends JpaRepository<Prefecture, Long> {
 	
 }

@@ -1,0 +1,78 @@
+/* Bottom Navigation Bar Styles */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    height: 70px;
+    background-color: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.bottom-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #6c757d;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    flex: 1;
+    max-width: 80px;
+}
+
+.bottom-nav .nav-item svg {
+    margin-bottom: 4px;
+    transition: all 0.2s ease;
+}
+
+.bottom-nav .nav-item:hover {
+    color: #007bff;
+    background-color: #f8f9fa;
+}
+
+.bottom-nav .nav-item.active {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.bottom-nav .nav-item.active svg {
+    fill: #007bff;
+}
+
+.bottom-nav .nav-item span {
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* 모바일 컨테이너에 하단 여백 추가 (네비게이션 바 높이만큼) */
+.mobile-container {
+    padding-bottom: 70px;
+}
+
+/* 반응형: 작은 화면에서 텍스트 크기 조정 */
+@media (max-width: 380px) {
+    .bottom-nav .nav-item {
+        font-size: 10px;
+    }
+
+    .bottom-nav .nav-item svg {
+        width: 20px;
+        height: 20px;
+    }
+}

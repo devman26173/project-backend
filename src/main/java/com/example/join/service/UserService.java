@@ -4,6 +4,7 @@ import com.example.join.entity.User;
 import com.example.join.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,13 @@ public class UserService {
     }
     
     public void registerUser(String username, String name, String password, String region, String prefecture) {
+    	//입력한 username이 이미 db에 있는지 확인
+    	Optional<User> existingUser = userRepository.findByUsername(username);
+    	//중복된 ID면 예외 발생
+    	if (existingUser.isPresent()) {
+    		throw new IllegalArgumentException("このIDは既に使用されています。");
+    	}
+    	//중복 아니면 회원가입 진행
         User user = new User();
         user.setUsername(username);
         user.setName(name);
@@ -55,8 +63,13 @@ public class UserService {
         }
     }
     
-    // ✅ 이 메서드 추가!
+    // 
     public void logout(HttpSession session) {
         session.invalidate();
+    }
+    //db에서 사용자 삭제
+    @Transactional
+    public void withdrawUser(Long userId) {
+    	userRepository.deleteById(userId);
     }
 }

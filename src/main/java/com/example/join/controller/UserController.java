@@ -20,7 +20,14 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(@RequestParam(required = false) String returnUrl, Model model) {
+    public String login(@RequestParam(required = false) 
+    	String returnUrl, HttpSession session, Model model) {
+    	//로그인이 되어있는지 확인
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	//로그인 상태면 board로 이동
+    	if(loginUser != null) {
+    		return "redirect:/board";
+    	}
         model.addAttribute("returnUrl", returnUrl);
         return "user-login";
     }
@@ -28,7 +35,13 @@ public class UserController {
     @GetMapping("/signup")
     public String signup(
          @RequestParam(required = false) String returnUrl,  // ✅ 추가
-         Model model) {
+         HttpSession session, Model model) {
+    	//로그인이 되어있는지 확인
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	//로그인 상태면 board로 이동
+    	if(loginUser != null) {
+    		return "redirect:/board";
+    	}
      model.addAttribute("message", "태형 AI 👍");
      model.addAttribute("returnUrl", returnUrl);  // ✅ 추가
      return "user-signup";
@@ -52,12 +65,35 @@ public class UserController {
         @RequestParam(required = false) String returnUrl,
         Model model
     ) {
+    	//비밀번호 확인
         if (!password.equals(passwordConfirm)) {
             model.addAttribute("error","パスワードが一致しません。");
             model.addAttribute("returnUrl", returnUrl);
+            
+            //에러 나도 입력받은 값 유지(패스워드 제외)
+            model.addAttribute("username", username);
+            model.addAttribute("name", name);
+            model.addAttribute("region", region);
+            model.addAttribute("prefecture", prefecture);
+            
             return "user-signup";
         }
-        userService.registerUser(username, name, password, region, prefecture);
+        //중복 체크 에러 잡아내기
+        try {
+        	userService.registerUser(username, name, password, region, prefecture);
+        }catch(IllegalArgumentException e) {
+        	//중복 ID면 에러메시지 보여주기
+        	model.addAttribute("error","このIDはすでに使用されています。");
+        	model.addAttribute("returnurl", returnUrl);
+        	
+        	model.addAttribute("username", username);
+        	model.addAttribute("name", name);
+        	model.addAttribute("region", region);
+        	model.addAttribute("prefecture", prefecture);
+        	
+        	return "user-signup";
+        }
+        
         
         // returnUrl이 있으면 login 페이지로 리다이렉트할 때 함께 전달
         if (returnUrl != null && !returnUrl.isEmpty()) {
@@ -65,8 +101,6 @@ public class UserController {
         }
         return "redirect:/login";
     }
-    
-    // ✅ 이 메서드 추가 (빠져있었어요!)
     @PostMapping("/login")
     public String loginSubmit(
         @RequestParam String username,
@@ -103,6 +137,29 @@ public class UserController {
     		return "redirect:/login";
     	}
     	userService.logout(session);
+    	return "redirect:/login";
+    }
+    
+    //회원탈퇴
+    @GetMapping("/withdraw")
+    public String withdraw(HttpSession session, Model model) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	if (loginUser == null) { //로그인 안했으면 로그인 페이지로
+    		return "redirect:/login";
+    	}
+		return "user-withdraw";
+    }
+    @PostMapping("/withdraw")
+    public String withdrawSubmit(HttpSession session) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	if (loginUser == null) {
+    		return "redirect:/login";
+    	}
+    	//회원탈퇴 처리
+    	userService.withdrawUser(loginUser.getUserId());
+    	//세션삭제
+    	session.invalidate();
+    	//로그인 페이지로
     	return "redirect:/login";
     }
 }

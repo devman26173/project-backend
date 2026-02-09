@@ -220,7 +220,7 @@
 				</div>
 
 			    <!-- 정렬 버튼 -->
-			    <div class="comment-section">
+			    <div class="comment-section" th:if="${comments != null && !comments.isEmpty()}">
 				    <!-- 정렬 버튼 -->
 				    <div class="px-3 py-3 bg-white border-bottom sticky-top" style="top: 0;">
 				        <div class="d-flex justify-content-end gap-2">

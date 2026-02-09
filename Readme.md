@@ -66,152 +66,212 @@ Spring BootとThymeleaf を用いたフロントエンド構成となってい�
 
 ## 担当範囲
 
-### キム・テイヒョン
+<details>
+<summary>キム・テイヒョン</summary>
 
 - 機能明細書 作成
 - プロジェクト ファイル 管理（初期化、Git merge）
 - 日程管理、ガイド 文書 作成
 - Home page, Board page, Menu bar, Error page 開発
 
-### カン・スジン
+</details>
+
+<details>
+<summary>カン・スジン</summary>
 
 - Login page, Signup page Frontend
-- 
-- 
-- 
+-
+-
+-
 
-### キム・ヒョンジュ
+</details>
+
+<details>
+<summary>キム・ヒョンジュ</summary>
 
 - Board page
-- 
-- 
-- 
+-
+-
+-
 
-### キ・ソンヒャン
+</details>
+
+<details>
+<summary>キ・ソンヒャン</summary>
 
 - Comment area
-- 
-- 
-- 
+-
+-
+-
 
-### チャン・ミンチャン
+</details>
+
+<details>
+<summary>チャン・ミンチャン</summary>
 
 - Profile page
-- 
-- 
-- 
+-
+-
+-
+
+</details>
 
 ## 工夫点
 
-### キム・テイヒョン
+<details>
+<summary>キム・テイヒョン</summary>
 
 - Spring boot 復習
-- 
-- 
-- 
+-
+-
+-
 - -
 - -
 - -
 
-### カン・スジン
+</details>
 
-- 
-- 
-- 
-- 
+<details>
+<summary>カン・スジン</summary>
 
-### キム・ヒョンジュ
+-
+-
+-
+-
 
-- 
-- 
-- 
-- 
+</details>
 
-### キ・ソンヒャン
+<details>
+<summary>キム・ヒョンジュ</summary>
 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
 
-### チャン・ミンチャン
+</details>
 
-- 
-- 
-- 
-- 
+<details>
+<summary>キ・ソンヒャン</summary>
+
+-
+-
+-
+-
+
+</details>
+
+<details>
+<summary>チャン・ミンチャン</summary>
+
+-
+-
+-
+-
+
+</details>
 
 ## 課題
 
-### キム・テイヒョン
+<details>
+<summary>キム・テイヒョン</summary>
 
 - チームメンバーのスケジュールの管理方法
-- 
-- 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
+-
+-
 
-### カン・スジン
+</details>
 
-- 
-- 
-- 
-- 
+<details>
+<summary>カン・スジン</summary>
 
-### キ・ヒョンジュ
+-
+-
+-
+-
 
-- 
-- 
-- 
-- 
+</details>
 
-### キム・ソンヒャン
+<details>
+<summary>キ・ヒョンジュ</summary>
 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
 
-### チャン・ミンチャン
+</details>
 
-- 
-- 
-- 
-- 
+<details>
+<summary>キム・ソンヒャン</summary>
+
+-
+-
+-
+-
+
+</details>
+
+<details>
+<summary>チャン・ミンチャン</summary>
+
+-
+-
+-
+-
+
+</details>
 
 ## 今後の対応
 
-### キム・テイヒョン
+<details>
+<summary>キム・テイヒョン</summary>
 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
+-
+-
+-
 
-### カン・スジン
+</details>
 
-- 
-- 
-- 
-- 
+<details>
+<summary>カン・スジン</summary>
 
-### キム・ヒョンジュ
+-
+-
+-
+-
 
-- 
-- 
-- 
-- 
+</details>
 
-### キ・ソンヒャン
+<details>
+<summary>キム・ヒョンジュ</summary>
 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
 
-### チャン・ミンチャン
+</details>
+
+<details>
+<summary>キ・ソンヒャン</summary>
+
+-
+-
+-
+-
+
+</details>
+
+<details>
+<summary>チャン・ミンチャン</summary>
+
+-

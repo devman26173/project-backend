@@ -83,5 +83,10 @@ public class FoodBoardService {
 
         return regionPosts;
     }
+    
+    //검색 기능 
+    public List<FoodBoard> searchByKeyword(String keyword) {
+        return foodboardRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(keyword, keyword);
+    }
 
 }

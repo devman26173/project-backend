@@ -83,6 +83,39 @@ public class FoodBoardController {
 	    
 	    return "foodboard";
 	}
+	//검색 기능 추가
+	@GetMapping("/board/search")
+	public String searchBoard(@RequestParam String keyword,
+							HttpSession session, 
+							Model model) {
+		//검색어로 게시글 찾기 
+		List<FoodBoard> boards = foodBoardService.searchByKeyword(keyword);
+		
+		//로그인 유저 정보 가져오기
+	    User loginUser = (User) session.getAttribute("loginUser");
+	    String currentUserId = loginUser != null?loginUser.getUsername() : null;
+	    
+	    //각 게시글의 좋아요 수와 댓글 수 설정
+	    for (FoodBoard board : boards) {
+	    	//댓글 수 (부모 댓글만, 대댓글 제외)
+	    	long commentCount = commentRepository.countByPostIdAndParentIdIsNull(board.getId());
+	    	board.setCommentCount((int) commentCount);
+	    	
+	    	//좋아요 수 
+	    	board.setLikeCount(postService.getLikeCount(board.getId(), "BOARD"));
+	    	
+	    	//내가 좋아요 눌렀는지 여부 설정
+	    	board.setLikedByMe(currentUserId != null &&
+	    		postService.isLiked(board.getId(), "BOARD", currentUserId));	
+	    }
+	    
+	    model.addAttribute("boards",boards);
+	    model.addAttribute("searchKeyword",keyword);
+	    model.addAttribute("currentCategory","検索結果: " + keyword);
+	    
+	    return "foodboard";
+	}
+	
     // 게시글 작성 페이지
     @GetMapping("/board/write")
     public String write(HttpSession session) {

@@ -34,13 +34,15 @@
 			<div th:if="${session.loginUser == null }"class="d-flex flex-column align-items-center">
 			    <button type="button"
 						class="btn btn-outline-secondary">
-						<a href="/login" style="text-decoration: none; color: inherit;" />
+						<a href="/login" style="text-decoration: none; color: inherit;">
 						ログイン
+						</a>
 				</button>
 				<button type="button"
 						class="btn btn-outline-secondary mt-2">
-						<a href="/boards" style="text-decoration: none; color: inherit;" />
+						<a href="/boards" style="text-decoration: none; color: inherit;">
 						非会員で
+						</a>
 				</button>
 			</div>
 			<div th:if="${session.loginUser != null}"></div>

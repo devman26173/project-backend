@@ -79,6 +79,7 @@ header {
 								style="width: 32px; height: 32px; object-fit: cover; cursor: pointer"
 								alt="profile">
 						</div>
+					</div>
 			</header>
 
 			<!-- Main -->
@@ -124,7 +125,7 @@ header {
 							<a th:href="@{/board/view/{id}(id=${board.id})}"
 								class="text-decoration-none text-dark">
 								<div class="small text-secondary mb-1"
-									th:text="'[' + ${board.prefecture} + ']'">[東京都]</div>
+									th:text="|[${board.prefecture}]|">[東京都]</div>
 								<div class="fw-bold text-truncate" th:text="${board.title}">タイトル</div>
 								<div class="small text-muted" th:text="${board.content}"
 									style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all;">
@@ -142,11 +143,42 @@ header {
 
 
 
-				<!-- 最近のコメント(仮データ) -->
-				<div class="p-3" style="background-color: white">
-					<h6 class="fw-bold mb-2">最近のコメント</h6>
-					<div class="text-muted small">（ここは後でDB連携）</div>
+				<!-- 26.02.10実装、最近のコメント(実データ) -->
+				<div class="p-3 border-top" style="background-color: white">
+					<div class="d-flex justify-content-between align-items-center mb-2">
+						<h6 class="fw-bold mb-0">最近のコメント</h6>
+						<span class="small text-muted"
+							th:text="${comments != null ? comments.size() : 0} + '件'">0件</span>
+					</div>
+					<div th:if="${comments != null and !comments.isEmpty()}">
+						<div th:each="c : ${comments}" class="py-2 border-top">
+							<!-- コメントが紐づく投稿へ飛ばす。 -->
+							<a th:href="@{/board/view/{id}(id=${c.postId})}"
+								class="text-decoration-none text-dark">
+								<div class="small text-secondary mb-1"
+									th:text="${c.author != null ? c.author : (c.user != null ? c.user.username : '匿名')}">author</div>
+
+								<div class="small text-muted" th:text="${c.content}"
+									style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all;">
+									comment...</div>
+							</a>
+
+							<div class="small text-muted mt-1" th:if="${c.createdAt != null}"
+								th:text="${#temporals.format(c.createdAt,'yyyy-MM-dd HH:mm')}">
+								2026-02-10 12:34</div>
+						</div>
+					</div>
+
+					<div th:if="${comments == null or comments.isEmpty()}"
+						class="text-muted small">コメントが見当たりません。</div>
 				</div>
+
+
+
+
+
+
+
 
 			</main>
 		</div>

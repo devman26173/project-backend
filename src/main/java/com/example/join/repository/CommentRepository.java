@@ -17,4 +17,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     
     //특정 게시글의 댓글 수 세기 (대댓글 제외)
     long countByPostIdAndParentIdIsNull(Long postId);
+    
+    //profileControllerでCommentEntityがもつCommentの内容を該当UserのProfileごと10個持たせるため追加。
+    List<Comment> findTop10ByUser_UserIdOrderByCreatedAtDesc(Long userId);
 }

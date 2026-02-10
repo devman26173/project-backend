@@ -5,7 +5,7 @@ import com.example.join.entity.Profile;
 import com.example.join.entity.User;
 import com.example.join.repository.FoodBoardRepository;
 import com.example.join.service.ProfileService;
-
+import com.example.join.service.UserService;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
@@ -21,12 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/profile")
 public class ProfileController {
 
+    private final UserService userService;
 	private final ProfileService profileService;
 	private final FoodBoardRepository foodBoardRepository;
 
-	public ProfileController(ProfileService profileService, FoodBoardRepository foodBoardRepository) {
+	public ProfileController(ProfileService profileService, FoodBoardRepository foodBoardRepository, UserService userService) {
 		this.profileService = profileService;
 		this.foodBoardRepository = foodBoardRepository;
+		this.userService = userService;
 	}
 
 	// ログインしているユーザーのプロフィールページを保持セッション
@@ -64,6 +66,13 @@ public class ProfileController {
 	public String editProfile(@PathVariable Long userId, Profile formProfile) {
 		profileService.updateProfile(userId, formProfile);
 		return "redirect:/profile/" + userId;
+	}
+	//会員脱退処理機能
+	@PostMapping("/{userId}/withdraw")
+	public String withdraw(@PathVariable Long userId, HttpSession session) {
+		userService. withdrawUser(userId);
+		session.invalidate();
+		return "redirect:/login";
 	}
 
 }

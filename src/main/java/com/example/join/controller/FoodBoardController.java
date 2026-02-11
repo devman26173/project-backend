@@ -19,6 +19,12 @@ import com.example.join.repository.LikeRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//========== 비동기 API 엔드포인트 ==========
+
+import org.springframework.web.bind.annotation.ResponseBody;
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 public class FoodBoardController {
 

@@ -28,7 +28,8 @@ public class ProfileController {
 	private final FoodBoardRepository foodBoardRepository;
 	private final CommentRepository commentRepository;
 
-	public ProfileController(ProfileService profileService, FoodBoardRepository foodBoardRepository, CommentRepository commentRepository) {
+	public ProfileController(ProfileService profileService, FoodBoardRepository foodBoardRepository, CommentRepository commentRepository, UserService userService) {
+		this.userService = userService;
 		this.profileService = profileService;
 		this.foodBoardRepository = foodBoardRepository;
 		this.commentRepository = commentRepository;

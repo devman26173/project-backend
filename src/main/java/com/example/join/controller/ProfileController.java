@@ -1,8 +1,10 @@
 package com.example.join.controller;
 
+import com.example.join.entity.Comment;
 import com.example.join.entity.FoodBoard;
 import com.example.join.entity.Profile;
 import com.example.join.entity.User;
+import com.example.join.repository.CommentRepository;
 import com.example.join.repository.FoodBoardRepository;
 import com.example.join.service.ProfileService;
 import com.example.join.service.UserService;
@@ -24,11 +26,12 @@ public class ProfileController {
     private final UserService userService;
 	private final ProfileService profileService;
 	private final FoodBoardRepository foodBoardRepository;
+	private final CommentRepository commentRepository;
 
-	public ProfileController(ProfileService profileService, FoodBoardRepository foodBoardRepository, UserService userService) {
+	public ProfileController(ProfileService profileService, FoodBoardRepository foodBoardRepository, CommentRepository commentRepository) {
 		this.profileService = profileService;
 		this.foodBoardRepository = foodBoardRepository;
-		this.userService = userService;
+		this.commentRepository = commentRepository;
 	}
 
 	// ログインしているユーザーのプロフィールページを保持セッション
@@ -47,9 +50,15 @@ public class ProfileController {
 
 		// 26.02.06実装
 		List<FoodBoard> boards = foodBoardRepository.findTop10ByUser_UserIdOrderByCreatedAtDesc(userId);
-
+		
+		// 26.02.10実装
+		List<Comment> comments = commentRepository.findTop10ByUser_UserIdOrderByCreatedAtDesc(userId);
+		
+		
 		model.addAttribute("profile", profile);
 		model.addAttribute("boards", boards);
+		model.addAttribute("comments", comments);
+		
 		return "profile";
 	}
 

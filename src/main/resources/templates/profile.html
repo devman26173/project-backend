@@ -106,6 +106,13 @@ header {
 							th:href="@{/profile/{userId}/edit(userId=${profile.user.userId})}"
 							class="btn btn-sm btn-outline-primary"
 							style="border-radius: 20px;"> 編集 </a>
+							<form th:action="@{/profile/{userId}/withdraw(userId=${profile.user.userId})}"
+								method="post"
+								onsubmit="return confirm('脱退しますか？（すべてのデータを削除します。）')">
+								<button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius: 20px;">
+									脱退
+								</button>
+							</form>
 					</div>
 
 					<div th:if="${profile == null}" class="text-muted">
@@ -172,14 +179,6 @@ header {
 					<div th:if="${comments == null or comments.isEmpty()}"
 						class="text-muted small">コメントが見当たりません。</div>
 				</div>
-
-
-
-
-
-
-
-
 			</main>
 		</div>
 	</div>

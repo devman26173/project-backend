@@ -486,5 +486,12 @@ public class FoodBoardController {
         return "redirect:/board/view/" + boardId;
     }
     
+ // 이용방법 및 규칙 페이지
+    @GetMapping("/board/rules")
+    public String rules() {
+        return "foodboard-rules";
+    }
+
+    
 }
    

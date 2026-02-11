@@ -53,7 +53,7 @@
 		<div class="mobile-container">
 			<header class="bg-white border-bottom py-3 px-3 d-flex justify-content-between align-items-center">
 			    <!-- 뒤로가기 -->
-			    <a th:href="@{/}" 
+			    <a th:href="@{/boards}" 
 			       class="d-inline-flex align-items-center justify-content-center" 
 			       style="cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
 			    
@@ -109,10 +109,10 @@
 					</div>
 				</div>
 
-		<div class = "p-3 rounded d-flex gap-2 small fw-bold" style = "background-color: #ffecd9; cursor: pointer">
-			<span>📢</span>
-			<span>グルメ掲示板ご利用方法とルール</span>
-		</div>
+				<a th:href="@{/board/rules}" class="p-3 rounded d-flex gap-2 small fw-bold text-decoration-none text-dark" style="background-color: #ffecd9; cursor: pointer">
+				    <span>📢</span>
+				    <span>グルメ掲示板ご利用方法とルール</span>
+				</a>
 
 		<main class="p-0 pb-5">
 		    <div th:each="board : ${boards}" class="p-2 border-bottom" style="background-color: white">
@@ -137,6 +137,10 @@
 		        </div>
 
 				<div class="d-flex align-items-center gap-2 small">
+					<span class="text-warning fw-bold d-flex align-items-center gap-1">
+					        <img src="https://img.icons8.com/ios-filled/20/ffc107/star.png" alt="별점" style="width:16px; height:16px;">
+					        <span th:text="${board.rating}">5</span>
+					    </span>
 				    <span class="d-flex align-items-center gap-1">
 				        <img th:src="${board.likedByMe ?
 							'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' :

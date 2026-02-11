@@ -3,6 +3,7 @@ package com.example.join.controller;
 import com.example.join.service.FoodBoardService;
 import com.example.join.service.CommentService;
 import com.example.join.service.PostService;
+import com.example.join.service.R2UploadService;
 import com.example.join.entity.Comment;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -31,17 +32,20 @@ public class FoodBoardController {
 	private final FoodBoardService foodBoardService;
     private final CommentService commentService;
     private final PostService postService;
+    private final R2UploadService r2UploadService;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
 	
     public FoodBoardController(FoodBoardService foodBoardService, 
     							CommentService commentService,
-    							PostService postService, 
+    							PostService postService,
+							R2UploadService r2UploadService,
     							CommentRepository commentRepository, 
     							LikeRepository likeRepository) {
     	this.foodBoardService = foodBoardService;
     	this.commentService = commentService;
     	this.postService = postService;
+		this.r2UploadService = r2UploadService;
     	this.commentRepository = commentRepository;
     	this.likeRepository = likeRepository;
     }
@@ -139,6 +143,7 @@ public class FoodBoardController {
         if (loginUser == null) {
             return "redirect:/login?returnUrl=/board/write";
         }
+        foodBoard.setImageUrls(r2UploadService.normalizeImageUrls(foodBoard.getImageUrls()));
         foodBoard.setUser(loginUser);
         foodBoardService.saveFood(foodBoard);
         return "redirect:/board";
@@ -220,6 +225,7 @@ public class FoodBoardController {
         }
         FoodBoard existingBoard = foodBoardService.findById(id);
         foodBoard.setUser(existingBoard.getUser());
+        foodBoard.setImageUrls(r2UploadService.normalizeImageUrls(foodBoard.getImageUrls()));
         
         foodBoardService.updateBoard(id, foodBoard);
         return "redirect:/board/view/" + id;

@@ -264,7 +264,7 @@
 		</script>
 		<script>
 			const imageInput = document.getElementById('imageInput');
-			const dropzone = document.getElementById('dropZone');
+			const dropZone = document.getElementById('dropZone');
 			const imagePreviewContainer = document.getElementById('imagePreviewContainer');
 			const imagePreviewList = document.getElementById('imagePreviewList');
 			const imageUrlsInput = document.getElementById('imageUrls');
@@ -278,7 +278,7 @@
 			window.addEventListener('DOMContentLoaded', function(){
 				const initialUrls = imageUrlsInput.value; 
 				if(initialUrls && initialUrls.trim() !== ''){
-					existingUrls = initialUrls.split(',').map(url => url.trim());
+					existingImageUrls = initialUrls.split(',').map(url => url.trim());
 					updateExistingImages();
 				}
 			});
@@ -386,14 +386,18 @@
 			            return;
 			        }
 			        
-			        const formData = new FormData();
-			        formData.append('file', file);
-			        
 			        showLoading();
-			        
-			        fetch('/api/upload', {
+			
+			        fetch('/api/uploads/presign', {
 			            method: 'POST',
-			            body: formData
+			            headers: {
+			                'Content-Type': 'application/json'
+			            },
+			            body: JSON.stringify({
+			                fileName: file.name,
+			                contentType: file.type,
+			                fileSize: file.size
+			            })
 			        })
 			        .then(response => {
 			            if (!response.ok) {
@@ -401,9 +405,21 @@
 			            }
 			            return response.json();
 			        })
+			        .then(data => fetch(data.uploadUrl, {
+			            method: 'PUT',
+			            headers: {
+			                'Content-Type': file.type
+			            },
+			            body: file
+			        }).then(uploadResponse => {
+			            if (!uploadResponse.ok) {
+			                throw new Error('R2へのアップロードに失敗しました');
+			            }
+			            return data;
+			        }))
 			        .then(data => {
-			            if (data.url) {
-			                newImageUrls.push(data.url);
+			            if (data.publicUrl) {
+			                newImageUrls.push(data.publicUrl);
 			                updateNewImagePreview();
 			                updateImageUrlsInput();
 			            } else {
@@ -475,7 +491,5 @@
 
 	</body>
 </html>
-
-
 
 

@@ -260,15 +260,19 @@
 						            return;
 						        }
 						        
-						        const formData = new FormData();
-						        formData.append('file', file);
-						        
 						        // 로딩 표시
 						        showLoading();
-						        
-						        fetch('/api/upload', {
+
+						        fetch('/api/uploads/presign', {
 						            method: 'POST',
-						            body: formData
+						            headers: {
+						                'Content-Type': 'application/json'
+						            },
+						            body: JSON.stringify({
+						                fileName: file.name,
+						                contentType: file.type,
+						                fileSize: file.size
+						            })
 						        })
 						        .then(response => {
 						            if (!response.ok) {
@@ -276,10 +280,21 @@
 						            }
 						            return response.json();
 						        })
+						        .then(data => fetch(data.uploadUrl, {
+						            method: 'PUT',
+						            headers: {
+						                'Content-Type': file.type
+						            },
+						            body: file
+						        }).then(uploadResponse => {
+						            if (!uploadResponse.ok) {
+						                throw new Error('R2へのアップロードに失敗しました');
+						            }
+						            return data;
+						        }))
 						        .then(data => {
-						            if (data.url) {
-						                // 업로드 성공
-						                uploadedImages.push(data.url);
+						            if (data.publicUrl) {
+						                uploadedImages.push(data.publicUrl);
 						                updateImagePreview();
 						                updateImageUrlsInput();
 						            } else {

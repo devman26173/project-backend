@@ -88,5 +88,13 @@ public class FoodBoardService {
     public List<FoodBoard> searchByKeyword(String keyword) {
         return foodboardRepository.findByTitleContainingOrContentContainingOrderByCreatedAtDesc(keyword, keyword);
     }
+    
+    //조회수 증가 메소드
+    public void increaseViewCount(Long id) {
+    	FoodBoard board = foodboardRepository.findById(id)
+    			.orElseThrow(() -> new RuntimeException("投稿が見つかりません。"));
+    			board.setViewCount(board.getViewCount() + 1);
+    			foodboardRepository.save(board);
+    }
 
 }

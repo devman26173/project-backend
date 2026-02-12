@@ -196,6 +196,13 @@
 					    <span>コメント</span>
 					    <span th:text="${comments != null ? comments.size() : 0}">0</span>
 					</span>
+					
+					<!--조회수 추가-->
+					<span class="text-muted ms-auto">
+						<img src="https://img.icons8.com/ios/22/888888/eye.png" alt="조회수" style="vertical-align: middle;">
+						<span th:text="${board.viewCount}">0</span>
+					</span>
+						
 			    </div>
 			</div>
 

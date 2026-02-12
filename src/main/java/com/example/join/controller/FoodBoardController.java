@@ -160,6 +160,13 @@ public class FoodBoardController {
         User loginUser = (User) session.getAttribute("loginUser");
         String currentUserId = loginUser != null ? loginUser.getUsername() : null;
         
+        //조회수 증가(중복 방지를 위한 세션 체크)
+        String viewKey = "board_view_" + id; 
+        if(session.getAttribute(viewKey) == null) {
+        	foodBoardService.increaseViewCount(id);
+        	session.setAttribute(viewKey, true);
+        }
+        
         // 게시글 정보
         FoodBoard board = foodBoardService.findById(id);
         

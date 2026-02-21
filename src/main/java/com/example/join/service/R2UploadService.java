@@ -9,7 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
@@ -20,19 +23,49 @@ public class R2UploadService {
 
     private static final long MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
     private static final List<String> ALLOWED_CONTENT_TYPES = List.of(
-            "image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif");
+            "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif");
 
+    private final S3Client s3Client;
     private final S3Presigner s3Presigner;
     private final String bucketName;
     private final String publicUrl;
 
     public R2UploadService(
+            S3Client s3Client,
             S3Presigner s3Presigner,
             @Value("${cloudflare.r2.bucket-name}") String bucketName,
             @Value("${cloudflare.r2.public-url}") String publicUrl) {
+        this.s3Client = s3Client;
         this.s3Presigner = s3Presigner;
         this.bucketName = bucketName;
         this.publicUrl = publicUrl;
+    }
+
+    public UploadedImage uploadImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("画像ファイルが必要です");
+        }
+
+        String contentType = file.getContentType();
+        long fileSize = file.getSize();
+        validateUploadRequest(contentType, fileSize);
+
+        String extension = extractExtension(file.getOriginalFilename());
+        String key = "foodboard/" + UUID.randomUUID() + extension;
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .contentType(contentType)
+                .build();
+
+        try {
+            s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), fileSize));
+        } catch (Exception e) {
+            throw new IllegalStateException("R2へのアップロードに失敗しました", e);
+        }
+
+        return new UploadedImage(key, buildPublicUrl(key));
     }
 
     public PresignedUpload createPresignedUpload(String originalFilename, String contentType, long fileSize) {
@@ -96,5 +129,8 @@ public class R2UploadService {
     }
 
     public record PresignedUpload(String key, String uploadUrl, String publicUrl) {
+    }
+
+    public record UploadedImage(String key, String publicUrl) {
     }
 }

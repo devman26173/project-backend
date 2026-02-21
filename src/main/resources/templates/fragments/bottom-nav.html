@@ -5,27 +5,59 @@
 </head>
 <body>
     <!-- Bottom Navigation Fragment -->
+    <style>
+        body { overflow-x: hidden; }
+        body.slide-enter-forward,
+        body.slide-enter-backward,
+        body.slide-leave-forward,
+        body.slide-leave-backward {
+            animation-duration: 260ms;
+            animation-timing-function: ease;
+            animation-fill-mode: both;
+        }
+        body.slide-enter-forward { animation-name: slideInFromRight; }
+        body.slide-enter-backward { animation-name: slideInFromLeft; }
+        body.slide-leave-forward { animation-name: slideOutToLeft; }
+        body.slide-leave-backward { animation-name: slideOutToRight; }
+        @keyframes slideInFromRight {
+            from { transform: translateX(18px); opacity: 0.6; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInFromLeft {
+            from { transform: translateX(-18px); opacity: 0.6; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutToLeft {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-18px); opacity: 0.65; }
+        }
+        @keyframes slideOutToRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(18px); opacity: 0.65; }
+        }
+    </style>
     <nav th:fragment="bottomNav" style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; height: 70px; background-color: white; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-around; align-items: center; z-index: 1000;">
-        <a th:href="@{/}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
+        <a data-transition-nav th:href="@{/}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
             <span style="font-size: 24px;">🏠</span>
             <span style="font-size: 11px; margin-top: 4px;">ホーム</span>
         </a>
-        <a th:href="@{/boards}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
+        <a data-transition-nav th:href="@{/boards}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
             <span style="font-size: 24px;">📋</span>
             <span style="font-size: 11px; margin-top: 4px;">地域掲示板</span>
         </a>
-        <a th:href="@{/board}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
+        <a data-transition-nav th:href="@{/board}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
             <span style="font-size: 24px;">🍔</span>
             <span style="font-size: 11px; margin-top: 4px;">グルメ</span>
         </a>
-        <a th:if="${session.loginUser == null}" th:href="@{/login}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
+        <a th:if="${session.loginUser == null}" data-transition-nav th:href="@{/login}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
             <span style="font-size: 24px;">👤</span>
             <span style="font-size: 11px; margin-top: 4px;">ログイン</span>
         </a>
-        <a th:if="${session.loginUser != null}" th:href="@{/profile/{userId}(userId=${session.loginUser.userId})}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
+        <a th:if="${session.loginUser != null}" data-transition-nav th:href="@{/profile/{userId}(userId=${session.loginUser.userId})}" style="display: flex; flex-direction: column; align-items: center; padding: 8px; text-decoration: none; color: #333;">
             <span style="font-size: 24px;">👤</span>
             <span style="font-size: 11px; margin-top: 4px;">プロフィール</span>
         </a>
     </nav>
+    <script th:src="@{/js/page-transition.js}" defer></script>
 </body>
 </html>

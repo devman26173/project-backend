@@ -36,7 +36,7 @@ public class R2UploadService {
     }
 
     public PresignedUpload createPresignedUpload(String originalFilename, String contentType, long fileSize) {
-        validateUploadRequest(contentType, fileSize);
+        validateLocalUpload(contentType, fileSize);
 
         String extension = extractExtension(originalFilename);
         String key = "foodboard/" + UUID.randomUUID() + extension;
@@ -64,7 +64,7 @@ public class R2UploadService {
         List<String> validUrls = Arrays.stream(imageUrlsCsv.split(","))
                 .map(String::trim)
                 .filter(StringUtils::hasText)
-                .filter(url -> url.startsWith(publicUrl + "/foodboard/"))
+                .filter(url -> url.startsWith(publicUrl + "/foodboard/") || url.startsWith("/uploads/"))
                 .distinct()
                 .limit(5)
                 .collect(Collectors.toList());
@@ -75,7 +75,7 @@ public class R2UploadService {
         return String.join(",", validUrls);
     }
 
-    private void validateUploadRequest(String contentType, long fileSize) {
+    public void validateLocalUpload(String contentType, long fileSize) {
         if (!StringUtils.hasText(contentType) || !ALLOWED_CONTENT_TYPES.contains(contentType)) {
             throw new IllegalArgumentException("画像ファイルのみアップロード可能です");
         }

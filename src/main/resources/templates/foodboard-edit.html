@@ -388,7 +388,30 @@
 			        
 			        showLoading();
 			
-			        fetch('/api/uploads/presign', {
+			        requestPresignedUpload(file)
+			        .catch(error => {
+			            console.warn('R2 upload failed, fallback to local upload.', error);
+			            return uploadToLocal(file);
+			        })
+			        .then(data => {
+			            if (data.publicUrl) {
+			                newImageUrls.push(data.publicUrl);
+			                updateNewImagePreview();
+			                updateImageUrlsInput();
+			            } else {
+			                alert(data.error || 'アップロード失敗');
+			            }
+			            hideLoading();
+			        })
+			        .catch(error => {
+			            alert('アップロードエラー: ' + error.message);
+			            console.error('Upload error:', error);
+			            hideLoading();
+			        });
+			    }
+
+			    function requestPresignedUpload(file) {
+			        return fetch('/api/uploads/presign', {
 			            method: 'POST',
 			            headers: {
 			                'Content-Type': 'application/json'
@@ -416,21 +439,21 @@
 			                throw new Error('R2へのアップロードに失敗しました');
 			            }
 			            return data;
-			        }))
-			        .then(data => {
-			            if (data.publicUrl) {
-			                newImageUrls.push(data.publicUrl);
-			                updateNewImagePreview();
-			                updateImageUrlsInput();
-			            } else {
-			                alert(data.error || 'アップロード失敗');
+			        }));
+			    }
+
+			    function uploadToLocal(file) {
+			        const formData = new FormData();
+			        formData.append('file', file);
+
+			        return fetch('/api/uploads/local', {
+			            method: 'POST',
+			            body: formData
+			        }).then(response => {
+			            if (!response.ok) {
+			                throw new Error('ローカルアップロード失敗');
 			            }
-			            hideLoading();
-			        })
-			        .catch(error => {
-			            alert('アップロードエラー: ' + error.message);
-			            console.error('Upload error:', error);
-			            hideLoading();
+			            return response.json();
 			        });
 			    }
 			    
@@ -491,5 +514,4 @@
 
 	</body>
 </html>
-
 

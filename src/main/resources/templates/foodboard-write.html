@@ -263,39 +263,15 @@
 						        // 로딩 표시
 						        showLoading();
 
-						        fetch('/api/uploads/presign', {
-						            method: 'POST',
-						            headers: {
-						                'Content-Type': 'application/json'
-						            },
-						            body: JSON.stringify({
-						                fileName: file.name,
-						                contentType: file.type,
-						                fileSize: file.size
-						            })
-						        })
-						        .then(response => {
-						            if (!response.ok) {
-						                throw new Error('アップロード失敗');
-						            }
-						            return response.json();
-						        })
-						        .then(data => fetch(data.uploadUrl, {
-						            method: 'PUT',
-						            headers: {
-						                'Content-Type': file.type
-						            },
-						            body: file
-						        }).then(uploadResponse => {
-						            if (!uploadResponse.ok) {
-						                throw new Error('R2へのアップロードに失敗しました');
-						            }
-						            return data;
-						        }))
-						        .then(data => {
-						            if (data.publicUrl) {
-						                uploadedImages.push(data.publicUrl);
-						                updateImagePreview();
+						    requestPresignedUpload(file)
+						    .catch(error => {
+						        console.warn('R2 upload failed, fallback to local upload.', error);
+						        return uploadToLocal(file);
+						    })
+						    .then(data => {
+						        if (data.publicUrl) {
+						            uploadedImages.push(data.publicUrl);
+						            updateImagePreview();
 						                updateImageUrlsInput();
 						            } else {
 						                alert(data.error || 'アップロード失敗');
@@ -304,10 +280,57 @@
 						        })
 						        .catch(error => {
 						            alert('アップロードエラー: ' + error.message);
-						            console.error('Upload error:', error);
-						            hideLoading();
-						        });
-						    }
+						        console.error('Upload error:', error);
+						        hideLoading();
+						    });
+						}
+
+						function requestPresignedUpload(file) {
+						    return fetch('/api/uploads/presign', {
+						        method: 'POST',
+						        headers: {
+						            'Content-Type': 'application/json'
+						        },
+						        body: JSON.stringify({
+						            fileName: file.name,
+						            contentType: file.type,
+						            fileSize: file.size
+						        })
+						    })
+						    .then(response => {
+						        if (!response.ok) {
+						            throw new Error('アップロード失敗');
+						        }
+						        return response.json();
+						    })
+						    .then(data => fetch(data.uploadUrl, {
+						        method: 'PUT',
+						        headers: {
+						            'Content-Type': file.type
+						        },
+						        body: file
+						    }).then(uploadResponse => {
+						        if (!uploadResponse.ok) {
+						            throw new Error('R2へのアップロードに失敗しました');
+						        }
+						        return data;
+						    }));
+						}
+
+						function uploadToLocal(file) {
+						    const formData = new FormData();
+						    formData.append('file', file);
+
+						    return fetch('/api/uploads/local', {
+						        method: 'POST',
+						        body: formData
+						    }).then(response => {
+						        if (!response.ok) {
+						            throw new Error('ローカルアップロード失敗');
+						        }
+						        return response.json();
+						    });
+						}
 						    
 						    // 미리보기 업데이트
 						    function updateImagePreview() {

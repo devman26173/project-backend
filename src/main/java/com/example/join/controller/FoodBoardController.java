@@ -1,11 +1,12 @@
 package com.example.join.controller;
 
 import com.example.join.service.FoodBoardService;
+import com.example.join.service.ImageUploadService;
 import com.example.join.service.CommentService;
 import com.example.join.service.PostService;
-import com.example.join.service.R2UploadService;
 import com.example.join.entity.Comment;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,22 +33,25 @@ public class FoodBoardController {
 	private final FoodBoardService foodBoardService;
     private final CommentService commentService;
     private final PostService postService;
-    private final R2UploadService r2UploadService;
+    private final ImageUploadService imageUploadService;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+    private final String uploadClientMode;
 	
     public FoodBoardController(FoodBoardService foodBoardService, 
     							CommentService commentService,
     							PostService postService,
-							R2UploadService r2UploadService,
+							ImageUploadService imageUploadService,
     							CommentRepository commentRepository, 
-    							LikeRepository likeRepository) {
+    							LikeRepository likeRepository,
+                                @Value("${app.upload.client-mode:server}") String uploadClientMode) {
     	this.foodBoardService = foodBoardService;
     	this.commentService = commentService;
     	this.postService = postService;
-		this.r2UploadService = r2UploadService;
+		this.imageUploadService = imageUploadService;
     	this.commentRepository = commentRepository;
     	this.likeRepository = likeRepository;
+        this.uploadClientMode = uploadClientMode;
     }
 
 	@GetMapping("/board")
@@ -128,11 +132,12 @@ public class FoodBoardController {
 	
     // 게시글 작성 페이지
     @GetMapping("/board/write")
-    public String write(HttpSession session) {
+    public String write(HttpSession session, Model model) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (loginUser == null) {
             return "redirect:/login?returnUrl=/board/write";
         }
+        model.addAttribute("uploadClientMode", uploadClientMode);
         return "foodboard-write";
     }
     
@@ -143,7 +148,7 @@ public class FoodBoardController {
         if (loginUser == null) {
             return "redirect:/login?returnUrl=/board/write";
         }
-        foodBoard.setImageUrls(r2UploadService.normalizeImageUrls(foodBoard.getImageUrls()));
+        foodBoard.setImageUrls(imageUploadService.normalizeImageUrls(foodBoard.getImageUrls()));
         foodBoard.setUser(loginUser);
         foodBoardService.saveFood(foodBoard);
         return "redirect:/board";
@@ -220,6 +225,7 @@ public class FoodBoardController {
     @GetMapping("/board/edit/{id}")
     public String editForm(@PathVariable Long id, Model model) {
     model.addAttribute("board", foodBoardService.findById(id));
+    model.addAttribute("uploadClientMode", uploadClientMode);
     return "foodboard-edit";
     }
     
@@ -232,7 +238,7 @@ public class FoodBoardController {
         }
         FoodBoard existingBoard = foodBoardService.findById(id);
         foodBoard.setUser(existingBoard.getUser());
-        foodBoard.setImageUrls(r2UploadService.normalizeImageUrls(foodBoard.getImageUrls()));
+        foodBoard.setImageUrls(imageUploadService.normalizeImageUrls(foodBoard.getImageUrls()));
         
         foodBoardService.updateBoard(id, foodBoard);
         return "redirect:/board/view/" + id;

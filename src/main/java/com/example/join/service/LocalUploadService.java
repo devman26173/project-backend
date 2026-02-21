@@ -1,6 +1,9 @@
 package com.example.join.service;
 
-import java.time.Duration;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -12,35 +15,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
-
 @Service
-@Profile("!dev")
-public class R2UploadService implements ImageUploadService {
+@Profile("dev")
+public class LocalUploadService implements ImageUploadService {
 
     private static final long MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
     private static final List<String> ALLOWED_CONTENT_TYPES = List.of(
             "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif");
 
-    private final S3Client s3Client;
-    private final S3Presigner s3Presigner;
-    private final String bucketName;
-    private final String publicUrl;
+    private final Path uploadRootPath;
+    private final String publicBaseUrl;
 
-    public R2UploadService(
-            S3Client s3Client,
-            S3Presigner s3Presigner,
-            @Value("${cloudflare.r2.bucket-name}") String bucketName,
-            @Value("${cloudflare.r2.public-url}") String publicUrl) {
-        this.s3Client = s3Client;
-        this.s3Presigner = s3Presigner;
-        this.bucketName = bucketName;
-        this.publicUrl = publicUrl;
+    public LocalUploadService(
+            @Value("${file.upload-dir:uploads}") String uploadDir,
+            @Value("${app.upload.public-base-url:/uploads}") String publicBaseUrl) {
+        this.uploadRootPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+        this.publicBaseUrl = normalizeBaseUrl(publicBaseUrl);
     }
 
     @Override
@@ -55,17 +45,13 @@ public class R2UploadService implements ImageUploadService {
 
         String extension = extractExtension(file.getOriginalFilename());
         String key = "foodboard/" + UUID.randomUUID() + extension;
-
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .contentType(contentType)
-                .build();
+        Path targetPath = uploadRootPath.resolve(key).normalize();
+        ensureUploadPath(targetPath);
 
         try {
-            s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), fileSize));
-        } catch (Exception e) {
-            throw new IllegalStateException("R2へのアップロードに失敗しました", e);
+            Files.copy(file.getInputStream(), targetPath);
+        } catch (IOException e) {
+            throw new IllegalStateException("ローカル画像アップロードに失敗しました", e);
         }
 
         return new UploadedImage(key, buildPublicUrl(key));
@@ -73,24 +59,7 @@ public class R2UploadService implements ImageUploadService {
 
     @Override
     public PresignedUpload createPresignedUpload(String originalFilename, String contentType, long fileSize) {
-        validateUploadRequest(contentType, fileSize);
-
-        String extension = extractExtension(originalFilename);
-        String key = "foodboard/" + UUID.randomUUID() + extension;
-
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .contentType(contentType)
-                .build();
-
-        PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(
-                PutObjectPresignRequest.builder()
-                        .signatureDuration(Duration.ofMinutes(5))
-                        .putObjectRequest(putObjectRequest)
-                        .build());
-
-        return new PresignedUpload(key, presignedRequest.url().toString(), buildPublicUrl(key));
+        throw new UnsupportedOperationException("Presigned upload is not available in dev profile");
     }
 
     @Override
@@ -102,15 +71,12 @@ public class R2UploadService implements ImageUploadService {
         List<String> validUrls = Arrays.stream(imageUrlsCsv.split(","))
                 .map(String::trim)
                 .filter(StringUtils::hasText)
-                .filter(url -> url.startsWith(publicUrl + "/foodboard/"))
+                .filter(url -> url.startsWith(publicBaseUrl + "/foodboard/"))
                 .distinct()
                 .limit(5)
                 .collect(Collectors.toList());
 
-        if (validUrls.isEmpty()) {
-            return null;
-        }
-        return String.join(",", validUrls);
+        return validUrls.isEmpty() ? null : String.join(",", validUrls);
     }
 
     private void validateUploadRequest(String contentType, long fileSize) {
@@ -130,7 +96,24 @@ public class R2UploadService implements ImageUploadService {
     }
 
     private String buildPublicUrl(String key) {
-        return publicUrl + "/" + key;
+        return publicBaseUrl + "/" + key;
     }
 
+    private String normalizeBaseUrl(String baseUrl) {
+        if (!StringUtils.hasText(baseUrl)) {
+            return "/uploads";
+        }
+        return baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
+    }
+
+    private void ensureUploadPath(Path targetPath) {
+        if (!targetPath.startsWith(uploadRootPath)) {
+            throw new IllegalArgumentException("無効なファイルパスです");
+        }
+        try {
+            Files.createDirectories(targetPath.getParent());
+        } catch (IOException e) {
+            throw new IllegalStateException("アップロードディレクトリを作成できません", e);
+        }
+    }
 }

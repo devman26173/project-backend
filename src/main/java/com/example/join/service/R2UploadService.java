@@ -45,7 +45,6 @@ public class R2UploadService {
                 .bucket(bucketName)
                 .key(key)
                 .contentType(contentType)
-                .contentLength(fileSize)
                 .build();
 
         PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(
@@ -99,4 +98,3 @@ public class R2UploadService {
     public record PresignedUpload(String key, String uploadUrl, String publicUrl) {
     }
 }
-

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class FoodBoardService {
@@ -95,6 +96,10 @@ public class FoodBoardService {
     			.orElseThrow(() -> new RuntimeException("投稿が見つかりません。"));
     			board.setViewCount(board.getViewCount() + 1);
     			foodboardRepository.save(board);
+    }
+
+    public Optional<FoodBoard> findLatest() {
+        return Optional.ofNullable(foodboardRepository.findTopByOrderByCreatedAtDesc());
     }
 
 }

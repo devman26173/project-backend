@@ -27,5 +27,6 @@ public interface FoodBoardRepository extends JpaRepository<FoodBoard, Long> {
     
     //검색 결과 조회
     List<FoodBoard> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
-}
 
+    FoodBoard findTopByOrderByCreatedAtDesc();
+}

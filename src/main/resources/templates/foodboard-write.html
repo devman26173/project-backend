@@ -31,7 +31,7 @@
 					}
 					</style>	
 	</head>
-		<body>
+		<body th:attr="data-upload-mode=${uploadClientMode}">
 			<div class = "container-fluid px-0">
 				<div class="mobile-container">
 				<form th:action="@{/board/write}" method="post">
@@ -190,6 +190,7 @@
 						    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
 						    const imagePreviewList = document.getElementById('imagePreviewList');
 						    const imageUrlsInput = document.getElementById('imageUrls');
+						    const uploadMode = document.body.dataset.uploadMode || 'server';
 						    
 						    let uploadedImages = []; // 업로드된 이미지 URL 배열
 						    const MAX_IMAGES = 5;
@@ -263,35 +264,51 @@
 						        // 로딩 표시
 						        showLoading();
 
-						        fetch('/api/uploads/presign', {
-						            method: 'POST',
-						            headers: {
-						                'Content-Type': 'application/json'
-						            },
-						            body: JSON.stringify({
-						                fileName: file.name,
-						                contentType: file.type,
-						                fileSize: file.size
+						        let uploadPromise;
+						        if (uploadMode === 'direct') {
+						            uploadPromise = fetch('/api/uploads/presign', {
+						                method: 'POST',
+						                headers: {
+						                    'Content-Type': 'application/json'
+						                },
+						                body: JSON.stringify({
+						                    fileName: file.name,
+						                    contentType: file.type,
+						                    fileSize: file.size
+						                })
 						            })
-						        })
-						        .then(response => {
-						            if (!response.ok) {
-						                throw new Error('アップロード失敗');
-						            }
-						            return response.json();
-						        })
-						        .then(data => fetch(data.uploadUrl, {
-						            method: 'PUT',
-						            headers: {
-						                'Content-Type': file.type
-						            },
-						            body: file
-						        }).then(uploadResponse => {
-						            if (!uploadResponse.ok) {
-						                throw new Error('R2へのアップロードに失敗しました');
-						            }
-						            return data;
-						        }))
+						            .then(response => {
+						                if (!response.ok) {
+						                    throw new Error('アップロード失敗');
+						                }
+						                return response.json();
+						            })
+						            .then(data => fetch(data.uploadUrl, {
+						                method: 'PUT',
+						                headers: {
+						                    'Content-Type': file.type
+						                },
+						                body: file
+						            }).then(uploadResponse => {
+						                if (!uploadResponse.ok) {
+						                    throw new Error('R2へのアップロードに失敗しました');
+						                }
+						                return data;
+						            }));
+						        } else {
+						            const formData = new FormData();
+						            formData.append('file', file);
+						            uploadPromise = fetch('/api/uploads/image', {
+						                method: 'POST',
+						                body: formData
+						            }).then(response => {
+						                if (!response.ok) {
+						                    throw new Error('アップロード失敗');
+						                }
+						                return response.json();
+						            });
+						        }
+						        uploadPromise
 						        .then(data => {
 						            if (data.publicUrl) {
 						                uploadedImages.push(data.publicUrl);

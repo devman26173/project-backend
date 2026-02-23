@@ -175,6 +175,18 @@
 					<button class="btn btn-primary">追加機能</button>
 			    </div>
 				
+				<!-- 지도 (mapUrl이 있을 때만 표시) -->
+				<div class="px-3 pb-2" th:if="${board.mapUrl != null and !board.mapUrl.isEmpty()}">
+					<div class="mb-1 small text-muted fw-bold">📍 地図</div>
+					<iframe th:src="${board.mapUrl}"
+							width="100%"
+							height="250"
+							frameborder="0"
+							style="border-radius: 8px; border: 1px solid #dee2e6;">
+					</iframe>
+				</div>
+				
+				
 			</main>
 			
 			<!-- ✅ 게시글 좋아요/댓글 버튼 추가 -->

@@ -327,10 +327,10 @@
 						  </span>
 			                
 			                <!-- 삭제 -->
-							<form th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
-							      th:action="@{/board/comment/delete}" method="post" 
-							      class="d-inline"
-							      onsubmit="event.stopPropagation(); return checkLoginForAction(event) && confirm('本当に削除しますか?');">
+								<form th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
+								      th:action="@{/board/comment/delete}" method="post" 
+								      class="d-inline"
+								      onsubmit="event.stopPropagation(); return checkLoginForAction(event);">
 			                    <input type="hidden" name="commentId" th:value="${comment.id}">
 								<button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
 								    <img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
@@ -424,14 +424,14 @@
 									</span>
 			                        
 			                        <!-- 대댓글 삭제 -->
-			                        <form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
-									      th:action="@{/board/comment/reply/delete}" method="post" 
-									      class="d-inline"
-									      onsubmit="event.stopPropagation(); return checkLoginForAction(event) && confirm('本当に削除しますか?');"
-			                            <input type="hidden" name="parentId" th:value="${comment.id}">
-			                            <input type="hidden" name="replyId" th:value="${reply.id}">
-			                            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
-											<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
+					                        <form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
+										      th:action="@{/board/comment/reply/delete}" method="post" 
+										      class="d-inline"
+										      onsubmit="event.stopPropagation(); return checkLoginForAction(event);">
+				                            <input type="hidden" name="parentId" th:value="${comment.id}">
+				                            <input type="hidden" name="replyId" th:value="${reply.id}">
+				                            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
+												<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
 			                            </button>
 			                        </form>
 			                    </div>

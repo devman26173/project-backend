@@ -1,9 +1,28 @@
-# 1. Java 17 베이스
-FROM eclipse-temurin:17-jdk-jammy
+# base image
+FROM maven:3.9.9-eclipse-temurin-17 AS builder
+WORKDIR /app
 
-# 2. JAR 파일 복사
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+# dependency
+COPY pom.xml ./
+RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests dependency:go-offline
 
-# 3. 컨테이너 실행
-ENTRYPOINT ["java","-jar","/app.jar","--spring.profiles.active=prod"]
+# Build
+COPY src src
+RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests clean package
+
+# runtime image
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+
+# Non-root user(For security)
+RUN useradd -create-home -shell /bin/bash appuser
+
+# Copy jar to runtime
+COPY --from=builder /app/target/*.jar /app/app.jar
+
+# use switch
+RUN chown -R spring:spring /app
+USER appuser
+
+# port
+EXPOSE 8080

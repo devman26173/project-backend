@@ -4,6 +4,7 @@ import com.example.join.service.FoodBoardService;
 import com.example.join.service.ImageUploadService;
 import com.example.join.service.CommentService;
 import com.example.join.service.PostService;
+import com.example.join.service.TokenExtractService;
 import com.example.join.entity.Comment;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import com.example.join.entity.FoodBoard;
 import com.example.join.entity.User;
 import com.example.join.repository.CommentRepository;
 import com.example.join.repository.LikeRepository;
+import com.example.join.repository.TokenRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 //========== 비동기 API 엔드포인트 ==========
 
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +40,8 @@ public class FoodBoardController {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final String uploadClientMode;
+    private final TokenExtractService tokenExtractService;
+    private final TokenRepository tokenRepository;
 	
     public FoodBoardController(FoodBoardService foodBoardService, 
     							CommentService commentService,
@@ -44,14 +49,18 @@ public class FoodBoardController {
 							ImageUploadService imageUploadService,
     							CommentRepository commentRepository, 
     							LikeRepository likeRepository,
-                                @Value("${app.upload.client-mode:server}") String uploadClientMode) {
+                                @Value("${app.upload.client-mode:server}") String uploadClientMode,
+                                TokenExtractService tokenExtractService,
+                                TokenRepository tokenRepository) {
     	this.foodBoardService = foodBoardService;
     	this.commentService = commentService;
     	this.postService = postService;
 		this.imageUploadService = imageUploadService;
     	this.commentRepository = commentRepository;
-    	this.likeRepository = likeRepository;
+        this.likeRepository = likeRepository;
         this.uploadClientMode = uploadClientMode;
+        this.tokenExtractService = tokenExtractService;
+        this.tokenRepository = tokenRepository;
     }
 
 	@GetMapping("/board")
@@ -219,6 +228,14 @@ public class FoodBoardController {
         model.addAttribute("sortOrder", sort);  // ✅ 추가
         
         return "foodboard-view";  // ✅ 게시글 상세 페이지로
+    }
+
+    // Add nouns extract feature
+    @PostMapping("/board/token-extract")
+    public String extractNounsAndApply(@RequestParam Long boardId, RedirectAttributes redirectAttributes) {
+        List<String> extractedNouns = tokenExtractService.extractNounsList(foodBoardService.findById(boardId).getContent());
+        redirectAttributes.addFlashAttribute("extractedNouns",extractedNouns);
+        return "redirect:/board/view/" + boardId;
     }
     
     //게시글 수정 페이지 
@@ -444,6 +461,261 @@ public class FoodBoardController {
             return "redirect:/post/" + parent.getPostId();
         }
         return "redirect:/board/view/" + parent.getPostId() + "#comment-" + parentId;
+    }
+
+    // ========== 비동기 API ==========
+    @PostMapping("/api/board/like")
+    @ResponseBody
+    public Map<String, Object> likeBoardApi(@RequestParam Long boardId, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return response;
+        }
+
+        postService.toggleLike(boardId, "BOARD", loginUser.getUsername());
+        response.put("success", true);
+        response.put("liked", postService.isLiked(boardId, "BOARD", loginUser.getUsername()));
+        response.put("likeCount", postService.getLikeCount(boardId, "BOARD"));
+        return response;
+    }
+
+    @PostMapping("/api/board/comment/add")
+    @ResponseBody
+    public Map<String, Object> addCommentApi(@RequestParam Long boardId,
+                                             @RequestParam String content,
+                                             HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return response;
+        }
+
+        Comment comment = new Comment();
+        comment.setPostId(boardId);
+        comment.setContent(content);
+        comment.setUser(loginUser);
+        comment.setAuthor(loginUser.getUsername());
+        comment.setCreatedAt(java.time.LocalDateTime.now());
+        commentService.save(comment);
+
+        response.put("success", true);
+        return response;
+    }
+
+    @PostMapping("/api/board/comment/like")
+    @ResponseBody
+    public Map<String, Object> likeCommentApi(@RequestParam Long commentId, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return response;
+        }
+
+        Comment comment = commentService.findById(commentId);
+        if (comment == null) {
+            response.put("success", false);
+            response.put("message", "댓글을 찾을 수 없습니다.");
+            return response;
+        }
+
+        postService.toggleLike(commentId, "COMMENT", loginUser.getUsername());
+        response.put("success", true);
+        response.put("liked", postService.isLiked(commentId, "COMMENT", loginUser.getUsername()));
+        response.put("likeCount", postService.getLikeCount(commentId, "COMMENT"));
+        return response;
+    }
+
+    @PostMapping("/api/board/comment/edit")
+    @ResponseBody
+    public Map<String, Object> editCommentApi(@RequestParam Long commentId,
+                                              @RequestParam String content,
+                                              HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return response;
+        }
+
+        Comment comment = commentService.findById(commentId);
+        if (comment == null) {
+            response.put("success", false);
+            response.put("message", "댓글을 찾을 수 없습니다.");
+            return response;
+        }
+        if (!comment.getUser().getUserId().equals(loginUser.getUserId())) {
+            response.put("success", false);
+            response.put("message", "수정 권한이 없습니다.");
+            return response;
+        }
+
+        comment.setContent(content);
+        commentService.save(comment);
+        response.put("success", true);
+        response.put("content", content);
+        return response;
+    }
+
+    @PostMapping("/api/board/comment/delete")
+    @ResponseBody
+    public Map<String, Object> deleteCommentApi(@RequestParam Long commentId, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return response;
+        }
+
+        Comment comment = commentService.findById(commentId);
+        if (comment == null) {
+            response.put("success", false);
+            response.put("message", "댓글을 찾을 수 없습니다.");
+            return response;
+        }
+        if (!comment.getUser().getUserId().equals(loginUser.getUserId())) {
+            response.put("success", false);
+            response.put("message", "삭제 권한이 없습니다.");
+            return response;
+        }
+
+        commentService.delete(comment);
+        response.put("success", true);
+        return response;
+    }
+
+    @PostMapping("/api/board/comment/reply")
+    @ResponseBody
+    public Map<String, Object> addReplyApi(@RequestParam Long parentId,
+                                           @RequestParam String content,
+                                           HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return response;
+        }
+
+        Comment parent = commentService.findById(parentId);
+        if (parent == null) {
+            response.put("success", false);
+            response.put("message", "부모 댓글을 찾을 수 없습니다.");
+            return response;
+        }
+
+        Comment reply = new Comment();
+        reply.setPostId(parent.getPostId());
+        reply.setParentId(parentId);
+        reply.setContent(content);
+        reply.setUser(loginUser);
+        reply.setAuthor(loginUser.getUsername());
+        reply.setCreatedAt(java.time.LocalDateTime.now());
+        commentService.save(reply);
+
+        response.put("success", true);
+        return response;
+    }
+
+    @PostMapping("/api/board/comment/reply/edit")
+    @ResponseBody
+    public Map<String, Object> editReplyApi(@RequestParam Long parentId,
+                                            @RequestParam Long replyId,
+                                            @RequestParam String content,
+                                            HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return response;
+        }
+
+        Comment parent = commentService.findById(parentId);
+        Comment reply = commentService.findById(replyId);
+        if (parent == null || reply == null) {
+            response.put("success", false);
+            response.put("message", "댓글을 찾을 수 없습니다.");
+            return response;
+        }
+        if (!reply.getUser().getUserId().equals(loginUser.getUserId())) {
+            response.put("success", false);
+            response.put("message", "수정 권한이 없습니다.");
+            return response;
+        }
+
+        reply.setContent(content);
+        commentService.save(reply);
+        response.put("success", true);
+        response.put("content", content);
+        return response;
+    }
+
+    @PostMapping("/api/board/comment/reply/delete")
+    @ResponseBody
+    public Map<String, Object> deleteReplyApi(@RequestParam Long parentId,
+                                              @RequestParam Long replyId,
+                                              HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return response;
+        }
+
+        Comment parent = commentService.findById(parentId);
+        Comment reply = commentService.findById(replyId);
+        if (parent == null || reply == null) {
+            response.put("success", false);
+            response.put("message", "댓글을 찾을 수 없습니다.");
+            return response;
+        }
+        if (!reply.getUser().getUserId().equals(loginUser.getUserId())) {
+            response.put("success", false);
+            response.put("message", "삭제 권한이 없습니다.");
+            return response;
+        }
+
+        commentService.delete(reply);
+        response.put("success", true);
+        return response;
+    }
+
+    @PostMapping("/api/board/comment/reply/like")
+    @ResponseBody
+    public Map<String, Object> likeReplyApi(@RequestParam Long parentId,
+                                            @RequestParam Long replyId,
+                                            HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User loginUser = (User) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return response;
+        }
+
+        Comment parent = commentService.findById(parentId);
+        Comment reply = commentService.findById(replyId);
+        if (parent == null || reply == null) {
+            response.put("success", false);
+            response.put("message", "댓글을 찾을 수 없습니다.");
+            return response;
+        }
+
+        postService.toggleLike(replyId, "COMMENT", loginUser.getUsername());
+        response.put("success", true);
+        response.put("liked", postService.isLiked(replyId, "COMMENT", loginUser.getUsername()));
+        response.put("likeCount", postService.getLikeCount(replyId, "COMMENT"));
+        return response;
     }
     
     // ✅ 추가: 댓글 전용 페이지 (POST 페이지)

@@ -172,7 +172,8 @@
 			    <!-- 4. 글 내용 -->
 			    <div class="px-3 py-2">
 			        <p class="mb-0" style="line-height: 1.6;" th:text="${board.content}"></p>
-					<button class="btn btn-primary">追加機能</button>
+					<div th:each="extractedNoun : ${extractedNouns}" th:text="${extractedNoun}"></div>
+					<button id="newFeatureButton" class="btn btn-primary">追加機能</button>
 			    </div>
 				
 			</main>
@@ -424,15 +425,15 @@
 									</span>
 			                        
 			                        <!-- 대댓글 삭제 -->
-			                        <form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
-									      th:action="@{/board/comment/reply/delete}" method="post" 
-									      class="d-inline"
-									      onsubmit="event.stopPropagation(); return checkLoginForAction(event) && confirm('本当に削除しますか?');"
-			                            <input type="hidden" name="parentId" th:value="${comment.id}">
-			                            <input type="hidden" name="replyId" th:value="${reply.id}">
-			                            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
-											<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
-			                            </button>
+				                        <form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
+										      th:action="@{/board/comment/reply/delete}" method="post" 
+										      class="d-inline"
+										      onsubmit="event.stopPropagation(); return checkLoginForAction(event) && confirm('本当に削除しますか?');">
+				                            <input type="hidden" name="parentId" th:value="${comment.id}">
+				                            <input type="hidden" name="replyId" th:value="${reply.id}">
+				                            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
+												<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
+				                            </button>
 			                        </form>
 			                    </div>
 			                </div>
@@ -809,5 +810,7 @@
 			<!-- Bottom Navigation Bar -->
 			<div th:replace="~{fragments/bottom-nav :: bottomNav}"></div>
 
+			<!-- new feature 스크립트 -->
+			<script th:src="@{/js/extract-noun.js}"></script>
 		</body>
 </html>

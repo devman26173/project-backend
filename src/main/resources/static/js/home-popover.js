@@ -9,5 +9,5 @@ document.getElementById('japanMapImage').addEventListener('mouseout', function()
 });
 
 const tooltip = (text) => {
-    return `<div class="tooltip">${text}</div>`;
+    return `<div id="japan-map-tooltip">${text}</div>`;
 };

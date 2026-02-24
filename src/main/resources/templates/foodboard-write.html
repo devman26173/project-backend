@@ -138,6 +138,23 @@
 												   <input type="hidden" name="imageUrls" id="imageUrls">
 												   </div>
 										</div>
+										<div class="mt-3 px-3 mb-3">
+											<div class="border rounded p-3" style="background-color: #f8f9fa;">
+												<div class="mb-2">📍 地図リンク（任意）</div>
+												<input type="text"
+													    name="mapUrl"
+														class="form-control"
+														placeholder="OpenStreetMapのEmbedURLを貼り付けてください">
+												<div class="small text-muted mt-1">
+													 例: https://www.openstreetmap.org/export/embed.html?bbox=...
+												</div>
+												<!--미리보기-->
+												<div id="mapPreview" class="mt-2" style="display:none;">
+													<iframe id="mapIframe" width="100%" height="200" frameborder="0"
+															style="border-radius:8px; border:1px solid #dee2e6;"></iframe>
+												</div> 
+											</div>
+										</div>
 									</form> 
 								</div> 
 							</div>				
@@ -384,6 +401,61 @@
 						            </p>
 						        `;
 						    }
+							
+							// OpenStreetMap URL → Embed URL 자동 변환
+							document.getElementById('mapUrlInput').addEventListener('input', function(){
+								const url = this.value.trim();
+								const embedUrl = convertToEmbedUrl(url);
+								
+								const preview = document.getElementById('mapPreview');
+								const iframe = document.getElementById('mapIframe');
+								
+								if(embedUrl){
+									iframe.src = embedUrl;
+									preview.style.display = 'block';
+									this.value = embedUrl; 
+								} else {
+									preview.style.display = 'none'
+								}
+							});
+							
+							function convertToEmbedUrl(url){
+								if(!url) return null; 
+								
+								  // 이미 embed URL인 경우 그대로 반환
+								if(url.includes('/export/embed.html')) return url; 
+								
+								try{
+									// 패턴 1: https://www.openstreetmap.org/#map=zoom/lat/lon
+									const hashMatch = url.match(/#map=(\d+)\/([\d.-]+)\/([\d.-]+)/);
+									if(hashMatch){
+										const zoom = parseInt(hashMatch[1]);
+										const lat = parseFloat(hashMatch[2]);
+										const lon = parseFloat(hashMatch[3]);
+										return buildEmbedUrl(lat, lon, zoom);
+										
+									}
+									// 패턴 2: ?mlat=lat&mlon=lon 형태
+									  const mlatMatch = url.match(/mlat=([\d.-]+).*mlon=([\d.-]+)/);
+									        if (mlatMatch) {
+									            const lat = parseFloat(mlatMatch[1]);
+									            const lon = parseFloat(mlatMatch[2]);
+									            return buildEmbedUrl(lat, lon, 15);
+									        }
+									        
+									        return null;
+									    } catch(e) {
+									        return null;
+									    }
+									}
+
+									function buildEmbedUrl(lat, lon, zoom) {
+									    const offset = 0.01 / Math.pow(2, zoom - 15); // zoom에 따른 bbox 범위 조정
+									    const bbox = `${lon - offset},${lat - offset},${lon + offset},${lat + offset}`;
+									    return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
+									}
+								}
+							}	
 						</script>
 						
 				</body>

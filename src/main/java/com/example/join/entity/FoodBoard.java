@@ -22,6 +22,9 @@ public class FoodBoard {
 @Column(nullable = false, columnDefinition = "integer default 0")
 	private int viewCount = 0; 
 
+@Column(nullable = true)
+	private String mapUrl; 
+
 	
 @ManyToOne
 @JoinColumn(name = "user_id")
@@ -151,6 +154,16 @@ public int getViewCount() {
 
 public void setViewCount(int viewCount) {
 	this.viewCount = viewCount;
+}
+
+
+public String getMapUrl() {
+	return mapUrl;
+}
+
+
+public void setMapUrl(String mapUrl) {
+	this.mapUrl = mapUrl;
 }
 
 

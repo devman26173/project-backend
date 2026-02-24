@@ -19,7 +19,7 @@ public class FoodBoardService {
         this.foodboardRepository = foodboardRepository;
     }
     public List<FoodBoard> findAll() {
-        return foodboardRepository.findAll();
+    	 return foodboardRepository.findAllByOrderByCreatedAtDesc();
     }
     public void saveFood(FoodBoard foodBoard) {
         foodboardRepository.save(foodBoard);
@@ -47,9 +47,9 @@ public class FoodBoardService {
  // 지방별 조회
     public List<FoodBoard> findByRegion(String region) {
         // 해당 지방의 모든 도도부현 찾기
-        List<String> prefectures = getPrefecturesByRegion(region);
+    	List<String> prefectures = getPrefecturesByRegion(region);
         // 그 도도부현들의 게시글 모두 조회
-        return foodboardRepository.findByPrefectureIn(prefectures);
+    	return foodboardRepository.findByPrefectureInOrderByCreatedAtDesc(prefectures); 
     }
 
     // 지방별 도도부현 매핑
@@ -67,7 +67,7 @@ public class FoodBoardService {
 
 // 도도부현별 조회
     public List<FoodBoard> findByPrefecture(String prefecture) {
-        return foodboardRepository.findByPrefecture(prefecture);
+    	return foodboardRepository.findByPrefectureOrderByCreatedAtDesc(prefecture);
     }
 
  // 각 지역별 첫 번째 게시물 가져오기

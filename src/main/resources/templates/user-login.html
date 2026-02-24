@@ -26,8 +26,15 @@
             <form th:action="@{/login}" method="post">
 				
 				<!-- returnUrl 전달 (추가) -->
-				 <input type="hidden" name="returnUrl" th:value="${returnUrl}">
-
+				<input type="hidden" name="returnUrl" th:value="${returnUrl}">
+				
+				<!--로그인 실패시 에러메시지를 alert로 표시-->
+				<!-- th:if = error 값이 있을 때만 이 스크립트가 실행됨-->
+				<script th:if="${error}" th:inline="javascript">
+					/*<![CDATA[*/
+					        alert(/*[[${error}]]*/ '');
+					        /*]]>*/
+					    </script>
                 <!-- ID -->
                 <div class="mb-4">
                     <label class="form-label">ID</label>
@@ -39,6 +46,12 @@
                     <label class="form-label">パスワード</label>
                     <input type="password" class="form-control" name="password" placeholder="パスワードを入力してください">
                 </div>
+				<div class="text-end mb-2">
+				    <a th:href="@{/verify-password}" 
+				       style="color: inherit; font-size: 14px;">
+				       パスワードをお忘れですか？
+				    </a>
+				</div>
 
                 <!-- Remember me -->
                 <div class="text-end mb-5">

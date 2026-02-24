@@ -1,825 +1,729 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset = "UTF-8">
-	<meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>投稿詳細- FoodBoard</title>
-	
+
 	<!--Bootstrap CSS-->
-	<link href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 	<link rel="stylesheet" th:href="@{/css/bottom-nav.css}">
-	
-	<style> 
-	.mobile-container{
-		    max-width: 430px;
-		    margin: 0 auto;
-		    min-height: 100vh;  /* ✅ height → min-height 변경 */
-		    background-color: #ffffff;
-		    border-left: 1px solid #f0f0f0;
-		    border-right: 1px solid #f0f0f0;
-		    display: flex;
-		    flex-direction: column;
-		    padding: 0;
-		    padding-bottom: 70px;
-		    overflow-y: auto;  /* ✅ 추가 */
+
+	<style>
+		.mobile-container{
+			max-width: 430px;
+			margin: 0 auto;
+			min-height: 100vh;  /* ✅ height → min-height 변경 */
+			background-color: #ffffff;
+			border-left: 1px solid #f0f0f0;
+			border-right: 1px solid #f0f0f0;
+			display: flex;
+			flex-direction: column;
+			padding: 0;
+			padding-bottom: 70px;
+			overflow-y: auto;  /* ✅ 추가 */
 		}
-	header 	{
-		    position: sticky; 
-		    top: 0;
-		    z-index: 1020; 
-		    width: 100%; 
-		    background-color: #ffecd9;
-		    flex-shrink: 0;  /* ✅ 추가 */
+		header{
+			position: sticky;
+			top: 0;
+			z-index: 1020;
+			width: 100%;
+			background-color: #ffecd9;
+			flex-shrink: 0;  /* ✅ 추가 */
 		}
 
 		/* ✅ 게시글 영역 */
-		main {
-		    flex-shrink: 0;
-		}
+		main { flex-shrink: 0; }
 
 		/* ✅ 댓글 입력창 영역 */
 		.comment-input-area {
-		    flex-shrink: 0;
-		    border-top: 1px solid #dee2e6;
+			flex-shrink: 0;
+			border-top: 1px solid #dee2e6;
 		}
 
 		.comment-section {
-		    flex-shrink: 0;
-		    display: flex;
-		    flex-direction: column;
-		    /* max-height와 overflow-y 제거 */
+			flex-shrink: 0;
+			display: flex;
+			flex-direction: column;
 		}
 
 		.comment-list {
-		    flex: 1;
-		    max-height: calc(100vh - 500px);  /* 여기로 이동 */
-		    overflow-y: auto;
+			flex: 1;
+			max-height: calc(100vh - 500px);
+			overflow-y: auto;
 		}
 
 		/* ✅ 댓글 관련 스타일 */
-		.edit-form {
-		    display: none;
-		}
+		.edit-form { display: none; }
+		.reply-form { display: none; }
 
-		.reply-form {
-		    display: none;
-		}
-
-		.comment-actions {
-		    font-size: 0.85rem;
-		}
+		.comment-actions { font-size: 0.85rem; }
 
 		.comment-actions span,
-		.comment-actions button {
-		    cursor: pointer;
-		}
+		.comment-actions button { cursor: pointer; }
 
 		.comment-actions span:hover,
-		.comment-actions button:hover {
-		    opacity: 0.7;
-		}
-		
+		.comment-actions button:hover { opacity: 0.7; }
+
 		/* ✅ textarea 높이 고정 */
 		#commentInput {
-		    resize: none !important;
-		    overflow-y: auto;
+			resize: none !important;
+			overflow-y: auto;
 		}
+
 		/* ✅ 정렬 버튼 활성화 스타일 */
 		.btn-sort-active {
-		    background-color: #6c757d !important;
-		    color: white !important;
-		    border-color: #6c757d !important;
+			background-color: #6c757d !important;
+			color: white !important;
+			border-color: #6c757d !important;
 		}
-		</style>
+	</style>
 </head>
 
 <body>
-	<div class = "container-fluid px-0">
-		<div class = "mobile-container">
-			<header class = "d-flex justify-content-between align-items-center py-3 px-3"
-					style = "background-color: #ffecd9; min-height: 85px;">
-					
-					<a th:href = "@{/board}"
-					   class = "d-inline-flex align-items-center justify-content-center"
-					   style = "cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
-						
-					<h5 class = "mb-0 fw-bold">グルメ掲示板</h5>
-					
-				<div class = "dropdown">
-					<span style = "cursor: pointer; font-size: 24px;" 
-						   data-bs-toggle = "dropdown">⋮</span>
-					<ul class = "dropdown-menu dropdown-menu-end">
-						<li>
-							<a class="dropdown-item" th:href="@{/board/edit/{id}(id=${board.id})}">
-								✏️ 修正する
-							</a>
-						</li>
-						<li><hr class ="dropdown-divider"></li>
-						<li>
-							<a class = "dropdown-item text-danger" href = "#" onclick= "deletePost()">
-								🗑️ 削除する
-							</a>
-						</li>
-					</ul>
+<div class="container-fluid px-0">
+	<div class="mobile-container">
+		<header class="d-flex justify-content-between align-items-center py-3 px-3"
+				style="background-color: #ffecd9; min-height: 85px;">
+
+			<a th:href="@{/board}"
+			   class="d-inline-flex align-items-center justify-content-center"
+			   style="cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
+
+			<h5 class="mb-0 fw-bold">グルメ掲示板</h5>
+
+			<div class="dropdown">
+				<span style="cursor: pointer; font-size: 24px;"
+					  data-bs-toggle="dropdown">⋮</span>
+				<ul class="dropdown-menu dropdown-menu-end">
+					<li>
+						<a class="dropdown-item" th:href="@{/board/edit/{id}(id=${board.id})}">
+							✏️ 修正する
+						</a>
+					</li>
+					<li><hr class="dropdown-divider"></li>
+					<li>
+						<a class="dropdown-item text-danger" href="#" onclick="deletePost()">
+							🗑️ 削除する
+						</a>
+					</li>
+				</ul>
+			</div>
+		</header>
+
+		<!--게시글 내용-->
+		<main class="flex-grow-1">
+
+			<!-- 1. 지역명 + 별점 + 작성자 + 날짜 (한 줄) -->
+			<div class="px-3 pt-3 d-flex justify-content-between align-items-center">
+				<div class="d-flex align-items-center gap-2">
+					<span class="badge bg-warning text-dark" th:text="${board.prefecture}"></span>
+					<span class="text-warning fw-bold d-flex align-items-center gap-1">
+						<img src="https://img.icons8.com/ios-filled/20/ffc107/star.png" alt="별점" style="width:18px; height:18px;">
+						<span th:text="${board.rating}"></span>
+					</span>
 				</div>
-				
-		
-			</header>
-			<!--게시글 내용-->
-			<main class="flex-grow-1">
-			    
-				<!-- 1. 지역명 + 별점 + 작성자 + 날짜 (한 줄) -->
-				<div class="px-3 pt-3 d-flex justify-content-between align-items-center">
-				    <div class="d-flex align-items-center gap-2">
-				        <span class="badge bg-warning text-dark" th:text="${board.prefecture}"></span>
-						<span class="text-warning fw-bold d-flex align-items-center gap-1">
-							<img src="https://img.icons8.com/ios-filled/20/ffc107/star.png" alt="별점" style="width:18px; height:18px;">
-							<span th:text="${board.rating}"></span>
-				    	</span>
+				<div class="small text-muted">
+					<span th:text="${#temporals.format(board.createdAt, 'MM/dd HH:mm')}"></span>
+					<span>|</span>
+					<span th:text="${board.user != null ? board.user.username : '匿名'}"></span>
+				</div>
+			</div>
+
+			<!-- 2. 제목 -->
+			<div class="px-3 pt-2">
+				<h5 class="fw-bold mb-0" th:text="${board.title}"></h5>
+			</div>
+
+			<!-- 3. 이미지 (여러 장, 옆으로 스크롤) -->
+			<div class="px-3 py-3" th:if="${board.imageUrls != null and !board.imageUrls.isEmpty()}">
+				<div class="d-flex gap-2"
+					 style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+					<img th:each="url : ${board.imageUrls.split(',')}"
+						 th:src="${url}"
+						 alt="投稿イメージ"
+						 class="rounded flex-shrink-0"
+						 style="width: 100%; max-width: 350px; height: 250px; object-fit: cover;">
+				</div>
+
+				<!-- 이미지 없을 때 -->
+				<div th:if="${board.imageUrls == null or board.imageUrls.isEmpty()}"
+					 class="bg-light rounded d-flex align-items-center justify-content-center"
+					 style="height: 200px;">
+					<span class="text-muted">No Image</span>
+				</div>
+			</div>
+
+			<!-- 4. 글 내용 -->
+			<div class="px-3 py-2">
+				<p class="mb-0" style="line-height: 1.6;" th:text="${board.content}"></p>
+<!-- 				<button class="btn btn-primary">追加機能</button> -->
+			</div>
+
+		</main>
+
+		<!-- ✅ 게시글 좋아요/댓글 버튼 추가 -->
+		<div class="px-3 py-3 border-top">
+			<div class="d-flex align-items-center gap-3">
+				<!-- 좋아요 -->
+				<form th:action="@{/board/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
+					<input type="hidden" name="boardId" th:value="${board.id}">
+					<button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
+						<img th:src="${board.likedByMe ? 'https://img.icons8.com/ios-filled/22/ff6b6b/like.png' : 'https://img.icons8.com/ios/22/888888/like.png'}"
+							 alt="like" style="vertical-align: middle;">
+						<span>いいね！</span>
+						<span th:text="${board.likeCount}">0</span>
+					</button>
+				</form>
+
+				<!-- 댓글 개수 (클릭시 댓글 페이지로 이동) -->
+				<a th:href="@{/post/{id}(id=${board.id})}" class="text-decoration-none text-muted">
+					<img src="https://img.icons8.com/ios/22/888888/comments.png" alt="comments" style="vertical-align: middle;">
+					<span>コメント</span>
+					<span th:text="${comments != null ? comments.size() : 0}">0</span>
+				</a>
+
+				<!--조회수 추가-->
+				<span class="text-muted ms-auto">
+					<img src="https://img.icons8.com/ios/22/888888/eye.png" alt="조회수" style="vertical-align: middle;">
+					<span th:text="${board.viewCount}">0</span>
+				</span>
+
+			</div>
+		</div>
+
+		<!--댓글 섹션 추가 -->
+		<div id="commentSection" class="comment-section">
+			<!-- 댓글 입력 -->
+			<div class="bg-white px-3 py-3" style="position: sticky; bottom: 0; z-index: 100; border-top: 1px solid #dee2e6;">
+				<form th:action="@{/board/comment/add}" method="post" onsubmit="return checkLoginForAction(event)">
+					<input type="hidden" name="boardId" th:value="${board.id}">
+					<textarea id="commentInput"
+							  name="content"
+							  class="form-control mb-2"
+							  placeholder="コメントを入力してください"
+							  onclick="checkLoginForClick(event)"
+							  rows="2"
+							  required></textarea>
+					<button type="submit"
+							class="btn btn-primary w-100 fw-bold rounded-pill py-2">
+						登録
+					</button>
+				</form>
+			</div>
+
+			<!-- 정렬 버튼 -->
+			<div class="comment-section" th:if="${comments != null && !comments.isEmpty()}">
+				<div class="px-3 py-3 bg-white border-bottom sticky-top" style="top: 0;">
+					<div class="d-flex justify-content-end gap-2">
+						<button type="button"
+								class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+								id="sort-newest"
+								th:classappend="${sortOrder == 'newest' ? 'btn-sort-active' : ''}"
+								onclick="sortComments('newest')">
+							新着順
+						</button>
+						<button type="button"
+								class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+								id="sort-oldest"
+								th:classappend="${sortOrder == null or sortOrder == 'oldest' ? 'btn-sort-active' : ''}"
+								onclick="sortComments('oldest')">
+							投稿順
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- 댓글 리스트 -->
+			<div class="comment-list">
+				<div class="comment px-3 py-3 border-bottom"
+					 th:each="comment : ${comments}"
+					 th:id="'comment-' + ${comment.id}">
+					<div class="d-flex align-items-center gap-2 mb-2">
+						<!-- 프로필 이미지 -->
+						<div th:if="${comment.user != null && comment.user.profileImageUrl != null}"
+							 class="rounded-circle"
+							 th:style="'background-image: url(' + ${comment.user.profileImageUrl} + '); background-size: cover; background-position: center; width: 32px; height: 32px;'">
 						</div>
-				    <div class="small text-muted">
-				        <span th:text="${#temporals.format(board.createdAt, 'MM/dd HH:mm')}"></span>
-				        <span>|</span>
-				        <span th:text="${board.user != null ? board.user.username : '匿名'}"></span>
-				    </div>
-				</div>
-			    
-			    <!-- 2. 제목 -->
-			    <div class="px-3 pt-2">
-			        <h5 class="fw-bold mb-0" th:text="${board.title}"></h5>
-			    </div>
-			    
-			    <!-- 3. 이미지 (여러 장, 옆으로 스크롤) -->
-				<div class="px-3 py-3" th:if="${board.imageUrls != null and !board.imageUrls.isEmpty()}">
-				    <div class="d-flex gap-2"
-				         style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-				        <img th:each="url : ${board.imageUrls.split(',')}"
-				             th:src="${url}" 
-				             alt="投稿イメージ"
-				             class="rounded flex-shrink-0"
-				             style="width: 100%; max-width: 350px; height: 250px; object-fit: cover;">
-				    </div>
-			    
-			        <!-- 이미지 없을 때 -->
-			        <div th:if="${board.imageUrls == null or board.imageUrls.isEmpty()}"
-			             class="bg-light rounded d-flex align-items-center justify-content-center"
-			             style="height: 200px;">
-			            <span class="text-muted">No Image</span>
-			        </div>
-			    </div>
-			    
-			    <!-- 4. 글 내용 -->
-			    <div class="px-3 py-2">
-			        <p class="mb-0" style="line-height: 1.6;" th:text="${board.content}"></p>
-					<button class="btn btn-primary">追加機能</button>
-			    </div>
-				
-				<!-- 지도 (mapUrl이 있을 때만 표시) -->
-				<div class="px-3 pb-2" th:if="${board.mapUrl != null and !board.mapUrl.isEmpty()}">
-					<div class="mb-1 small text-muted fw-bold">📍 地図</div>
-					<iframe th:src="${board.mapUrl}"
-							width="100%"
-							height="250"
-							frameborder="0"
-							style="border-radius: 8px; border: 1px solid #dee2e6;">
-					</iframe>
-				</div>
-				
-				
-			</main>
-			
-			<!-- ✅ 게시글 좋아요/댓글 버튼 추가 -->
-			<div class="px-3 py-3 border-top">
-			    <div class="d-flex align-items-center gap-3">
-			        <!-- 좋아요 -->
-			        <form th:action="@{/board/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
-			            <input type="hidden" name="boardId" th:value="${board.id}">
-			            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
-			                <img th:src="${board.likedByMe ? 'https://img.icons8.com/ios-filled/22/ff6b6b/like.png' : 'https://img.icons8.com/ios/22/888888/like.png'}" 
-			                     alt="like" style="vertical-align: middle;">
-								 <span>いいね！</span>
-			                <span th:text="${board.likeCount}">0</span>
-			            </button>
-			        </form>
-			        
-					<!-- 댓글 개수 (클릭시 댓글 페이지로 이동) -->
-					<span th:href="@{/post/{id}(id=${board.id})}" class="text-decoration-none text-muted">
-					    <img src="https://img.icons8.com/ios/22/888888/comments.png" alt="comments" style="vertical-align: middle;">
-					    <span>コメント</span>
-					    <span th:text="${comments != null ? comments.size() : 0}">0</span>
-					</span>
-					
-					<!--조회수 추가-->
-					<span class="text-muted ms-auto">
-						<img src="https://img.icons8.com/ios/22/888888/eye.png" alt="조회수" style="vertical-align: middle;">
-						<span th:text="${board.viewCount}">0</span>
-					</span>
-						
-			    </div>
-			</div>
+						<div th:unless="${comment.user != null && comment.user.profileImageUrl != null}"
+							 class="rounded-circle bg-secondary"
+							 style="width: 32px; height: 32px;">
+						</div>
 
-			<!--댓글 섹션 추가 -->
-			<div id="commentSection" class="comment-section">
-				<!-- 댓글 입력 -->
-			    <div class="bg-white px-3 py-3" style="position: sticky; bottom: 0; z-index: 100; border-top: 1px solid #dee2e6;">
-				    <form th:action="@{/board/comment/add}" method="post" onsubmit="return checkLoginForAction(event)">
-				        <input type="hidden" name="boardId" th:value="${board.id}">
-				        <textarea id="commentInput" 
-				                  name="content" 
-				                  class="form-control mb-2" 
-				                  placeholder="コメントを入力してください"
-				                  onclick="checkLoginForClick(event)" 
-				                  rows="2"
-				                  required></textarea>
-				        <button type="submit"
-				                class="btn btn-primary w-100 fw-bold rounded-pill py-2">
-				          登録
-				        </button>
-				    </form>
-				</div>
+						<!-- 사용자 이름 -->
+						<span class="fw-semibold"
+							  th:text="${comment.user != null ? comment.user.name : comment.author}">
+							ユーザー
+						</span>
 
-			    <!-- 정렬 버튼 -->
-			    <div class="comment-section" th:if="${comments != null && !comments.isEmpty()}">
-				    <!-- 정렬 버튼 -->
-				    <div class="px-3 py-3 bg-white border-bottom sticky-top" style="top: 0;">
-				        <div class="d-flex justify-content-end gap-2">
-							<button type="button" 
-							        class="btn btn-sm btn-outline-secondary rounded-pill px-3" 
-							        id="sort-newest" 
-							        th:classappend="${sortOrder == 'newest' ? 'btn-sort-active' : ''}"
-							        onclick="sortComments('newest')">
-							    新着順
+						<span class="text-muted small"
+							  th:text="${comment.createdAt != null ? #temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:30'}">
+							2026-01-19 14:30
+						</span>
+					</div>
+
+					<!-- 댓글 내용 -->
+					<div class="mb-2" th:text="${comment.content}"
+						 th:id="'comment-content-' + ${comment.id}">
+						コメント内容
+					</div>
+
+					<!-- 댓글 수정 폼 -->
+					<div class="edit-form" th:id="'edit-form-' + ${comment.id}" style="display: none;">
+						<form th:action="@{/board/comment/edit}" method="post" onsubmit="return checkLoginForAction(event)">
+							<input type="hidden" name="commentId" th:value="${comment.id}">
+							<textarea name="content" class="form-control mb-2" th:text="${comment.content}" required></textarea>
+							<div class="d-flex gap-2">
+								<button type="submit" class="btn btn-sm btn-primary">保存</button>
+								<button type="button" class="btn btn-sm btn-secondary"
+										th:onclick="|toggleEdit(${comment.id})|">キャンセル</button>
+							</div>
+						</form>
+					</div>
+
+					<!-- 댓글 액션 -->
+					<div class="comment-actions d-flex align-items-center gap-2 small text-muted">
+						<!-- 좋아요 -->
+						<form th:action="@{/board/comment/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
+							<input type="hidden" name="commentId" th:value="${comment.id}">
+							<button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
+								<img th:src="${comment.likedByMe ? 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' : 'https://img.icons8.com/ios/20/888888/like.png'}"
+									 alt="like" style="vertical-align: middle;">
+								<span th:text="${comment.likeCount}">0</span>
 							</button>
-							<button type="button" 
-							        class="btn btn-sm btn-outline-secondary rounded-pill px-3" 
-							        id="sort-oldest" 
-							        th:classappend="${sortOrder == null or sortOrder == 'oldest' ? 'btn-sort-active' : ''}"
-							        onclick="sortComments('oldest')">
-							    投稿順
-							</button>
-				        </div>
-				    </div>
-			    </div>
-			    <!-- 댓글 리스트 -->
-			    <div class="comment-list">
-					<div class="comment px-3 py-3 border-bottom"
-					     th:each="comment : ${comments}"
-					     th:id="'comment-' + ${comment.id}">
-			            <div class="d-flex align-items-center gap-2 mb-2">
-			                <!-- 프로필 이미지 -->
-			                <div th:if="${comment.user != null && comment.user.profileImageUrl != null}"
-			                     class="rounded-circle"
-			                     th:style="'background-image: url(' + ${comment.user.profileImageUrl} + '); background-size: cover; background-position: center; width: 32px; height: 32px;'">
-			                </div>
-			                <div th:unless="${comment.user != null && comment.user.profileImageUrl != null}"
-			                     class="rounded-circle bg-secondary"
-			                     style="width: 32px; height: 32px;">
-			                </div>
-			                
-			                <!-- 사용자 이름 -->
-			                <span class="fw-semibold" 
-			                      th:text="${comment.user != null ? comment.user.name : comment.author}">
-			                    ユーザー
-			                </span>
-			                
-			                <span class="text-muted small" 
-			                      th:text="${comment.createdAt != null ? #temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:30'}">
-			                    2026-01-19 14:30
-			                </span>
-			            </div>
-			            
-			            <!-- 댓글 내용 -->
-			            <div class="mb-2" th:text="${comment.content}" 
-			                 th:id="'comment-content-' + ${comment.id}">
-			                コメント内容
-			            </div>
-			            
-			            <!-- 댓글 수정 폼 -->
-			            <div class="edit-form" th:id="'edit-form-' + ${comment.id}" style="display: none;">
-			                <form th:action="@{/board/comment/edit}" method="post" onsubmit="return checkLoginForAction(event)">
-			                    <input type="hidden" name="commentId" th:value="${comment.id}">
-			                    <textarea name="content" class="form-control mb-2" th:text="${comment.content}" required></textarea>
-			                    <div class="d-flex gap-2">
-			                        <button type="submit" class="btn btn-sm btn-primary">保存</button>
-			                        <button type="button" class="btn btn-sm btn-secondary"
-			                                th:onclick="'toggleEdit(' + ${comment.id} + ')'">キャンセル</button>
-			                    </div>
-			                </form>
-			            </div>
-			            
-			            <!-- 댓글 액션 -->
-			            <div class="comment-actions d-flex align-items-center gap-2 small text-muted">
-			                <!-- 좋아요 -->
-			                <form th:action="@{/board/comment/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
-			                    <input type="hidden" name="commentId" th:value="${comment.id}">
-			                    <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
-									<img th:src="${comment.likedByMe ? 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' : 'https://img.icons8.com/ios/20/888888/like.png'}" 
-									     alt="like" style="vertical-align: middle;">
-			                        <span th:text="${comment.likeCount}">0</span>
-			                    </button>
-			                </form>
-			                
-			                <!-- 대댓글 수 표시 -->
-							<span th:onclick="'toggleReply(' + ${comment.id} + ')'"
-							      class="d-flex align-items-center gap-1"
-							      style="cursor:pointer;">
-							    <img src="https://img.icons8.com/ios/20/888888/comments.png">
-							    <span th:text="${comment.replies.size()}">0</span>
-							</span>
-			                
-							<!-- 수정 -->
-						  <span th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
-						  th:onclick="'event.stopPropagation(); checkLoginAndToggleEdit(event,' + ${comment.id} + ')'"
-						        style="cursor:pointer;">
-								<img src="https://img.icons8.com/ios/20/888888/edit.png"
-							         alt="edit"
-							         style="vertical-align: middle;">
-							    <span>編集</span>
-						  </span>
-			                
-			                <!-- 삭제 -->
-								<form th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
-								      th:action="@{/board/comment/delete}" method="post" 
-								      class="d-inline"
-								      onsubmit="event.stopPropagation(); return checkLoginForAction(event);">
-			                    <input type="hidden" name="commentId" th:value="${comment.id}">
-								<button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
-								    <img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
-								</button>
-			                </form>
-			            </div>
-			            
-			            <!-- 대댓글 입력 폼 -->
-			            <div class="reply-form mt-2" th:id="'reply-form-' + ${comment.id}" style="display: none;">
-			                <form th:action="@{/board/comment/reply}" method="post" onsubmit="return checkLoginForAction(event)">
-			                    <input type="hidden" name="parentId" th:value="${comment.id}">
-			                    <textarea name="content" 
-			                              class="form-control mb-2" 
-			                              placeholder="コメントを入力してください"
-			                              onclick="checkLoginForClick(event)" 
-			                              required></textarea>
-			                    <div class="d-flex gap-2">
-			                        <button type="submit" class="btn btn-sm btn-danger">登録</button>
-			                        <button type="button" class="btn btn-sm btn-secondary"
-			                                th:onclick="'toggleReply(' + ${comment.id} + ')'">キャンセル</button>
-			                    </div>
-			                </form>
-			            </div>
-			            
-			            <!-- 대댓글 목록 -->
-			            <div th:if="${comment.replies != null && !comment.replies.isEmpty()}">
-			                <div class="reply bg-light rounded px-2 py-2 ms-4 mt-2" th:each="reply : ${comment.replies}">
-			                    <div class="d-flex align-items-center gap-2 mb-2">
-			                        <!-- 프로필 이미지 -->
-			                        <div th:if="${reply.user != null && reply.user.profileImageUrl != null}"
-			                             class="rounded-circle"
-			                             th:style="'background-image: url(' + ${reply.user.profileImageUrl} + '); background-size: cover; background-position: center; width: 24px; height: 24px;'">
-			                        </div>
-			                        <div th:unless="${reply.user != null && reply.user.profileImageUrl != null}"
-			                             class="rounded-circle bg-secondary"
-			                             style="width: 24px; height: 24px;">
-			                        </div>
-			                        
-			                        <!-- 사용자 이름 -->
-			                        <span class="fw-semibold small" 
-			                              th:text="${reply.user != null ? reply.user.name : reply.author}">
-			                            ユーザー
-			                        </span>
-			                        
-			                        <span class="text-muted small" 
-			                              th:text="${reply.createdAt != null ? #temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:35'}">
-			                            2026-01-19 14:35
-			                        </span>
-			                    </div>
-			                    
-			                    <!-- 대댓글 내용 -->
-			                    <div class="mb-2 small" th:text="${reply.content}" 
-			                         th:id="'reply-content-' + ${comment.id} + '-' + ${reply.id}">
-			                        コメント内容
-			                    </div>
-								
-								<!-- ✅ 대댓글 수정 폼 추가 -->
-								        <div class="edit-form" th:id="'reply-edit-form-' + ${comment.id} + '-' + ${reply.id}" style="display: none;">
-								            <form th:action="@{/board/comment/reply/edit}" method="post" onsubmit="return checkLoginForAction(event)">
-								                <input type="hidden" name="parentId" th:value="${comment.id}">
-								                <input type="hidden" name="replyId" th:value="${reply.id}">
-								                <textarea name="content" class="form-control mb-2" th:text="${reply.content}" required></textarea>
-								                <div class="d-flex gap-2">
-								                    <button type="submit" class="btn btn-sm btn-primary">保存</button>
-								                    <button type="button" class="btn btn-sm btn-secondary"
-								                            th:onclick="'toggleReplyEdit(' + ${comment.id} + ',' + ${reply.id} + ')'">キャンセル</button>
-								                </div>
-								            </form>
-								        </div>
-			                    
-			                    <!-- 대댓글 액션 -->
-			                    <div class="comment-actions small text-muted d-flex gap-2">
-			                        <!-- 대댓글 좋아요 -->
-			                        <form th:action="@{/board/comment/reply/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
-			                            <input type="hidden" name="parentId" th:value="${comment.id}">
-			                            <input type="hidden" name="replyId" th:value="${reply.id}">
-			                            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
-											<img th:src="${reply.likedByMe ? 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' : 'https://img.icons8.com/ios/20/888888/like.png'}" 
-											     alt="like" style="vertical-align: middle;">
-			                                <span th:text="${reply.likeCount}">0</span>
-			                            </button>
-			                        </form>
-			                        
-			                        <span th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
-									      th:onclick="'checkLoginAndToggleReplyEdit(event,' + ${comment.id} + ',' + ${reply.id} + ')'" 
-									      style="cursor:pointer;">
-										  <img src="https://img.icons8.com/ios/20/888888/edit.png"
-										       alt="edit"
-										       style="vertical-align: middle;">
-										  <span>編集</span>
-									</span>
-			                        
-			                        <!-- 대댓글 삭제 -->
-					                        <form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
-										      th:action="@{/board/comment/reply/delete}" method="post" 
-										      class="d-inline"
-										      onsubmit="event.stopPropagation(); return checkLoginForAction(event);">
-				                            <input type="hidden" name="parentId" th:value="${comment.id}">
-				                            <input type="hidden" name="replyId" th:value="${reply.id}">
-				                            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
-												<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
-			                            </button>
-			                        </form>
-			                    </div>
-			                </div>
-			            </div>
-			        </div>
-			    </div>
-			</div>
-			
-			<!-- 로그인 상태 스크립트 -->
-			<script th:inline="javascript">
-				/*<![CDATA[*/
-				const isLoggedIn = /*[[${isLoggedIn}]]*/ false;
-				/*]]>*/
-						
-				// ==== 로그인 체크 함수 ====
-				function checkLoginForAction(event) {
-				        if (!isLoggedIn) {
-				            event.preventDefault();
-				            if (confirm('ログインが必要です。ログインページに移動しますか？')) {
-				                location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
-				            }
-				            return false;
-				        }
-				        return true;
-				    }
-			    
-				function checkLoginForClick(event) {
-				        if (!isLoggedIn) {
-				            event.preventDefault();
-				            if (confirm('ログインが必要です。ログインページに移動しますか？')) {
-				                location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
-				            }
-				        }
-				    }
-						  
-				// ==== 댓글 수정 함수 ====  
-				function toggleEdit(commentId) {
-				    const content = document.getElementById('comment-content-' + commentId);
-				    const form = document.getElementById('edit-form-' + commentId);
-				    const replyForm = document.getElementById('reply-form-' + commentId);
-				    
-					// ✅ 대댓글 입력창 강제 닫기
-					    if (replyForm) {
-					        replyForm.style.display = 'none';
-					    }
+						</form>
 
-					    if (form.style.display === 'none' || form.style.display === '') {
-					        content.style.display = 'none';
-					        form.style.display = 'block';
-					    } else {
-					        content.style.display = 'block';
-					        form.style.display = 'none';
-					    }
+						<!-- 대댓글 수 표시 -->
+						<span th:onclick="|toggleReply(${comment.id})|"
+							  class="d-flex align-items-center gap-1"
+							  style="cursor:pointer;">
+							<img src="https://img.icons8.com/ios/20/888888/comments.png" alt="replies">
+							<span th:text="${comment.replies.size()}">0</span>
+						</span>
+
+						<!-- 수정 -->
+						<span th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
+							  th:onclick="|event.stopPropagation(); checkLoginAndToggleEdit(event, ${comment.id})|"
+							  style="cursor:pointer;">
+							<img src="https://img.icons8.com/ios/20/888888/edit.png"
+								 alt="edit"
+								 style="vertical-align: middle;">
+							<span>編集</span>
+						</span>
+
+						<!-- 삭제 -->
+						<form th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
+							  th:action="@{/board/comment/delete}" method="post"
+							  class="d-inline"
+							  onsubmit="event.stopPropagation(); return checkLoginForAction(event);">
+							<input type="hidden" name="commentId" th:value="${comment.id}">
+							<button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
+								<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
+							</button>
+						</form>
+					</div>
+
+					<!-- 대댓글 입력 폼 -->
+					<div class="reply-form mt-2" th:id="'reply-form-' + ${comment.id}" style="display: none;">
+						<form th:action="@{/board/comment/reply}" method="post" onsubmit="return checkLoginForAction(event)">
+							<input type="hidden" name="parentId" th:value="${comment.id}">
+							<textarea name="content"
+									  class="form-control mb-2"
+									  placeholder="コメントを入力してください"
+									  onclick="checkLoginForClick(event)"
+									  required></textarea>
+							<div class="d-flex gap-2">
+								<button type="submit" class="btn btn-sm btn-danger">登録</button>
+								<button type="button" class="btn btn-sm btn-secondary"
+										th:onclick="|toggleReply(${comment.id})|">キャンセル</button>
+							</div>
+						</form>
+					</div>
+
+					<!-- 대댓글 목록 -->
+					<div th:if="${comment.replies != null && !comment.replies.isEmpty()}">
+						<div class="reply bg-light rounded px-2 py-2 ms-4 mt-2" th:each="reply : ${comment.replies}">
+							<div class="d-flex align-items-center gap-2 mb-2">
+								<!-- 프로필 이미지 -->
+								<div th:if="${reply.user != null && reply.user.profileImageUrl != null}"
+									 class="rounded-circle"
+									 th:style="'background-image: url(' + ${reply.user.profileImageUrl} + '); background-size: cover; background-position: center; width: 24px; height: 24px;'">
+								</div>
+								<div th:unless="${reply.user != null && reply.user.profileImageUrl != null}"
+									 class="rounded-circle bg-secondary"
+									 style="width: 24px; height: 24px;">
+								</div>
+
+								<!-- 사용자 이름 -->
+								<span class="fw-semibold small"
+									  th:text="${reply.user != null ? reply.user.name : reply.author}">
+									ユーザー
+								</span>
+
+								<span class="text-muted small"
+									  th:text="${reply.createdAt != null ? #temporals.format(reply.createdAt, 'yyyy-MM-dd HH:mm') : '2026-01-19 14:35'}">
+									2026-01-19 14:35
+								</span>
+							</div>
+
+							<!-- 대댓글 내용 -->
+							<div class="mb-2 small" th:text="${reply.content}"
+								 th:id="'reply-content-' + ${comment.id} + '-' + ${reply.id}">
+								コメント内容
+							</div>
+
+							<!-- ✅ 대댓글 수정 폼 추가 -->
+							<div class="edit-form" th:id="'reply-edit-form-' + ${comment.id} + '-' + ${reply.id}" style="display: none;">
+								<form th:action="@{/board/comment/reply/edit}" method="post" onsubmit="return checkLoginForAction(event)">
+									<input type="hidden" name="parentId" th:value="${comment.id}">
+									<input type="hidden" name="replyId" th:value="${reply.id}">
+									<textarea name="content" class="form-control mb-2" th:text="${reply.content}" required></textarea>
+									<div class="d-flex gap-2">
+										<button type="submit" class="btn btn-sm btn-primary">保存</button>
+										<button type="button" class="btn btn-sm btn-secondary"
+												th:onclick="|toggleReplyEdit(${comment.id}, ${reply.id})|">キャンセル</button>
+									</div>
+								</form>
+							</div>
+
+							<!-- 대댓글 액션 -->
+							<div class="comment-actions small text-muted d-flex gap-2">
+								<!-- 대댓글 좋아요 -->
+								<form th:action="@{/board/comment/reply/like}" method="post" class="d-inline" onsubmit="return checkLoginForAction(event)">
+									<input type="hidden" name="parentId" th:value="${comment.id}">
+									<input type="hidden" name="replyId" th:value="${reply.id}">
+									<button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
+										<img th:src="${reply.likedByMe ? 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' : 'https://img.icons8.com/ios/20/888888/like.png'}"
+											 alt="like" style="vertical-align: middle;">
+										<span th:text="${reply.likeCount}">0</span>
+									</button>
+								</form>
+
+								<span th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
+									  th:onclick="|checkLoginAndToggleReplyEdit(event, ${comment.id}, ${reply.id})|"
+									  style="cursor:pointer;">
+									<img src="https://img.icons8.com/ios/20/888888/edit.png"
+										 alt="edit"
+										 style="vertical-align: middle;">
+									<span>編集</span>
+								</span>
+
+								<!-- 대댓글 삭제 -->
+								<form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
+									  th:action="@{/board/comment/reply/delete}" method="post"
+									  class="d-inline"
+									  onsubmit="event.stopPropagation(); return checkLoginForAction(event);">
+									<input type="hidden" name="parentId" th:value="${comment.id}">
+									<input type="hidden" name="replyId" th:value="${reply.id}">
+									<button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
+										<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
+									</button>
+								</form>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<!-- 로그인 상태 스크립트 -->
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+			const isLoggedIn = /*[[${isLoggedIn}]]*/ false;
+			/*]]>*/
+
+			function checkLoginForAction(event) {
+				if (!isLoggedIn) {
+					event.preventDefault();
+					if (confirm('ログインが必要です。ログインページに移動しますか？')) {
+						location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
 					}
-						    
-				function checkLoginAndToggleEdit(event, commentId) {
-					event.stopPropagation(); // ✅ 추가
-					
-			        if (!isLoggedIn) {
-			            event.preventDefault();
-			            if (confirm('ログインが必要です。ログインページに移動しますか？')) {
-			                location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
-			            }
-			        } else {
-			            toggleEdit(commentId);
-			        }
-			    }
-						
-				// ==== 대댓글 입력 함수 ====    
-				function toggleReply(commentId) {
-				        const form = document.getElementById('reply-form-' + commentId);
-				        if (form.style.display === 'none' || form.style.display === '') {
-				            form.style.display = 'block';
-				        } else {
-				            form.style.display = 'none';
-				        }
-				    }
-					
-				// ==== 대댓글 수정 함수 ====	    
-				function toggleReplyEdit(commentId, replyId) {
-				        const content = document.getElementById('reply-content-' + commentId + '-' + replyId);
-				        const form = document.getElementById('reply-edit-form-' + commentId + '-' + replyId);
-				        
-				        if (form && content) {
-				            if (form.style.display === 'none' || form.style.display === '') {
-				                content.style.display = 'none';
-				                form.style.display = 'block';
-				            } else {
-				                content.style.display = 'block';
-				                form.style.display = 'none';
-				            }
-				        }
-				    }
-				
-				function checkLoginAndToggleReplyEdit(event, commentId, replyId) {
-				        if (!isLoggedIn) {
-				            event.preventDefault();
-				            if (confirm('ログインが必要です。ログインページに移動しますか？')) {
-				                location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
-				            }
-				        } else {
-				            toggleReplyEdit(commentId, replyId);
-				        }
-				    }
-					
-				// ==== 정렬 함수 ====
-			    function sortComments(order) {
-			        location.href = location.pathname + '?sort=' + order;
-			    }
-						
-				// ==== 게시글 삭제 함수 ====
-				function deletePost(){
-					if(confirm('本当に削除しますか？')){
-						const form = document.createElement('form');
-						form.method = 'POST';
-						form.action = '/board/delete/[[${board.id}]]';
-						document.body.appendChild(form);
-						form.submit();
+					return false;
+				}
+				return true;
+			}
+
+			function checkLoginForClick(event) {
+				if (!isLoggedIn) {
+					event.preventDefault();
+					if (confirm('ログインが必要です。ログインページに移動しますか？')) {
+						location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
 					}
 				}
-				
-				// ========== 비동기 처리 ==========
+			}
 
-				// 페이지 로드 후 이벤트 리스너 등록
-				document.addEventListener('DOMContentLoaded', function() {
-				    
-				    // 1. 게시글 좋아요
-				    const boardLikeForm = document.querySelector('form[action*="/board/like"]');
-				    if (boardLikeForm) {
-				        boardLikeForm.addEventListener('submit', function(e) {
-				            e.preventDefault();
-				            
-				            if (!checkLoginForAction(e)) return;
-				            
-				            const formData = new FormData(this);
-				            const boardId = formData.get('boardId');
-				            const likeBtn = this.querySelector('button');
-				            const likeImg = likeBtn.querySelector('img');
-				            const likeCount = likeBtn.querySelector('span:last-child');
-				            
-				            fetch('/api/board/like', {
-				                method: 'POST',
-				                body: formData
-				            })
-				            .then(response => response.json())
-				            .then(data => {
-				                if (data.success) {
-				                    if (data.liked) {
-				                        likeImg.src = 'https://img.icons8.com/ios-filled/22/ff6b6b/like.png';
-				                    } else {
-				                        likeImg.src = 'https://img.icons8.com/ios/22/888888/like.png';
-				                    }
-				                    likeCount.textContent = data.likeCount;
-				                }
-				            });
-				        });
-				    }
-				    
-				    // 2. 댓글 추가
-				    const commentAddForm = document.querySelector('form[action*="/board/comment/add"]');
-				    if (commentAddForm) {
-				        commentAddForm.addEventListener('submit', function(e) {
-				            e.preventDefault();
-				            
-				            if (!checkLoginForAction(e)) return;
-				            
-				            const formData = new FormData(this);
-				            const textarea = this.querySelector('textarea');
-				            
-				            fetch('/api/board/comment/add', {
-				                method: 'POST',
-				                body: formData
-				            })
-				            .then(response => response.json())
-				            .then(data => {
-				                if (data.success) {
-				                    // 댓글 목록 새로고침
-				                    location.reload();
-				                } else {
-				                    alert(data.message);
-				                }
-				            });
-				        });
-				    }
-				    
-				    // 3. 댓글 좋아요
-				    document.querySelectorAll('form[action*="/board/comment/like"]:not([action*="reply"])').forEach(form => {
-				        form.addEventListener('submit', function(e) {
-				            e.preventDefault();
-				            
-				            if (!checkLoginForAction(e)) return;
-				            
-				            const formData = new FormData(this);
-				            const likeBtn = this.querySelector('button');
-				            const likeImg = likeBtn.querySelector('img');
-				            const likeCount = likeBtn.querySelector('span:last-child');
-				            
-				            fetch('/api/board/comment/like', {
-				                method: 'POST',
-				                body: formData
-				            })
-				            .then(response => response.json())
-				            .then(data => {
-				                if (data.success) {
-				                    if (data.liked) {
-				                        likeImg.src = 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png';
-				                    } else {
-				                        likeImg.src = 'https://img.icons8.com/ios/20/888888/like.png';
-				                    }
-				                    likeCount.textContent = data.likeCount;
-				                }
-				            });
-				        });
-				    });
-				    
-				    // 4. 댓글 수정
-				    document.querySelectorAll('form[action*="/board/comment/edit"]:not([action*="reply"])').forEach(form => {
-				        form.addEventListener('submit', function(e) {
-				            e.preventDefault();
-				            
-				            if (!checkLoginForAction(e)) return;
-				            
-				            const formData = new FormData(this);
-				            const commentId = formData.get('commentId');
-				            const newContent = formData.get('content');
-				            
-				            fetch('/api/board/comment/edit', {
-				                method: 'POST',
-				                body: formData
-				            })
-				            .then(response => response.json())
-				            .then(data => {
-				                if (data.success) {
-				                    const contentDiv = document.getElementById('comment-content-' + commentId);
-				                    contentDiv.textContent = data.content;
-				                    toggleEdit(commentId);
-				                }
-				            });
-				        });
-				    });
-				    
-				    // 5. 댓글 삭제
-				    document.querySelectorAll('form[action*="/board/comment/delete"]:not([action*="reply"])').forEach(form => {
-				        form.addEventListener('submit', function(e) {
-				            e.preventDefault();
-				            
-				            if (!checkLoginForAction(e)) return;
-				            if (!confirm('本当に削除しますか?')) return;
-				            
-				            const formData = new FormData(this);
-				            const commentId = formData.get('commentId');
-				            
-				            fetch('/api/board/comment/delete', {
-				                method: 'POST',
-				                body: formData
-				            })
-				            .then(response => response.json())
-				            .then(data => {
-				                if (data.success) {
-				                    const commentDiv = document.getElementById('comment-' + commentId);
-				                    commentDiv.remove();
-				                }
-				            });
-				        });
-				    });
-				    
-				    // 6. 대댓글 추가
-				    document.querySelectorAll('form[action*="/board/comment/reply"]:not([action*="edit"]):not([action*="delete"]):not([action*="like"])').forEach(form => {
-				        form.addEventListener('submit', function(e) {
-				            e.preventDefault();
-				            
-				            if (!checkLoginForAction(e)) return;
-				            
-				            const formData = new FormData(this);
-				            
-				            fetch('/api/board/comment/reply', {
-				                method: 'POST',
-				                body: formData
-				            })
-				            .then(response => response.json())
-				            .then(data => {
-				                if (data.success) {
-				                    location.reload();
-				                }
-				            });
-				        });
-				    });
-				    
-				    // 7. 대댓글 수정
-				    document.querySelectorAll('form[action*="/board/comment/reply/edit"]').forEach(form => {
-				        form.addEventListener('submit', function(e) {
-				            e.preventDefault();
-				            
-				            if (!checkLoginForAction(e)) return;
-				            
-				            const formData = new FormData(this);
-				            const parentId = formData.get('parentId');
-				            const replyId = formData.get('replyId');
-				            
-				            fetch('/api/board/comment/reply/edit', {
-				                method: 'POST',
-				                body: formData
-				            })
-				            .then(response => response.json())
-				            .then(data => {
-				                if (data.success) {
-				                    const contentDiv = document.getElementById('reply-content-' + parentId + '-' + replyId);
-				                    contentDiv.textContent = data.content;
-				                    toggleReplyEdit(parentId, replyId);
-				                }
-				            });
-				        });
-				    });
-				    
-				    // 8. 대댓글 삭제
-				    document.querySelectorAll('form[action*="/board/comment/reply/delete"]').forEach(form => {
-				        form.addEventListener('submit', function(e) {
-				            e.preventDefault();
-				            
-				            if (!checkLoginForAction(e)) return;
-				            if (!confirm('本当に削除しますか?')) return;
-				            
-				            const formData = new FormData(this);
-				            
-				            fetch('/api/board/comment/reply/delete', {
-				                method: 'POST',
-				                body: formData
-				            })
-				            .then(response => response.json())
-				            .then(data => {
-				                if (data.success) {
-				                    location.reload();
-				                }
-				            });
-				        });
-				    });
-				    
-				    // 9. 대댓글 좋아요
-				    document.querySelectorAll('form[action*="/board/comment/reply/like"]').forEach(form => {
-				        form.addEventListener('submit', function(e) {
-				            e.preventDefault();
-				            
-				            if (!checkLoginForAction(e)) return;
-				            
-				            const formData = new FormData(this);
-				            const likeBtn = this.querySelector('button');
-				            const likeImg = likeBtn.querySelector('img');
-				            const likeCount = likeBtn.querySelector('span:last-child');
-				            
-				            fetch('/api/board/comment/reply/like', {
-				                method: 'POST',
-				                body: formData
-				            })
-				            .then(response => response.json())
-				            .then(data => {
-				                if (data.success) {
-				                    if (data.liked) {
-				                        likeImg.src = 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png';
-				                    } else {
-				                        likeImg.src = 'https://img.icons8.com/ios/20/888888/like.png';
-				                    }
-				                    likeCount.textContent = data.likeCount;
-				                }
-				            });
-				        });
-				    });
+			function toggleEdit(commentId) {
+				const content = document.getElementById('comment-content-' + commentId);
+				const form = document.getElementById('edit-form-' + commentId);
+				const replyForm = document.getElementById('reply-form-' + commentId);
+
+				if (replyForm) replyForm.style.display = 'none';
+
+				if (form.style.display === 'none' || form.style.display === '') {
+					content.style.display = 'none';
+					form.style.display = 'block';
+				} else {
+					content.style.display = 'block';
+					form.style.display = 'none';
+				}
+			}
+
+			function checkLoginAndToggleEdit(event, commentId) {
+				event.stopPropagation();
+				if (!isLoggedIn) {
+					event.preventDefault();
+					if (confirm('ログインが必要です。ログインページに移動しますか？')) {
+						location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
+					}
+				} else {
+					toggleEdit(commentId);
+				}
+			}
+
+			function toggleReply(commentId) {
+				const form = document.getElementById('reply-form-' + commentId);
+				if (form.style.display === 'none' || form.style.display === '') {
+					form.style.display = 'block';
+				} else {
+					form.style.display = 'none';
+				}
+			}
+
+			function toggleReplyEdit(commentId, replyId) {
+				const content = document.getElementById('reply-content-' + commentId + '-' + replyId);
+				const form = document.getElementById('reply-edit-form-' + commentId + '-' + replyId);
+
+				if (form && content) {
+					if (form.style.display === 'none' || form.style.display === '') {
+						content.style.display = 'none';
+						form.style.display = 'block';
+					} else {
+						content.style.display = 'block';
+						form.style.display = 'none';
+					}
+				}
+			}
+
+			function checkLoginAndToggleReplyEdit(event, commentId, replyId) {
+				if (!isLoggedIn) {
+					event.preventDefault();
+					if (confirm('ログインが必要です。ログインページに移動しますか？')) {
+						location.href = '/login?returnUrl=' + encodeURIComponent(location.pathname);
+					}
+				} else {
+					toggleReplyEdit(commentId, replyId);
+				}
+			}
+
+			function sortComments(order) {
+				location.href = location.pathname + '?sort=' + order;
+			}
+
+			function deletePost() {
+				if (confirm('本当に削除しますか？')) {
+					const form = document.createElement('form');
+					form.method = 'POST';
+					form.action = '/board/delete/[[${board.id}]]';
+					document.body.appendChild(form);
+					form.submit();
+				}
+			}
+
+			// 비동기 처리(원본 유지)
+			document.addEventListener('DOMContentLoaded', function() {
+
+				const boardLikeForm = document.querySelector('form[action*="/board/like"]');
+				if (boardLikeForm) {
+					boardLikeForm.addEventListener('submit', function(e) {
+						e.preventDefault();
+						if (!checkLoginForAction(e)) return;
+
+						const formData = new FormData(this);
+						const likeBtn = this.querySelector('button');
+						const likeImg = likeBtn.querySelector('img');
+						const likeCount = likeBtn.querySelector('span:last-child');
+
+						fetch('/api/board/like', {
+							method: 'POST',
+							body: formData
+						})
+						.then(response => response.json())
+						.then(data => {
+							if (data.success) {
+								likeImg.src = data.liked
+									? 'https://img.icons8.com/ios-filled/22/ff6b6b/like.png'
+									: 'https://img.icons8.com/ios/22/888888/like.png';
+								likeCount.textContent = data.likeCount;
+							}
+						});
+					});
+				}
+
+				const commentAddForm = document.querySelector('form[action*="/board/comment/add"]');
+				if (commentAddForm) {
+					commentAddForm.addEventListener('submit', function(e) {
+						e.preventDefault();
+						if (!checkLoginForAction(e)) return;
+
+						const formData = new FormData(this);
+
+						fetch('/api/board/comment/add', {
+							method: 'POST',
+							body: formData
+						})
+						.then(response => response.json())
+						.then(data => {
+							if (data.success) location.reload();
+							else alert(data.message);
+						});
+					});
+				}
+
+				document.querySelectorAll('form[action*="/board/comment/like"]:not([action*="reply"])').forEach(form => {
+					form.addEventListener('submit', function(e) {
+						e.preventDefault();
+						if (!checkLoginForAction(e)) return;
+
+						const formData = new FormData(this);
+						const likeBtn = this.querySelector('button');
+						const likeImg = likeBtn.querySelector('img');
+						const likeCount = likeBtn.querySelector('span:last-child');
+
+						fetch('/api/board/comment/like', { method: 'POST', body: formData })
+						.then(r => r.json())
+						.then(data => {
+							if (data.success) {
+								likeImg.src = data.liked
+									? 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png'
+									: 'https://img.icons8.com/ios/20/888888/like.png';
+								likeCount.textContent = data.likeCount;
+							}
+						});
+					});
 				});
-				
-			</script>
 
-			<!-- Bootstrap JS -->
-			<script src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+				document.querySelectorAll('form[action*="/board/comment/edit"]:not([action*="reply"])').forEach(form => {
+					form.addEventListener('submit', function(e) {
+						e.preventDefault();
+						if (!checkLoginForAction(e)) return;
 
-			<!-- Bottom Navigation Bar -->
-			<div th:replace="~{fragments/bottom-nav :: bottomNav}"></div>
+						const formData = new FormData(this);
+						const commentId = formData.get('commentId');
 
-		</body>
+						fetch('/api/board/comment/edit', { method: 'POST', body: formData })
+						.then(r => r.json())
+						.then(data => {
+							if (data.success) {
+								const contentDiv = document.getElementById('comment-content-' + commentId);
+								contentDiv.textContent = data.content;
+								toggleEdit(commentId);
+							}
+						});
+					});
+				});
+
+				document.querySelectorAll('form[action*="/board/comment/delete"]:not([action*="reply"])').forEach(form => {
+					form.addEventListener('submit', function(e) {
+						e.preventDefault();
+						if (!checkLoginForAction(e)) return;
+						if (!confirm('本当に削除しますか?')) return;
+
+						const formData = new FormData(this);
+						const commentId = formData.get('commentId');
+
+						fetch('/api/board/comment/delete', { method: 'POST', body: formData })
+						.then(r => r.json())
+						.then(data => {
+							if (data.success) {
+								const commentDiv = document.getElementById('comment-' + commentId);
+								commentDiv.remove();
+							}
+						});
+					});
+				});
+
+				document.querySelectorAll('form[action*="/board/comment/reply"]:not([action*="edit"]):not([action*="delete"]):not([action*="like"])').forEach(form => {
+					form.addEventListener('submit', function(e) {
+						e.preventDefault();
+						if (!checkLoginForAction(e)) return;
+
+						const formData = new FormData(this);
+
+						fetch('/api/board/comment/reply', { method: 'POST', body: formData })
+						.then(r => r.json())
+						.then(data => { if (data.success) location.reload(); });
+					});
+				});
+
+				document.querySelectorAll('form[action*="/board/comment/reply/edit"]').forEach(form => {
+					form.addEventListener('submit', function(e) {
+						e.preventDefault();
+						if (!checkLoginForAction(e)) return;
+
+						const formData = new FormData(this);
+						const parentId = formData.get('parentId');
+						const replyId = formData.get('replyId');
+
+						fetch('/api/board/comment/reply/edit', { method: 'POST', body: formData })
+						.then(r => r.json())
+						.then(data => {
+							if (data.success) {
+								const contentDiv = document.getElementById('reply-content-' + parentId + '-' + replyId);
+								contentDiv.textContent = data.content;
+								toggleReplyEdit(parentId, replyId);
+							}
+						});
+					});
+				});
+
+				document.querySelectorAll('form[action*="/board/comment/reply/delete"]').forEach(form => {
+					form.addEventListener('submit', function(e) {
+						e.preventDefault();
+						if (!checkLoginForAction(e)) return;
+						if (!confirm('本当に削除しますか?')) return;
+
+						const formData = new FormData(this);
+
+						fetch('/api/board/comment/reply/delete', { method: 'POST', body: formData })
+						.then(r => r.json())
+						.then(data => { if (data.success) location.reload(); });
+					});
+				});
+
+				document.querySelectorAll('form[action*="/board/comment/reply/like"]').forEach(form => {
+					form.addEventListener('submit', function(e) {
+						e.preventDefault();
+						if (!checkLoginForAction(e)) return;
+
+						const formData = new FormData(this);
+						const likeBtn = this.querySelector('button');
+						const likeImg = likeBtn.querySelector('img');
+						const likeCount = likeBtn.querySelector('span:last-child');
+
+						fetch('/api/board/comment/reply/like', { method: 'POST', body: formData })
+						.then(r => r.json())
+						.then(data => {
+							if (data.success) {
+								likeImg.src = data.liked
+									? 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png'
+									: 'https://img.icons8.com/ios/20/888888/like.png';
+								likeCount.textContent = data.likeCount;
+							}
+						});
+					});
+				});
+			});
+		</script>
+
+		<!-- Bootstrap JS -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+		<!-- Bottom Navigation Bar -->
+		<div th:replace="~{fragments/bottom-nav :: bottomNav}"></div>
+
+	</div> <!-- mobile-container -->
+</div> <!-- container-fluid -->
+</body>
 </html>

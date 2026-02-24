@@ -97,12 +97,12 @@ Spring BootとThymeleaf を用いたフロントエンド構成となってい�
 </details>
 
 <details>
-<summary>チャン・ミンチャン</summary>
+<summary>ジャン・ミンチャン</summary>
 
-- Profile page
--
--
--
+- Profile Area(ユーザーごとProfileを保持)
+- ERD(DBリレーションの基本設計)
+- ProfileのViewからBoardの投稿とコメントが表示する機能の実装
+
 
 </details>
 
@@ -143,7 +143,6 @@ Spring BootとThymeleaf を用いたフロントエンド構成となってい�
 
 <details>
 <summary>キ・ソンヒャン</summary>
-
 -
 -
 -
@@ -152,9 +151,8 @@ Spring BootとThymeleaf を用いたフロントエンド構成となってい�
 </details>
 
 <details>
-<summary>チャン・ミンチャン</summary>
-
--
+<summary>ジャン・ミンチャン</summary>
+- JWTへのマイグレーション
 -
 -
 -

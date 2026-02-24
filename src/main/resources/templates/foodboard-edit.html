@@ -30,7 +30,7 @@
 		        }
 	  </style>
 </head>	
-<body>
+<body th:attr="data-upload-mode=${uploadClientMode}">
 	<div class="container-fluid px-0">
 		<div class="mobile-container">
 			<form th:action="@{/board/edit/{id}(id=${board.id})}" method="post">
@@ -40,8 +40,8 @@
 						style="background-color: #ffecd9; min-height: 85px;">
 				<!--뒤로 가기 버튼-->
 				<a th:href="@{/board/view/{id}(id=${board.id})}"
-					class="d-inline-flex align-items-center" 
-					style="cursor: pointer; font-size: 24px; text-decoration: none; color: black; line-height: 1;">〈</a>
+				   class="d-inline-flex align-items-center justify-content-center" 
+				   style="cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
 				<h5 class="mb-0 fw-bold">投稿修正</h5>
 				<button type="submit" class="btn p-0 fw-bold" 
 						style="font-size: 16px; color: black; border: none; background: none;">完了</button>
@@ -264,11 +264,12 @@
 		</script>
 		<script>
 			const imageInput = document.getElementById('imageInput');
-			const dropzone = document.getElementById('dropZone');
+			const dropZone = document.getElementById('dropZone');
 			const imagePreviewContainer = document.getElementById('imagePreviewContainer');
 			const imagePreviewList = document.getElementById('imagePreviewList');
 			const imageUrlsInput = document.getElementById('imageUrls');
 			const existingImages = document.getElementById('existingImages');
+			const uploadMode = document.body.dataset.uploadMode || 'server';
 			
 			let existingImageUrls = [];
 			let newImageUrls = [];
@@ -278,7 +279,7 @@
 			window.addEventListener('DOMContentLoaded', function(){
 				const initialUrls = imageUrlsInput.value; 
 				if(initialUrls && initialUrls.trim() !== ''){
-					existingUrls = initialUrls.split(',').map(url => url.trim());
+					existingImageUrls = initialUrls.split(',').map(url => url.trim());
 					updateExistingImages();
 				}
 			});
@@ -386,24 +387,56 @@
 			            return;
 			        }
 			        
-			        const formData = new FormData();
-			        formData.append('file', file);
-			        
 			        showLoading();
-			        
-			        fetch('/api/upload', {
-			            method: 'POST',
-			            body: formData
-			        })
-			        .then(response => {
-			            if (!response.ok) {
-			                throw new Error('アップロード失敗');
-			            }
-			            return response.json();
-			        })
+			
+			        let uploadPromise;
+			        if (uploadMode === 'direct') {
+			            uploadPromise = fetch('/api/uploads/presign', {
+			                method: 'POST',
+			                headers: {
+			                    'Content-Type': 'application/json'
+			                },
+			                body: JSON.stringify({
+			                    fileName: file.name,
+			                    contentType: file.type,
+			                    fileSize: file.size
+			                })
+			            })
+			            .then(response => {
+			                if (!response.ok) {
+			                    throw new Error('アップロード失敗');
+			                }
+			                return response.json();
+			            })
+			            .then(data => fetch(data.uploadUrl, {
+			                method: 'PUT',
+			                headers: {
+			                    'Content-Type': file.type
+			                },
+			                body: file
+			            }).then(uploadResponse => {
+			                if (!uploadResponse.ok) {
+			                    throw new Error('R2へのアップロードに失敗しました');
+			                }
+			                return data;
+			            }));
+			        } else {
+			            const formData = new FormData();
+			            formData.append('file', file);
+			            uploadPromise = fetch('/api/uploads/image', {
+			                method: 'POST',
+			                body: formData
+			            }).then(response => {
+			                if (!response.ok) {
+			                    throw new Error('アップロード失敗');
+			                }
+			                return response.json();
+			            });
+			        }
+			        uploadPromise
 			        .then(data => {
-			            if (data.url) {
-			                newImageUrls.push(data.url);
+			            if (data.publicUrl) {
+			                newImageUrls.push(data.publicUrl);
 			                updateNewImagePreview();
 			                updateImageUrlsInput();
 			            } else {
@@ -475,7 +508,3 @@
 
 	</body>
 </html>
-
-
-
-

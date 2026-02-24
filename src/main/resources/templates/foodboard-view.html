@@ -101,8 +101,8 @@
 					style = "background-color: #ffecd9; min-height: 85px;">
 					
 					<a th:href = "@{/board}"
-						class = "d-inline-flex align-items-center"
-						style = "cursor: pointer; font-size: 24px; text-decoration: none; color: black; line-height: 1;">〈</a>
+					   class = "d-inline-flex align-items-center justify-content-center"
+					   style = "cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
 						
 					<h5 class = "mb-0 fw-bold">グルメ掲示板</h5>
 					
@@ -172,7 +172,20 @@
 			    <!-- 4. 글 내용 -->
 			    <div class="px-3 py-2">
 			        <p class="mb-0" style="line-height: 1.6;" th:text="${board.content}"></p>
+					<button class="btn btn-primary">追加機能</button>
 			    </div>
+				
+				<!-- 지도 (mapUrl이 있을 때만 표시) -->
+				<div class="px-3 pb-2" th:if="${board.mapUrl != null and !board.mapUrl.isEmpty()}">
+					<div class="mb-1 small text-muted fw-bold">📍 地図</div>
+					<iframe th:src="${board.mapUrl}"
+							width="100%"
+							height="250"
+							frameborder="0"
+							style="border-radius: 8px; border: 1px solid #dee2e6;">
+					</iframe>
+				</div>
+				
 				
 			</main>
 			
@@ -196,6 +209,13 @@
 					    <span>コメント</span>
 					    <span th:text="${comments != null ? comments.size() : 0}">0</span>
 					</span>
+					
+					<!--조회수 추가-->
+					<span class="text-muted ms-auto">
+						<img src="https://img.icons8.com/ios/22/888888/eye.png" alt="조회수" style="vertical-align: middle;">
+						<span th:text="${board.viewCount}">0</span>
+					</span>
+						
 			    </div>
 			</div>
 
@@ -319,10 +339,10 @@
 						  </span>
 			                
 			                <!-- 삭제 -->
-							<form th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
-							      th:action="@{/board/comment/delete}" method="post" 
-							      class="d-inline"
-							      onsubmit="event.stopPropagation(); return checkLoginForAction(event) && confirm('本当に削除しますか?');">
+								<form th:if="${session.loginUser != null && comment.user != null && session.loginUser.userId == comment.user.userId}"
+								      th:action="@{/board/comment/delete}" method="post" 
+								      class="d-inline"
+								      onsubmit="event.stopPropagation(); return checkLoginForAction(event);">
 			                    <input type="hidden" name="commentId" th:value="${comment.id}">
 								<button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
 								    <img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
@@ -416,14 +436,14 @@
 									</span>
 			                        
 			                        <!-- 대댓글 삭제 -->
-			                        <form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
-									      th:action="@{/board/comment/reply/delete}" method="post" 
-									      class="d-inline"
-									      onsubmit="event.stopPropagation(); return checkLoginForAction(event) && confirm('本当に削除しますか?');"
-			                            <input type="hidden" name="parentId" th:value="${comment.id}">
-			                            <input type="hidden" name="replyId" th:value="${reply.id}">
-			                            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
-											<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
+					                        <form th:if="${session.loginUser != null && reply.user != null && session.loginUser.userId == reply.user.userId}"
+										      th:action="@{/board/comment/reply/delete}" method="post" 
+										      class="d-inline"
+										      onsubmit="event.stopPropagation(); return checkLoginForAction(event);">
+				                            <input type="hidden" name="parentId" th:value="${comment.id}">
+				                            <input type="hidden" name="replyId" th:value="${reply.id}">
+				                            <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none text-muted">
+												<img src="https://img.icons8.com/ios/20/888888/delete.png" alt="delete" style="vertical-align: middle;"> 削除
 			                            </button>
 			                        </form>
 			                    </div>
@@ -545,6 +565,254 @@
 						form.submit();
 					}
 				}
+				
+				// ========== 비동기 처리 ==========
+
+				// 페이지 로드 후 이벤트 리스너 등록
+				document.addEventListener('DOMContentLoaded', function() {
+				    
+				    // 1. 게시글 좋아요
+				    const boardLikeForm = document.querySelector('form[action*="/board/like"]');
+				    if (boardLikeForm) {
+				        boardLikeForm.addEventListener('submit', function(e) {
+				            e.preventDefault();
+				            
+				            if (!checkLoginForAction(e)) return;
+				            
+				            const formData = new FormData(this);
+				            const boardId = formData.get('boardId');
+				            const likeBtn = this.querySelector('button');
+				            const likeImg = likeBtn.querySelector('img');
+				            const likeCount = likeBtn.querySelector('span:last-child');
+				            
+				            fetch('/api/board/like', {
+				                method: 'POST',
+				                body: formData
+				            })
+				            .then(response => response.json())
+				            .then(data => {
+				                if (data.success) {
+				                    if (data.liked) {
+				                        likeImg.src = 'https://img.icons8.com/ios-filled/22/ff6b6b/like.png';
+				                    } else {
+				                        likeImg.src = 'https://img.icons8.com/ios/22/888888/like.png';
+				                    }
+				                    likeCount.textContent = data.likeCount;
+				                }
+				            });
+				        });
+				    }
+				    
+				    // 2. 댓글 추가
+				    const commentAddForm = document.querySelector('form[action*="/board/comment/add"]');
+				    if (commentAddForm) {
+				        commentAddForm.addEventListener('submit', function(e) {
+				            e.preventDefault();
+				            
+				            if (!checkLoginForAction(e)) return;
+				            
+				            const formData = new FormData(this);
+				            const textarea = this.querySelector('textarea');
+				            
+				            fetch('/api/board/comment/add', {
+				                method: 'POST',
+				                body: formData
+				            })
+				            .then(response => response.json())
+				            .then(data => {
+				                if (data.success) {
+				                    // 댓글 목록 새로고침
+				                    location.reload();
+				                } else {
+				                    alert(data.message);
+				                }
+				            });
+				        });
+				    }
+				    
+				    // 3. 댓글 좋아요
+				    document.querySelectorAll('form[action*="/board/comment/like"]:not([action*="reply"])').forEach(form => {
+				        form.addEventListener('submit', function(e) {
+				            e.preventDefault();
+				            
+				            if (!checkLoginForAction(e)) return;
+				            
+				            const formData = new FormData(this);
+				            const likeBtn = this.querySelector('button');
+				            const likeImg = likeBtn.querySelector('img');
+				            const likeCount = likeBtn.querySelector('span:last-child');
+				            
+				            fetch('/api/board/comment/like', {
+				                method: 'POST',
+				                body: formData
+				            })
+				            .then(response => response.json())
+				            .then(data => {
+				                if (data.success) {
+				                    if (data.liked) {
+				                        likeImg.src = 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png';
+				                    } else {
+				                        likeImg.src = 'https://img.icons8.com/ios/20/888888/like.png';
+				                    }
+				                    likeCount.textContent = data.likeCount;
+				                }
+				            });
+				        });
+				    });
+				    
+				    // 4. 댓글 수정
+				    document.querySelectorAll('form[action*="/board/comment/edit"]:not([action*="reply"])').forEach(form => {
+				        form.addEventListener('submit', function(e) {
+				            e.preventDefault();
+				            
+				            if (!checkLoginForAction(e)) return;
+				            
+				            const formData = new FormData(this);
+				            const commentId = formData.get('commentId');
+				            const newContent = formData.get('content');
+				            
+				            fetch('/api/board/comment/edit', {
+				                method: 'POST',
+				                body: formData
+				            })
+				            .then(response => response.json())
+				            .then(data => {
+				                if (data.success) {
+				                    const contentDiv = document.getElementById('comment-content-' + commentId);
+				                    contentDiv.textContent = data.content;
+				                    toggleEdit(commentId);
+				                }
+				            });
+				        });
+				    });
+				    
+				    // 5. 댓글 삭제
+				    document.querySelectorAll('form[action*="/board/comment/delete"]:not([action*="reply"])').forEach(form => {
+				        form.addEventListener('submit', function(e) {
+				            e.preventDefault();
+				            
+				            if (!checkLoginForAction(e)) return;
+				            if (!confirm('本当に削除しますか?')) return;
+				            
+				            const formData = new FormData(this);
+				            const commentId = formData.get('commentId');
+				            
+				            fetch('/api/board/comment/delete', {
+				                method: 'POST',
+				                body: formData
+				            })
+				            .then(response => response.json())
+				            .then(data => {
+				                if (data.success) {
+				                    const commentDiv = document.getElementById('comment-' + commentId);
+				                    commentDiv.remove();
+				                }
+				            });
+				        });
+				    });
+				    
+				    // 6. 대댓글 추가
+				    document.querySelectorAll('form[action*="/board/comment/reply"]:not([action*="edit"]):not([action*="delete"]):not([action*="like"])').forEach(form => {
+				        form.addEventListener('submit', function(e) {
+				            e.preventDefault();
+				            
+				            if (!checkLoginForAction(e)) return;
+				            
+				            const formData = new FormData(this);
+				            
+				            fetch('/api/board/comment/reply', {
+				                method: 'POST',
+				                body: formData
+				            })
+				            .then(response => response.json())
+				            .then(data => {
+				                if (data.success) {
+				                    location.reload();
+				                }
+				            });
+				        });
+				    });
+				    
+				    // 7. 대댓글 수정
+				    document.querySelectorAll('form[action*="/board/comment/reply/edit"]').forEach(form => {
+				        form.addEventListener('submit', function(e) {
+				            e.preventDefault();
+				            
+				            if (!checkLoginForAction(e)) return;
+				            
+				            const formData = new FormData(this);
+				            const parentId = formData.get('parentId');
+				            const replyId = formData.get('replyId');
+				            
+				            fetch('/api/board/comment/reply/edit', {
+				                method: 'POST',
+				                body: formData
+				            })
+				            .then(response => response.json())
+				            .then(data => {
+				                if (data.success) {
+				                    const contentDiv = document.getElementById('reply-content-' + parentId + '-' + replyId);
+				                    contentDiv.textContent = data.content;
+				                    toggleReplyEdit(parentId, replyId);
+				                }
+				            });
+				        });
+				    });
+				    
+				    // 8. 대댓글 삭제
+				    document.querySelectorAll('form[action*="/board/comment/reply/delete"]').forEach(form => {
+				        form.addEventListener('submit', function(e) {
+				            e.preventDefault();
+				            
+				            if (!checkLoginForAction(e)) return;
+				            if (!confirm('本当に削除しますか?')) return;
+				            
+				            const formData = new FormData(this);
+				            
+				            fetch('/api/board/comment/reply/delete', {
+				                method: 'POST',
+				                body: formData
+				            })
+				            .then(response => response.json())
+				            .then(data => {
+				                if (data.success) {
+				                    location.reload();
+				                }
+				            });
+				        });
+				    });
+				    
+				    // 9. 대댓글 좋아요
+				    document.querySelectorAll('form[action*="/board/comment/reply/like"]').forEach(form => {
+				        form.addEventListener('submit', function(e) {
+				            e.preventDefault();
+				            
+				            if (!checkLoginForAction(e)) return;
+				            
+				            const formData = new FormData(this);
+				            const likeBtn = this.querySelector('button');
+				            const likeImg = likeBtn.querySelector('img');
+				            const likeCount = likeBtn.querySelector('span:last-child');
+				            
+				            fetch('/api/board/comment/reply/like', {
+				                method: 'POST',
+				                body: formData
+				            })
+				            .then(response => response.json())
+				            .then(data => {
+				                if (data.success) {
+				                    if (data.liked) {
+				                        likeImg.src = 'https://img.icons8.com/ios-filled/20/ff6b6b/like.png';
+				                    } else {
+				                        likeImg.src = 'https://img.icons8.com/ios/20/888888/like.png';
+				                    }
+				                    likeCount.textContent = data.likeCount;
+				                }
+				            });
+				        });
+				    });
+				});
+				
 			</script>
 
 			<!-- Bootstrap JS -->

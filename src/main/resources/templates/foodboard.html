@@ -53,7 +53,7 @@
 		<div class="mobile-container">
 			<header class="bg-white border-bottom py-3 px-3 d-flex justify-content-between align-items-center">
 			    <!-- 뒤로가기 -->
-			    <a th:href="@{/}" 
+			    <a th:href="@{/boards}" 
 			       class="d-inline-flex align-items-center justify-content-center" 
 			       style="cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
 			    
@@ -92,9 +92,14 @@
 			        <span id="searchIcon" style="cursor: pointer; font-size: 1.2rem;">🔍</span>
 			        
 			        <!-- 프로필 이미지 (이 위치로 이동!) -->
-			        <img src="https://images.unsplash.com/photo-1740252117027-4275d3f84385?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-			             class="rounded-circle" 
-			             style="width:32px; height:32px; cursor:pointer">
+					<a th:href="${session.loginUser != null ? '/profile/' + session.loginUser.userId : '/login'}">
+					    <img th:src="${session.loginUser != null && session.loginUser.profileImageUrl != null 
+					                 ? session.loginUser.profileImageUrl 
+					                 : 'https://images.unsplash.com/photo-1740252117027-4275d3f84385?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}" 
+					         class="rounded-circle" 
+					         style="width:32px; height:32px; cursor:pointer; object-fit: cover;"
+					         alt="프로필">
+					</a>
 			    </div>
 			</header>
 		
@@ -109,10 +114,10 @@
 					</div>
 				</div>
 
-		<div class = "p-3 rounded d-flex gap-2 small fw-bold" style = "background-color: #ffecd9; cursor: pointer">
-			<span>📢</span>
-			<span>グルメ掲示板ご利用方法とルール</span>
-		</div>
+				<a th:href="@{/board/rules}" class="p-3 rounded d-flex gap-2 small fw-bold text-decoration-none text-dark" style="background-color: #ffecd9; cursor: pointer">
+				    <span>📢</span>
+				    <span>グルメ掲示板ご利用方法とルール</span>
+				</a>
 
 		<main class="p-0 pb-5">
 		    <div th:each="board : ${boards}" class="p-2 border-bottom" style="background-color: white">
@@ -137,6 +142,10 @@
 		        </div>
 
 				<div class="d-flex align-items-center gap-2 small">
+					<span class="text-warning fw-bold d-flex align-items-center gap-1">
+					        <img src="https://img.icons8.com/ios-filled/20/ffc107/star.png" alt="별점" style="width:16px; height:16px;">
+					        <span th:text="${board.rating}">5</span>
+					    </span>
 				    <span class="d-flex align-items-center gap-1">
 				        <img th:src="${board.likedByMe ?
 							'https://img.icons8.com/ios-filled/20/ff6b6b/like.png' :
@@ -148,6 +157,11 @@
 				        <img src="https://img.icons8.com/ios/20/888888/comments.png" alt="댓글" style="width:16px; height:16px;">
 						<span th:text="${board.commentCount}">0</span>
 				    </span>
+					<!--조회수 추가-->
+					<span class="d-flex align-items-center gap-1">
+						<img src="https://img.icons8.com/ios/20/888888/eye.png" alt="조회수" style="width:16px; height:16px;">
+						<span th:text="${board.viewCount}">0</span>
+					</span>
 				    <span class="ms-auto text-muted"
 				          th:text="${#temporals.format(board.createdAt, 'HH:mm') + ' | ' + (board.user != null ? board.user.username : '匿名')}">
 				        12:24 | 작성자

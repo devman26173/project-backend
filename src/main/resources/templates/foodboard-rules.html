@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ご利用方法とルール - FoodBoard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/bottom-nav.css}">
+    
+    <style>
+        .mobile-container {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: #ffffff;
+            border-left: 1px solid #f0f0f0;
+            border-right: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            padding-bottom: 70px;
+        }
+        
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        
+        .rule-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .rule-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .rule-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .example-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 4px;
+        }
+        
+        .warning-box {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 4px;
+        }
+        
+        .tip-box {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid px-0">
+        <div class="mobile-container">
+            <!-- Header -->
+            <header class="d-flex justify-content-between align-items-center py-3 px-3"
+                    style="background-color: #ffecd9; min-height: 85px;">
+                <a th:href="@{/board}"
+                   class="d-inline-flex align-items-center justify-content-center"
+                   style="cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
+                
+                <h5 class="mb-0 fw-bold">ご利用方法とルール</h5>
+                
+                <div style="width: 24px;"></div> <!-- 오른쪽 공백 -->
+            </header>
+            
+            <!-- Content -->
+            <main class="px-3 py-3">
+                <!-- 환영 메시지 -->
+                <div class="alert alert-warning d-flex align-items-start gap-2 mb-3" role="alert">
+                    <span style="font-size: 24px;">👋</span>
+                    <div>
+                        <strong>グルメ掲示板へようこそ！</strong><br>
+                        <small>みんなで美味しい情報を共有しましょう。投稿前に必ずルールをご確認ください。</small>
+                    </div>
+                </div>
+                
+                <!-- 1. 投稿について -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <span>📝</span>
+                        <span>1. 投稿について</span>
+                    </div>
+                    <div class="rule-content">
+                        <p class="mb-2"><strong>こんな投稿を歓迎します：</strong></p>
+                        <ul class="mb-2">
+                            <li>実際に訪問したお店のレビュー</li>
+                            <li>料理の写真と感想</li>
+                            <li>おすすめメニューの紹介</li>
+                            <li>お店の雰囲気やサービスについて</li>
+                            <li>地域のグルメ情報</li>
+                        </ul>
+                        
+                        <div class="example-box">
+                            <strong>✅ 良い例：</strong><br>
+                            「渋谷の○○というラーメン店に行きました！濃厚豚骨スープが絶品で、チャーシューもとろとろでした🍜 平日ランチは並ぶので、14時頃がおすすめです。」
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 2. 禁止事項 -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <span>⛔</span>
+                        <span>2. 禁止事項</span>
+                    </div>
+                    <div class="rule-content">
+                        <p class="mb-2"><strong>以下の投稿は禁止です：</strong></p>
+                        <ul class="mb-2">
+                            <li>他のユーザーへの誹謗中傷</li>
+                            <li>お店への根拠のない悪口</li>
+                            <li>宣伝目的の投稿</li>
+                            <li>同じ内容の連続投稿（スパム）</li>
+                            <li>個人情報の公開</li>
+                            <li>虚偽の情報</li>
+                            <li>著作権を侵害する内容</li>
+                        </ul>
+                        
+                        <div class="warning-box">
+                            <strong>❌ 悪い例：</strong><br>
+                            「このお店は最悪！二度と行かない！」<br>
+                            → 具体的な理由がなく、お店を傷つける内容は禁止です。
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 3. 写真について -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <span>📷</span>
+                        <span>3. 写真のアップロード</span>
+                    </div>
+                    <div class="rule-content">
+                        <ul class="mb-2">
+                            <li>最大5枚まで投稿可能</li>
+                            <li>ファイルサイズ：1枚10MB以内</li>
+                            <li>対応形式：JPG、PNG、GIF</li>
+                            <li>他人の顔が写っている場合はぼかしを入れてください</li>
+                            <li>ネットから拾った画像の無断転載は禁止</li>
+                        </ul>
+                        
+                        <div class="tip-box">
+                            <strong>💡 TIP：</strong><br>
+                            料理が美味しそうに見える写真を撮るコツ：自然光で撮影、真上からではなく斜め45度から撮ると立体感が出ます！
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 4. 評価について -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <span>⭐</span>
+                        <span>4. 星評価について</span>
+                    </div>
+                    <div class="rule-content">
+                        <p class="mb-2"><strong>評価の目安：</strong></p>
+                        <ul class="mb-0">
+                            <li>⭐⭐⭐⭐⭐ (5点)：大満足！また絶対行きたい</li>
+                            <li>⭐⭐⭐⭐ (4点)：満足、おすすめできる</li>
+                            <li>⭐⭐⭐ (3点)：普通、悪くない</li>
+                            <li>⭐⭐ (2点)：少し残念</li>
+                            <li>⭐ (1点)：おすすめしない</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 5. コメント・いいねについて -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <span>💬</span>
+                        <span>5. コメント・いいねについて</span>
+                    </div>
+                    <div class="rule-content">
+                        <p class="mb-2"><strong>コメントのマナー：</strong></p>
+                        <ul class="mb-2">
+                            <li>他のユーザーの意見を尊重しましょう</li>
+                            <li>建設的な議論を心がけましょう</li>
+                            <li>質問には丁寧に答えましょう</li>
+                            <li>攻撃的な言葉遣いは避けましょう</li>
+                        </ul>
+                        
+                        <p class="mb-0"><strong>いいね機能：</strong></p>
+                        <ul class="mb-0">
+                            <li>参考になった投稿には「いいね」を押しましょう</li>
+                            <li>お気に入りのお店を見つけたらシェア</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 6. 違反報告 -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <span>🚨</span>
+                        <span>6. ルール違反を見つけたら</span>
+                    </div>
+                    <div class="rule-content">
+                        <p class="mb-2">ルールに違反する投稿やコメントを見つけた場合：</p>
+                        <ul class="mb-0">
+                            <li>運営に報告してください（support@foodboard.jp）</li>
+                            <li>個人的に注意するのではなく、運営にお任せください</li>
+                            <li>悪質な場合はアカウント停止措置を取ります</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 7. プライバシーとセキュリティ -->
+                <div class="rule-section">
+                    <div class="rule-title">
+                        <span>🔒</span>
+                        <span>7. プライバシーとセキュリティ</span>
+                    </div>
+                    <div class="rule-content">
+                        <ul class="mb-0">
+                            <li>個人情報（住所、電話番号、メールアドレス等）は投稿しないでください</li>
+                            <li>パスワードは定期的に変更しましょう</li>
+                            <li>他人のアカウントを使用しないでください</li>
+                            <li>不審なリンクはクリックしないでください</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 最後のメッセージ -->
+                <div class="alert alert-info d-flex align-items-start gap-2 mt-4" role="alert">
+                    <span style="font-size: 24px;">🎉</span>
+                    <div>
+                        <strong>楽しいグルメコミュニティを一緒に作りましょう！</strong><br>
+                        <small>ルールを守って、みんなで美味しい情報を共有しましょう。ご協力ありがとうございます。</small>
+                    </div>
+                </div>
+                
+                <!-- 戻るボタン -->
+                <div class="text-center mt-4 mb-3">
+                    <a th:href="@{/board}" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">
+                        グルメ掲示板に戻る
+                    </a>
+                </div>
+            </main>
+            
+            <!-- Bottom Navigation -->
+            <div th:replace="~{fragments/bottom-nav :: bottomNav}"></div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

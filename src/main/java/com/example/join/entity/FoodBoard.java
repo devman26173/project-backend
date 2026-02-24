@@ -19,6 +19,13 @@ public class FoodBoard {
 	private String imageUrls; 
 	private LocalDateTime createdAt; 
 	
+@Column(nullable = false, columnDefinition = "integer default 0")
+	private int viewCount = 0; 
+
+@Column(nullable = true)
+	private String mapUrl; 
+
+	
 @ManyToOne
 @JoinColumn(name = "user_id")
    	private User user;
@@ -138,6 +145,27 @@ public Integer getCommentCount() {
 public void setCommentCount(Integer commentCount) {
 	this.commentCount = commentCount;
 }
+
+
+public int getViewCount() {
+	return viewCount;
+}
+
+
+public void setViewCount(int viewCount) {
+	this.viewCount = viewCount;
+}
+
+
+public String getMapUrl() {
+	return mapUrl;
+}
+
+
+public void setMapUrl(String mapUrl) {
+	this.mapUrl = mapUrl;
+}
+
 
 
 }

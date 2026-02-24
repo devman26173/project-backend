@@ -8,14 +8,17 @@ import com.example.join.entity.FoodBoard;
 
 
 public interface FoodBoardRepository extends JpaRepository<FoodBoard, Long> {
-	 // 지방별 조회
-    List<FoodBoard> findByRegion(String region);
+	// 전체 조회 - 최신순 추가
+	List<FoodBoard> findAllByOrderByCreatedAtDesc();
+	
+	// 지방별 조회
+	List<FoodBoard> findByRegionOrderByCreatedAtDesc(String region);
 
     // 도도부현별 조회
-    List<FoodBoard> findByPrefecture(String prefecture);
+	List<FoodBoard> findByPrefectureOrderByCreatedAtDesc(String prefecture);
 
  // 여러 도도부현 조회 (추가)
-    List<FoodBoard> findByPrefectureIn(List<String> prefectures);
+	List<FoodBoard> findByPrefectureInOrderByCreatedAtDesc(List<String> prefectures);
 
     List<FoodBoard> findTop10ByUser_UserIdOrderByCreatedAtDesc(Long userId);
     
@@ -27,5 +30,6 @@ public interface FoodBoardRepository extends JpaRepository<FoodBoard, Long> {
     
     //검색 결과 조회
     List<FoodBoard> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
-}
 
+    FoodBoard findTopByOrderByCreatedAtDesc();
+}

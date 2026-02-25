@@ -27,6 +27,11 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Debug identity
+        run: |
+          aws sts get-caller-identity
+          aws configure list
+
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
 

@@ -52,22 +52,15 @@ jobs:
           INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
           ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
 
-          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-
           CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
           CLOUDFLARE_R2_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY }}
           CLOUDFLARE_R2_SECRET_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_KEY }}
           CLOUDFLARE_R2_BUCKET_NAME: ${{ secrets.CLOUDFLARE_R2_BUCKET_NAME }}
           CLOUDFLARE_R2_PUBLIC_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_URL }}
         run: |
-          COMMANDS=$(jq -c -n \
+          COMMANDS=$(jq -n \
             --arg region "$AWS_REGION" \
             --arg ecr "$ECR_REGISTRY" \
-            --arg ds_url "$SPRING_DATASOURCE_URL" \
-            --arg ds_user "$SPRING_DATASOURCE_USERNAME" \
-            --arg ds_pass "$SPRING_DATASOURCE_PASSWORD" \
             --arg r2_endpoint "$CLOUDFLARE_R2_ENDPOINT" \
             --arg r2_access "$CLOUDFLARE_R2_ACCESS_KEY" \
             --arg r2_secret "$CLOUDFLARE_R2_SECRET_KEY" \
@@ -78,9 +71,6 @@ jobs:
               "cd /opt/join-web",
               ("cat <<\"EOF\" | sudo tee /opt/join-web/.env > /dev/null\n"
                 + "SPRING_PROFILES_ACTIVE=prod\n"
-                + "SPRING_DATASOURCE_URL=" + $ds_url + "\n"
-                + "SPRING_DATASOURCE_USERNAME=" + $ds_user + "\n"
-                + "SPRING_DATASOURCE_PASSWORD=" + $ds_pass + "\n"
                 + "CLOUDFLARE_R2_ENDPOINT=" + $r2_endpoint + "\n"
                 + "CLOUDFLARE_R2_ACCESS_KEY=" + $r2_access + "\n"
                 + "CLOUDFLARE_R2_SECRET_KEY=" + $r2_secret + "\n"
@@ -106,11 +96,14 @@ jobs:
           aws ssm wait command-executed \
             --region "$AWS_REGION" \
             --command-id "$COMMAND_ID" \
-            --instance-id "$INSTANCE_ID"
+            --instance-id "$INSTANCE_ID" || WAIT_FAILED=1
 
+          echo "=== SSM Command invocation result ==="
           aws ssm get-command-invocation \
             --region "$AWS_REGION" \
             --command-id "$COMMAND_ID" \
             --instance-id "$INSTANCE_ID" \
             --query '{Status:Status,Stdout:StandardOutputContent,Stderr:StandardErrorContent}' \
             --output json
+
+          if [ -n "${WAIT_FAILED:-}" ]; then exit 1; fi

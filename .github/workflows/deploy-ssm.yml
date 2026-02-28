@@ -69,15 +69,13 @@ jobs:
             '[
               "sudo aws ecr get-login-password --region \($region) | sudo docker login --username AWS --password-stdin \($ecr)",
               "cd /opt/join-web",
-              ("cat <<\"EOF\" | sudo tee /opt/join-web/.env > /dev/null\n"
-                + "SPRING_PROFILES_ACTIVE=prod\n"
-                + "CLOUDFLARE_R2_ENDPOINT=" + $r2_endpoint + "\n"
-                + "CLOUDFLARE_R2_ACCESS_KEY=" + $r2_access + "\n"
-                + "CLOUDFLARE_R2_SECRET_KEY=" + $r2_secret + "\n"
-                + "CLOUDFLARE_R2_BUCKET_NAME=" + $r2_bucket + "\n"
-                + "CLOUDFLARE_R2_PUBLIC_URL=" + $r2_public + "\n"
-                + "TZ=Asia/Seoul\n"
-                + "EOF"),
+              "echo \"SPRING_PROFILES_ACTIVE=prod\" | sudo tee /opt/join-web/.env > /dev/null",
+              ("echo \"CLOUDFLARE_R2_ENDPOINT=" + $r2_endpoint + "\" | sudo tee -a /opt/join-web/.env > /dev/null"),
+              ("echo \"CLOUDFLARE_R2_ACCESS_KEY=" + $r2_access + "\" | sudo tee -a /opt/join-web/.env > /dev/null"),
+              ("echo \"CLOUDFLARE_R2_SECRET_KEY=" + $r2_secret + "\" | sudo tee -a /opt/join-web/.env > /dev/null"),
+              ("echo \"CLOUDFLARE_R2_BUCKET_NAME=" + $r2_bucket + "\" | sudo tee -a /opt/join-web/.env > /dev/null"),
+              ("echo \"CLOUDFLARE_R2_PUBLIC_URL=" + $r2_public + "\" | sudo tee -a /opt/join-web/.env > /dev/null"),
+              "echo \"TZ=Asia/Seoul\" | sudo tee -a /opt/join-web/.env > /dev/null",
               "sudo chown ec2-user:ec2-user /opt/join-web/.env",
               "sudo chmod 600 /opt/join-web/.env",
               "sudo docker compose pull",

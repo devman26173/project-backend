@@ -72,16 +72,16 @@ jobs:
             --arg r2_bucket "$CLOUDFLARE_R2_BUCKET_NAME" \
             --arg r2_public "$CLOUDFLARE_R2_PUBLIC_URL" \
             'def esc: gsub("\\\\"; "\\\\\\\\") | gsub("\\\""; "\\\\\\\"");
-             "SPRING_PROFILES_ACTIVE=prod\n"
-             + "SPRING_DATASOURCE_URL=" + ($ds_url | esc) + "\n"
-             + "SPRING_DATASOURCE_USERNAME=" + ($ds_user | esc) + "\n"
-             + "SPRING_DATASOURCE_PASSWORD=" + ($ds_pass | esc) + "\n"
-             + "CLOUDFLARE_R2_ENDPOINT=" + ($r2_endpoint | esc) + "\n"
-             + "CLOUDFLARE_R2_ACCESS_KEY=" + ($r2_access | esc) + "\n"
-             + "CLOUDFLARE_R2_SECRET_KEY=" + ($r2_secret | esc) + "\n"
-             + "CLOUDFLARE_R2_BUCKET_NAME=" + ($r2_bucket | esc) + "\n"
-             + "CLOUDFLARE_R2_PUBLIC_URL=" + ($r2_public | esc) + "\n"
-             + "TZ=Asia/Seoul\n"')
+              "SPRING_PROFILES_ACTIVE=prod\n"
+              + "SPRING_DATASOURCE_URL=" + ($ds_url | esc) + "\n"
+              + "SPRING_DATASOURCE_USERNAME=" + ($ds_user | esc) + "\n"
+              + "SPRING_DATASOURCE_PASSWORD=" + ($ds_pass | esc) + "\n"
+              + "CLOUDFLARE_R2_ENDPOINT=" + ($r2_endpoint | esc) + "\n"
+              + "CLOUDFLARE_R2_ACCESS_KEY=" + ($r2_access | esc) + "\n"
+              + "CLOUDFLARE_R2_SECRET_KEY=" + ($r2_secret | esc) + "\n"
+              + "CLOUDFLARE_R2_BUCKET_NAME=" + ($r2_bucket | esc) + "\n"
+              + "CLOUDFLARE_R2_PUBLIC_URL=" + ($r2_public | esc) + "\n"
+              + "TZ=Asia/Seoul\n"')
 
           ENV_B64=$(echo -n "$ENV_PAYLOAD" | base64 -w 0)
 

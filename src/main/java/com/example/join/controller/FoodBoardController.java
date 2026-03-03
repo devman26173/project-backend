@@ -223,7 +223,15 @@ public class FoodBoardController {
     
     //게시글 수정 페이지 
     @GetMapping("/board/edit/{id}")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id, HttpSession session, Model model) {
+    User loginUser = (User)session.getAttribute("loginUser");
+    if(loginUser == null) {
+    	return "redirect:/login";
+    }
+    FoodBoard board = foodBoardService.findById(id);
+    if(!board.getUser().getUserId().equals(loginUser.getUserId())) {
+    	return "redirect:/board/view/" + id; 
+    }
     model.addAttribute("board", foodBoardService.findById(id));
     model.addAttribute("uploadClientMode", uploadClientMode);
     return "foodboard-edit";
@@ -237,6 +245,9 @@ public class FoodBoardController {
             return "redirect:/login";
         }
         FoodBoard existingBoard = foodBoardService.findById(id);
+        if(!existingBoard.getUser().getUserId().equals(loginUser.getUserId())) {
+        	return "redirect:/board/view/" + id;
+        }
         foodBoard.setUser(existingBoard.getUser());
         foodBoard.setImageUrls(imageUploadService.normalizeImageUrls(foodBoard.getImageUrls()));
         
@@ -246,7 +257,16 @@ public class FoodBoardController {
     
     //게시글 삭제 처리 
     @PostMapping("/board/delete/{id}")
-    public String deleteBoard(@PathVariable Long id) {
+    public String deleteBoard(@PathVariable Long id, HttpSession session) {
+    	User loginUser = (User)session.getAttribute("loginUser");
+    	if(loginUser == null) {
+    		return "redirect:/login";
+    	}
+    	FoodBoard board = foodBoardService.findById(id);
+    	if(!board.getUser().getUserId().equals(loginUser.getUserId())) {
+    		return "redirect:/board/view/" + id; 
+    	}
+    	
     	foodBoardService.deleteBoard(id);
     	return "redirect:/board";
     }

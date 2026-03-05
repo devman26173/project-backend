@@ -12,6 +12,13 @@
 	<div class="mobile-container d-flex justify-content-center align-items-center" style="padding-bottom: 70px;">
 		<div class="home-page-component d-flex flex-column align-items-center">
 			<h1 id="homeTitle" class="mb-4 text-center fw-bold">ようこそ！</h1>
+			<div id="homeQuestionWrapper" class="mb-3" style="display: none; width: 260px;">
+				<input id="homeQuestionInput"
+					   type="text"
+					   class="form-control"
+					   placeholder="質問を入力してください"
+					   aria-label="質問入力"/>
+			</div>
 			<img th:src="@{/images/japan_map.webp}"
 				 alt="japan map image"
 				 class="border border-2 rounded mb-3"

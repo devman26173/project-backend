@@ -26,3 +26,26 @@ body{
     border-right: 1px solid #f0f0f0;
     padding: 0;          
 }
+
+#japanMapImage {
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 12px;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+    filter: brightness(1.02);
+}
+
+#japanMapImage:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.12);
+}
+
+#japanMapImage:active {
+    transform: translateY(1px) scale(0.985);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+    filter: brightness(0.97);
+}

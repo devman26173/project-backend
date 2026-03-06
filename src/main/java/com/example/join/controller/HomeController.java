@@ -2,20 +2,28 @@ package com.example.join.controller;
 
 import com.example.join.entity.FoodBoard;
 import com.example.join.service.FoodBoardService;
+import com.example.join.service.AiService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @Controller
 public class HomeController {
 
     private final FoodBoardService foodBoardService;
+    private final AiService aiService;
 
-    public HomeController(FoodBoardService foodBoardService) {
+    public HomeController(FoodBoardService foodBoardService, AiService aiService) {
         this.foodBoardService = foodBoardService;
+        this.aiService = aiService;
     }
 
     @GetMapping("/")
@@ -38,4 +46,28 @@ public class HomeController {
 		model.addAttribute("prefectures", prefectures);
 	}
     
+    @PostMapping("/api/gemini/ask")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> askGemini(@RequestBody Map<String, String> request) {
+        try {
+            String question = request.get("question");
+            if (question == null || question.trim().isEmpty()) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "質問が空です。質問を入力してください。");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+            
+            String response = aiService.generateResponse(question.trim());
+            
+            Map<String, String> successResponse = new HashMap<>();
+            successResponse.put("response", response);
+            return ResponseEntity.ok(successResponse);
+            
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "서버에서 오류가 발생했습니다.");
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+
 }

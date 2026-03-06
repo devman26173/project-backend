@@ -17,6 +17,23 @@ body{
     width:150px; 
 }
 
+#searchButton, #cancelButton {
+    width: 60px;
+    border-radius: 0 0.375rem 0.375rem 0;
+}
+
+#searchButton {
+    border-left: none;
+}
+
+#cancelButton {
+    border-left: none;
+}
+
+#homeQuestionInput {
+    border-radius: 0.375rem 0 0 0.375rem;
+}
+
 .mobile-container {
     max-width: 430px;    
     margin: 0 auto;      

@@ -53,7 +53,8 @@
 		<div class="mobile-container">
 			<header class="bg-white border-bottom py-3 px-3 d-flex justify-content-between align-items-center">
 			    <!-- 뒤로가기 -->
-			    <a th:href="@{/boards}" 
+			    <a th:href="@{/boards}"
+			       onclick="if (window.history.length > 1) { event.preventDefault(); window.history.back(); }"
 			       class="d-inline-flex align-items-center justify-content-center" 
 			       style="cursor: pointer; font-size: 24px; line-height: 1; width: 24px; height: 24px; text-decoration: none; color: black;">〈</a>
 			    
@@ -108,6 +109,7 @@
 				<input type = "text"
 						id = "searchInput"
 						class = "form-control"
+						th:value = "${searchKeyword}"
 						placeholder = "検索ワードを入力">
 					<button class = "btn btn-outline-secondary" id = "searchButton">検索></button>
 					<button class = "btn btn-outline-danger" id = "closeSearch">❌</button>

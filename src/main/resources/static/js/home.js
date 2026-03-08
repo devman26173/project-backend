@@ -3,15 +3,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const homeTitle = document.getElementById('homeTitle');
     const homeQuestionWrapper = document.getElementById('homeQuestionWrapper');
     const homeQuestionInput = document.getElementById('homeQuestionInput');
-    const geminiResponse = document.getElementById('geminiResponse');
     const geminiResponseText = document.getElementById('geminiResponseText');
-    const geminiLoading = document.getElementById('geminiLoading');
+    const aiKeywordList = document.getElementById('aiKeywordList');
     const searchButton = document.getElementById('searchButton');
     const cancelButton = document.getElementById('cancelButton');
     const errorMessage = document.getElementById('errorMessage');
 
     // AbortController for canceling requests
     let abortController = null;
+    let isLoading = false;
     // Track error state to keep cancel button visible
     let isErrorState = false;
 
@@ -27,17 +27,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (isQuestionMode) {
             homeTitle.innerHTML = defaultTitle;
-            homeQuestionWrapper.style.display = 'none';
-            geminiResponse.style.display = 'none';
+            homeQuestionWrapper.hidden = true;
+            hideResponseText();
+            hideKeywords();
             hideErrorMessage(); 
             resetButtonState();
             return;
         }
 
         homeTitle.innerHTML = questionTitle;
-        homeQuestionWrapper.style.display = 'block';
+        homeQuestionWrapper.hidden = false;
         homeQuestionInput.focus();
         hideErrorMessage();
+        hideKeywords();
         resetButtonState();
     });
 
@@ -66,6 +68,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function performSearch() {
+        if (isLoading) {
+            return;
+        }
         const keyword = homeQuestionInput.value.trim();
         if (!keyword) {
             return;
@@ -78,13 +83,13 @@ document.addEventListener('DOMContentLoaded', function () {
             abortController.abort();
             abortController = null;
         }
+        isLoading = false;
         
         
         if (isErrorState) {
             hideErrorMessage();
-            if (geminiResponse) {
-                geminiResponse.style.display = 'none';
-            }
+            hideResponseText();
+            hideKeywords();
             resetButtonState();
             if (geminiResponseText) {
                 geminiResponseText.textContent = '';
@@ -92,12 +97,8 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
            
             hideErrorMessage();
-            if (geminiLoading) {
-                geminiLoading.style.display = 'none';
-            }
-            if (geminiResponse) {
-                geminiResponse.style.display = 'none';
-            }
+            hideResponseText();
+            hideKeywords();
             resetButtonState();
             if (geminiResponseText) {
                 geminiResponseText.textContent = '';
@@ -106,25 +107,78 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function resetButtonState() {
-        if (searchButton) searchButton.style.display = 'block';
-        if (cancelButton) cancelButton.style.display = 'none';
+        setButtonVisibility(true);
     }
 
     function setLoadingState() {
-        if (searchButton) searchButton.style.display = 'none';
-        if (cancelButton) cancelButton.style.display = 'block';
+        setButtonVisibility(false);
+    }
+
+    function setButtonVisibility(showSearchButton) {
+        if (searchButton) {
+            searchButton.hidden = !showSearchButton;
+        }
+        if (cancelButton) {
+            cancelButton.hidden = showSearchButton;
+        }
+    }
+
+    function showResponseText() {
+        if (geminiResponseText) {
+            geminiResponseText.hidden = false;
+        }
+    }
+
+    function hideResponseText() {
+        if (geminiResponseText) {
+            geminiResponseText.hidden = true;
+        }
+    }
+
+    function renderKeywords(keywords) {
+        if (!aiKeywordList) {
+            return;
+        }
+
+        aiKeywordList.className = 'mt-3 ai-keyword-chip-row';
+        aiKeywordList.innerHTML = '';
+
+        if (!Array.isArray(keywords) || keywords.length === 0) {
+            aiKeywordList.hidden = true;
+            return;
+        }
+
+        keywords.forEach(function (keyword) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn btn-sm btn-outline-secondary ai-keyword-chip';
+            button.textContent = keyword;
+            button.addEventListener('click', function () {
+                window.location.href = '/board/search?keyword=' + encodeURIComponent(keyword);
+            });
+            aiKeywordList.appendChild(button);
+        });
+
+        aiKeywordList.hidden = false;
+    }
+
+    function hideKeywords() {
+        if (aiKeywordList) {
+            aiKeywordList.hidden = true;
+            aiKeywordList.innerHTML = '';
+        }
     }
 
     function showErrorMessage() {
         if (errorMessage) {
-            errorMessage.style.display = 'block';
+            errorMessage.hidden = false;
             isErrorState = true; 
         }
     }
 
     function hideErrorMessage() {
         if (errorMessage) {
-            errorMessage.style.display = 'none';
+            errorMessage.hidden = true;
             isErrorState = false; 
         }
     }
@@ -133,21 +187,18 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             // Create new AbortController for this request
             abortController = new AbortController();
+            isLoading = true;
             
             // Hide previous error message
             hideErrorMessage();
             
             // Set loading state
             setLoadingState();
-            if (geminiLoading) {
-                geminiLoading.style.display = 'flex';
-            }
             if (geminiResponseText) {
-                geminiResponseText.textContent = '';
+                geminiResponseText.textContent = '回答を生成しています...';
             }
-            if (geminiResponse) {
-                geminiResponse.style.display = 'block';
-            }
+            showResponseText();
+            hideKeywords();
 
             const response = await fetch('/api/gemini/ask', {
                 method: 'POST',
@@ -162,47 +213,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const data = await response.json();
 
-            // Hide loading first
-            if (geminiLoading) {
-                geminiLoading.style.display = 'none';
-            }
-
-            if (response.ok && data.response) {
+            if (response.ok && data.answer) {
                 // Success case - reset button state and show response
                 resetButtonState();
                 if (geminiResponseText) {
-                    geminiResponseText.textContent = data.response;
+                    hideResponseText();
                 }
+                renderKeywords(data.keywords);
             } else {
                 // Error case - keep cancel button visible, show error message
                 showErrorMessage();
-                if (geminiResponse) {
-                    geminiResponse.style.display = 'none';
-                }
+                hideResponseText();
+                hideKeywords();
                 // Don't call resetButtonState() here - keep cancel button visible
             }
 
         } catch (error) {
-            // Hide loading first
-            if (geminiLoading) {
-                geminiLoading.style.display = 'none';
-            }
-            
             if (error.name === 'AbortError') {
                 // User cancelled - reset button state
                 resetButtonState();
                 if (geminiResponseText) {
-                    geminiResponseText.textContent = '検索がキャンセルされました。';
+                    showResponseText();
+                    geminiResponseText.textContent = '検索をキャンセルしました。';
                 }
+                hideKeywords();
             } else {
                 // Network or other error - keep cancel button visible, show error message
                 showErrorMessage();
-                if (geminiResponse) {
-                    geminiResponse.style.display = 'none';
-                }
+                hideResponseText();
+                hideKeywords();
                 // Don't call resetButtonState() here - keep cancel button visible
             }
         } finally {
+            isLoading = false;
             abortController = null;
         }
     }

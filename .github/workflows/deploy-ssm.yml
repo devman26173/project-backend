@@ -55,6 +55,7 @@ jobs:
           SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
           SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
           CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
           CLOUDFLARE_R2_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY }}
@@ -66,6 +67,7 @@ jobs:
             --arg ds_url "$SPRING_DATASOURCE_URL" \
             --arg ds_user "$SPRING_DATASOURCE_USERNAME" \
             --arg ds_pass "$SPRING_DATASOURCE_PASSWORD" \
+            --arg openai_api_key "$OPENAI_API_KEY" \
             --arg r2_endpoint "$CLOUDFLARE_R2_ENDPOINT" \
             --arg r2_access "$CLOUDFLARE_R2_ACCESS_KEY" \
             --arg r2_secret "$CLOUDFLARE_R2_SECRET_KEY" \
@@ -76,6 +78,7 @@ jobs:
               + "SPRING_DATASOURCE_URL=" + ($ds_url | esc) + "\n"
               + "SPRING_DATASOURCE_USERNAME=" + ($ds_user | esc) + "\n"
               + "SPRING_DATASOURCE_PASSWORD=" + ($ds_pass | esc) + "\n"
+              + "OPENAI_API_KEY=" + ($openai_api_key | esc) + "\n"
               + "CLOUDFLARE_R2_ENDPOINT=" + ($r2_endpoint | esc) + "\n"
               + "CLOUDFLARE_R2_ACCESS_KEY=" + ($r2_access | esc) + "\n"
               + "CLOUDFLARE_R2_SECRET_KEY=" + ($r2_secret | esc) + "\n"

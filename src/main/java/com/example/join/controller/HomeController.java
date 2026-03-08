@@ -48,23 +48,24 @@ public class HomeController {
     
     @PostMapping("/api/gemini/ask")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> askGemini(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> askGemini(@RequestBody Map<String, String> request) {
         try {
             String question = request.get("question");
             if (question == null || question.trim().isEmpty()) {
-                Map<String, String> errorResponse = new HashMap<>();
+                Map<String, Object> errorResponse = new HashMap<>();
                 errorResponse.put("error", "質問が空です。質問を入力してください。");
                 return ResponseEntity.badRequest().body(errorResponse);
             }
             
-            String response = aiService.generateResponse(question.trim());
+            AiService.AiReply response = aiService.generateResponse(question.trim());
             
-            Map<String, String> successResponse = new HashMap<>();
-            successResponse.put("response", response);
+            Map<String, Object> successResponse = new HashMap<>();
+            successResponse.put("answer", response.answer());
+            successResponse.put("keywords", response.keywords());
             return ResponseEntity.ok(successResponse);
             
         } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
+            Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "서버에서 오류가 발생했습니다.");
             return ResponseEntity.internalServerError().body(errorResponse);
         }

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnProperty(name = "spring.ai.openai.chat.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.ai.model.chat", havingValue = "openai", matchIfMissing = false)
 public class AiServiceConfig {
 
     @Bean

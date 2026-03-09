@@ -51,9 +51,10 @@ public class HomeController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> askGemini(@RequestBody Map<String, String> request) {
         if (aiService == null) {
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "AI機能は現在利用できません。APIキーが設定されていません。");
-            return ResponseEntity.status(503).body(errorResponse);
+            Map<String, Object> unavailableResponse = new HashMap<>();
+            unavailableResponse.put("answer", "現在、ご回答できない状況です。");
+            unavailableResponse.put("keywords", List.of());
+            return ResponseEntity.ok(unavailableResponse);
         }
         try {
             String question = request.get("question");

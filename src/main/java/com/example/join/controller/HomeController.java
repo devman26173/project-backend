@@ -46,9 +46,9 @@ public class HomeController {
 		model.addAttribute("prefectures", prefectures);
 	}
     
-    @PostMapping("/api/gemini/ask")
+    @PostMapping("/api/ai/ask")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> askGemini(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> askAi(@RequestBody Map<String, String> request) {
         try {
             String question = request.get("question");
             if (question == null || question.trim().isEmpty()) {

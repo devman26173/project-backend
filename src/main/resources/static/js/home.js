@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
             showResponseText();
             hideKeywords();
 
-            const response = await fetch('/api/gemini/ask', {
+            const response = await fetch('/api/ai/ask', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

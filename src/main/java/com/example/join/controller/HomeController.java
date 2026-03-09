@@ -3,6 +3,7 @@ package com.example.join.controller;
 import com.example.join.entity.FoodBoard;
 import com.example.join.service.FoodBoardService;
 import com.example.join.service.AiService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,7 @@ public class HomeController {
     private final FoodBoardService foodBoardService;
     private final AiService aiService;
 
-    public HomeController(FoodBoardService foodBoardService, AiService aiService) {
+    public HomeController(FoodBoardService foodBoardService, @Autowired(required = false) AiService aiService) {
         this.foodBoardService = foodBoardService;
         this.aiService = aiService;
     }
@@ -49,6 +50,11 @@ public class HomeController {
     @PostMapping("/api/gemini/ask")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> askGemini(@RequestBody Map<String, String> request) {
+        if (aiService == null) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "AI機能は現在利用できません。APIキーが設定されていません。");
+            return ResponseEntity.status(503).body(errorResponse);
+        }
         try {
             String question = request.get("question");
             if (question == null || question.trim().isEmpty()) {

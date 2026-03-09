@@ -46,16 +46,10 @@ public class HomeController {
 		List<String> prefectures = List.of("北海道・東北","関東","中部","近畿","中国・四国","九州・沖縄");
 		model.addAttribute("prefectures", prefectures);
 	}
-
-    @PostMapping("/api/gemini/ask")
+    
+    @PostMapping("/api/ai/ask")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> askGemini(@RequestBody Map<String, String> request) {
-        if (aiService == null) {
-            Map<String, Object> unavailableResponse = new HashMap<>();
-            unavailableResponse.put("answer", "現在、ご回答できない状況です。");
-            unavailableResponse.put("keywords", List.of());
-            return ResponseEntity.ok(unavailableResponse);
-        }
+    public ResponseEntity<Map<String, Object>> askAi(@RequestBody Map<String, String> request) {
         try {
             String question = request.get("question");
             if (question == null || question.trim().isEmpty()) {

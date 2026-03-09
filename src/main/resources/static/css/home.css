@@ -17,6 +17,47 @@ body{
     width:150px; 
 }
 
+#searchButton, #cancelButton {
+    width: 60px;
+    border-radius: 0 0.375rem 0.375rem 0;
+}
+
+#searchButton {
+    border-left: none;
+}
+
+#cancelButton {
+    border-left: none;
+}
+
+#homeQuestionInput {
+    border-radius: 0.375rem 0 0 0.375rem;
+}
+
+#geminiResponseText {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #2f2f2f;
+    white-space: pre-line;
+}
+
+.ai-keyword-chip-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.ai-keyword-chip {
+    flex: 0 0 auto;
+    width: fit-content !important;
+    max-width: 100%;
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
 .mobile-container {
     max-width: 430px;    
     margin: 0 auto;      
@@ -25,4 +66,27 @@ body{
     border-left: 1px solid #f0f0f0;
     border-right: 1px solid #f0f0f0;
     padding: 0;          
+}
+
+#japanMapImage {
+    cursor: pointer;
+    display: inline-block;
+    border-radius: 12px;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+    filter: brightness(1.02);
+}
+
+#japanMapImage:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.12);
+}
+
+#japanMapImage:active {
+    transform: translateY(1px) scale(0.985);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+    filter: brightness(0.97);
 }

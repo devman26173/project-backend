@@ -1,166 +1,301 @@
 <mxfile host="app.diagrams.net" modified="2026-03-09T00:00:00.000Z" agent="GitHub Copilot" version="21.7.5">
   <diagram id="arch" name="시스템 아키텍처">
-    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1169" math="0" shadow="1">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- ====== TITLE ====== -->
-        <mxCell id="a100" value="Join-web Spring Boot 시스템 아키텍처" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="100" y="20" width="1000" height="40" as="geometry" />
+        <!-- ===== TITLE ===== -->
+        <mxCell id="t0" value="Join-web 백엔드 시스템 아키텍처" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="200" y="15" width="1480" height="40" as="geometry" />
         </mxCell>
 
-        <!-- ====== FRONTEND LAYER ====== -->
-        <mxCell id="a200" value="🌐 Frontend (Browser)" style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="50" y="80" width="1110" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="a201" value="Web Browser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="a200">
-          <mxGeometry x="170" y="28" width="160" height="35" as="geometry" />
-        </mxCell>
-        <mxCell id="a202" value="Thymeleaf Templates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="a200">
-          <mxGeometry x="390" y="28" width="160" height="35" as="geometry" />
-        </mxCell>
-        <mxCell id="a203" value="REST API (JSON)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="a200">
-          <mxGeometry x="610" y="28" width="160" height="35" as="geometry" />
+        <!-- ===== CLOUD BOUNDARY ===== -->
+        <mxCell id="cloud" value="Spring Boot Application" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.cisco.clouds.cloud;html=1;whiteSpace=wrap;fontSize=14;fontStyle=1;fillColor=#f0f4ff;strokeColor=#4B5EAA;strokeWidth=2;verticalAlign=top;spacingTop=5;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="195" y="65" width="1290" height="920" as="geometry" />
         </mxCell>
 
-        <!-- ====== CONTROLLER LAYER ====== -->
-        <mxCell id="a300" value="🎮 Controller Layer" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#000000;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="50" y="210" width="1110" height="90" as="geometry" />
+        <!-- ===== SECURITY ZONE (left inside cloud) ===== -->
+        <mxCell id="sec_zone" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9E6;strokeColor=#E6A817;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="215" y="420" width="160" height="160" as="geometry" />
         </mxCell>
-        <mxCell id="a301" value="UserController&#xa;/login, /signup&#xa;/verify-password" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="a300">
-          <mxGeometry x="10" y="28" width="168" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="a302" value="FoodBoardController&#xa;/board, /board/write&#xa;/board/view/{id}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="a300">
-          <mxGeometry x="188" y="28" width="168" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="a303" value="PostController&#xa;/posts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="a300">
-          <mxGeometry x="366" y="28" width="168" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="a304" value="ProfileController&#xa;/profile/{userId}&#xa;/profile/{userId}/edit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="a300">
-          <mxGeometry x="544" y="28" width="168" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="a305" value="HomeController&#xa;/, /boards&#xa;/api/gemini/ask" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="a300">
-          <mxGeometry x="722" y="28" width="168" height="48" as="geometry" />
-        </mxCell>
-        <mxCell id="a306" value="FileUploadController&#xa;/api/uploads/presign&#xa;/api/uploads/image" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="a300">
-          <mxGeometry x="900" y="28" width="168" height="48" as="geometry" />
+        <mxCell id="sec" value="🔒&#xa;Spring&#xa;Security" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6D00;strokeColor=#E65100;fontColor=#FFFFFF;fontSize=12;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="440" width="130" height="100" as="geometry" />
         </mxCell>
 
-        <!-- ====== SERVICE LAYER ====== -->
-        <mxCell id="a400" value="⚙️ Service Layer" style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#000000;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="50" y="350" width="1110" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="a401" value="UserService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="a400">
-          <mxGeometry x="10" y="30" width="140" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="a402" value="FoodBoardService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="a400">
-          <mxGeometry x="160" y="30" width="140" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="a403" value="PostService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="a400">
-          <mxGeometry x="310" y="30" width="140" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="a404" value="CommentService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="a400">
-          <mxGeometry x="460" y="30" width="140" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="a405" value="ProfileService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="a400">
-          <mxGeometry x="610" y="30" width="140" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="a406" value="AiService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="a400">
-          <mxGeometry x="760" y="30" width="140" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="a407" value="ImageUploadService&#xa;(Local / R2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="a400">
-          <mxGeometry x="910" y="30" width="160" height="45" as="geometry" />
+        <!-- ===== CONTROLLER GROUP LABEL ===== -->
+        <mxCell id="ctrl_label" value="Controllers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=3;fontColor=#7B2D8B;" vertex="1" parent="1">
+          <mxGeometry x="420" y="70" width="160" height="30" as="geometry" />
         </mxCell>
 
-        <!-- ====== REPOSITORY LAYER ====== -->
-        <mxCell id="a500" value="🗄️ Repository Layer (Spring Data JPA)" style="swimlane;startSize=30;fillColor=#ffe6cc;strokeColor=#d6b656;fontColor=#000000;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="50" y="490" width="1110" height="90" as="geometry" />
+        <!-- ===== CONTROLLERS ===== -->
+        <mxCell id="ctrl_user" value="👤&#xa;UserController&#xa;/login /signup" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B2D8B;strokeColor=#5E1770;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="105" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a501" value="UserRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a500">
-          <mxGeometry x="10" y="30" width="140" height="45" as="geometry" />
+        <mxCell id="ctrl_food" value="🍜&#xa;FoodBoardController&#xa;/board /board/**" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B2D8B;strokeColor=#5E1770;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="245" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a502" value="FoodBoardRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a500">
-          <mxGeometry x="160" y="30" width="140" height="45" as="geometry" />
+        <mxCell id="ctrl_home" value="🏠&#xa;HomeController&#xa;/ /boards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B2D8B;strokeColor=#5E1770;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="385" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a503" value="PostRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a500">
-          <mxGeometry x="310" y="30" width="140" height="45" as="geometry" />
+        <mxCell id="ctrl_profile" value="👔&#xa;ProfileController&#xa;/profile/**" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B2D8B;strokeColor=#5E1770;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="525" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a504" value="CommentRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a500">
-          <mxGeometry x="460" y="30" width="140" height="45" as="geometry" />
+        <mxCell id="ctrl_file" value="📁&#xa;FileUploadController&#xa;/api/uploads/**" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B2D8B;strokeColor=#5E1770;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="665" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a505" value="ProfileRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a500">
-          <mxGeometry x="610" y="30" width="140" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="a506" value="LikeRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a500">
-          <mxGeometry x="760" y="30" width="140" height="45" as="geometry" />
-        </mxCell>
-        <mxCell id="a507" value="PrefectureRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a500">
-          <mxGeometry x="910" y="30" width="160" height="45" as="geometry" />
+        <mxCell id="ctrl_post" value="📝&#xa;PostController&#xa;/posts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B2D8B;strokeColor=#5E1770;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="805" width="160" height="90" as="geometry" />
         </mxCell>
 
-        <!-- ====== DATABASE LAYER ====== -->
-        <mxCell id="a600" value="💾 Database" style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="50" y="630" width="1110" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="a601" value="H2 Database&#xa;(개발 / 테스트)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="a600">
-          <mxGeometry x="230" y="15" width="210" height="62" as="geometry" />
-        </mxCell>
-        <mxCell id="a602" value="MySQL Database&#xa;(프로덕션)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="a600">
-          <mxGeometry x="670" y="15" width="210" height="62" as="geometry" />
+        <!-- ===== SERVICE GROUP LABEL ===== -->
+        <mxCell id="svc_label" value="Services" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=3;fontColor=#0071c5;" vertex="1" parent="1">
+          <mxGeometry x="655" y="70" width="160" height="30" as="geometry" />
         </mxCell>
 
-        <!-- ====== EXTERNAL SERVICES & CONFIG ====== -->
-        <mxCell id="a700" value="🔌 외부 서비스 &amp; 설정" style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#000000;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="1190" y="80" width="250" height="640" as="geometry" />
+        <!-- ===== SERVICES ===== -->
+        <mxCell id="svc_user" value="⚙️&#xa;UserService&#xa;BCrypt 암호화" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0071c5;strokeColor=#005494;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="655" y="105" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a710" value="Spring Security" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a700">
-          <mxGeometry x="20" y="40" width="210" height="35" as="geometry" />
+        <mxCell id="svc_food" value="⚙️&#xa;FoodBoardService&#xa;지역/검색/조회" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0071c5;strokeColor=#005494;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="655" y="245" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a711" value="SecurityConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a700">
-          <mxGeometry x="20" y="85" width="210" height="35" as="geometry" />
+        <mxCell id="svc_comment" value="⚙️&#xa;CommentService&#xa;댓글/대댓글" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0071c5;strokeColor=#005494;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="655" y="355" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a712" value="WebConfig (CORS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a700">
-          <mxGeometry x="20" y="130" width="210" height="35" as="geometry" />
+        <mxCell id="svc_ai" value="🤖&#xa;AiService&#xa;OpenAI 연동" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0071c5;strokeColor=#005494;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="655" y="465" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a713" value="ErrorPageLoggingFilter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="a700">
-          <mxGeometry x="20" y="175" width="210" height="35" as="geometry" />
+        <mxCell id="svc_post" value="⚙️&#xa;PostService&#xa;좋아요 관리" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0071c5;strokeColor=#005494;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="655" y="575" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a720" value="OpenAI API&#xa;(Spring AI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="a700">
-          <mxGeometry x="20" y="250" width="210" height="50" as="geometry" />
+        <mxCell id="svc_profile" value="⚙️&#xa;ProfileService&#xa;프로필 관리" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0071c5;strokeColor=#005494;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="655" y="685" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="a721" value="Cloudflare R2 Storage&#xa;(AWS S3 compatible)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="a700">
-          <mxGeometry x="20" y="315" width="210" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="a722" value="Local File Storage&#xa;(개발 환경)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="a700">
-          <mxGeometry x="20" y="380" width="210" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="a723" value="Swagger UI&#xa;(springdoc-openapi v2.8.5)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="a700">
-          <mxGeometry x="20" y="450" width="210" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="a724" value="Lombok&#xa;(Code Generation)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="a700">
-          <mxGeometry x="20" y="515" width="210" height="50" as="geometry" />
+        <mxCell id="svc_img" value="📷&#xa;ImageUploadService&#xa;Local / R2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0071c5;strokeColor=#005494;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="655" y="795" width="160" height="90" as="geometry" />
         </mxCell>
 
-        <!-- ====== LAYER ARROWS ====== -->
-        <mxCell id="a800" value="HTTP Request" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="a200" target="a300" parent="1">
+        <!-- ===== REPOSITORY GROUP LABEL ===== -->
+        <mxCell id="repo_label" value="Repositories (JPA)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=3;fontColor=#1A7F37;" vertex="1" parent="1">
+          <mxGeometry x="890" y="70" width="180" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ===== REPOSITORIES ===== -->
+        <mxCell id="repo_user" value="🗃️&#xa;UserRepository&#xa;findByUsername()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7F37;strokeColor=#145D28;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="105" width="175" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_food" value="🗃️&#xa;FoodBoardRepository&#xa;findByRegion()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7F37;strokeColor=#145D28;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="245" width="175" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_comment" value="🗃️&#xa;CommentRepository&#xa;findByPostId()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7F37;strokeColor=#145D28;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="385" width="175" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_like" value="🗃️&#xa;LikeRepository&#xa;findByTargetId()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7F37;strokeColor=#145D28;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="495" width="175" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_profile" value="🗃️&#xa;ProfileRepository&#xa;findByUser_UserId()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7F37;strokeColor=#145D28;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="685" width="175" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_prefecture" value="🗃️&#xa;PrefectureRepository&#xa;도도부현 조회" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7F37;strokeColor=#145D28;fontColor=#FFFFFF;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="795" width="175" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ===== EXTERNAL: User (left) ===== -->
+        <mxCell id="ext_user" value="👤&#xa;User&#xa;(Browser)" style="shape=mxgraph.aws4.user;html=1;whiteSpace=wrap;fillColor=#232F3E;strokeColor=none;fontColor=#232F3E;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="450" width="100" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ===== EXTERNAL: Right side ===== -->
+        <mxCell id="ext_mysql" value="🐬&#xa;MySQL DB&#xa;(Production)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#00758F;strokeColor=#005C72;fontColor=#FFFFFF;fontSize=12;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="105" width="140" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_h2" value="💿&#xa;H2 Database&#xa;(Development)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#4A90D9;strokeColor=#2E6FAD;fontColor=#FFFFFF;fontSize=12;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="265" width="140" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_openai" value="🤖&#xa;OpenAI API&#xa;(Spring AI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#10A37F;strokeColor=#0D8A6D;fontColor=#FFFFFF;fontSize=12;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="440" width="140" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_r2" value="☁️&#xa;Cloudflare R2&#xa;Storage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F38020;strokeColor=#D96F1A;fontColor=#FFFFFF;fontSize=12;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="620" width="140" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_swagger" value="📖&#xa;Swagger UI&#xa;/swagger-ui.html" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85EA2D;strokeColor=#5C9E20;fontColor=#2B3A2E;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="800" width="140" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ===== NUMBERED BADGES ===== -->
+        <mxCell id="n1" value="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=14;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="135" y="483" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=14;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="390" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="3" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=14;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="607" y="143" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="4" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=14;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="607" y="283" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" value="5" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=14;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="283" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" value="6" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=14;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="143" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" value="7" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=14;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="607" y="503" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" value="8" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=14;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="723" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n9" value="9" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=14;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="833" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ===== FLOW ARROWS ===== -->
+        <!-- 1: User → Security -->
+        <mxCell id="arr1" value="HTTP 요청" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0050EF;strokeWidth=2;fontColor=#0050EF;fontSize=10;fontStyle=1;" edge="1" source="ext_user" target="sec" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="a801" value="메서드 호출" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="a300" target="a400" parent="1">
+
+        <!-- 2: Security → Controllers (fan out) -->
+        <mxCell id="arr2a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#7B2D8B;strokeWidth=2;" edge="1" source="sec" target="ctrl_user" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="a802" value="데이터 조회/저장" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="a400" target="a500" parent="1">
+        <mxCell id="arr2b" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#7B2D8B;strokeWidth=2;" edge="1" source="sec" target="ctrl_food" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="a803" value="JPA / SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="a500" target="a600" parent="1">
+        <mxCell id="arr2c" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#7B2D8B;strokeWidth=2;" edge="1" source="sec" target="ctrl_home" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="a804" value="AI 응답 생성" style="edgeStyle=orthogonalEdgeStyle;dashed=1;rounded=1;" edge="1" source="a406" target="a720" parent="1">
+        <mxCell id="arr2d" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#7B2D8B;strokeWidth=2;" edge="1" source="sec" target="ctrl_profile" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="a805" value="이미지 업로드" style="edgeStyle=orthogonalEdgeStyle;dashed=1;rounded=1;" edge="1" source="a407" target="a721" parent="1">
+        <mxCell id="arr2e" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#7B2D8B;strokeWidth=2;" edge="1" source="sec" target="ctrl_file" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+        <mxCell id="arr2f" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#7B2D8B;strokeWidth=2;" edge="1" source="sec" target="ctrl_post" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 3: Controllers → Services -->
+        <mxCell id="arr3a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0071c5;strokeWidth=2;" edge="1" source="ctrl_user" target="svc_user" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr3b" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0071c5;strokeWidth=2;" edge="1" source="ctrl_food" target="svc_food" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr3c" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0071c5;strokeWidth=2;" edge="1" source="ctrl_food" target="svc_comment" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr3d" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0071c5;strokeWidth=2;" edge="1" source="ctrl_home" target="svc_ai" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr3e" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0071c5;strokeWidth=2;" edge="1" source="ctrl_post" target="svc_post" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr3f" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0071c5;strokeWidth=2;" edge="1" source="ctrl_profile" target="svc_profile" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr3g" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0071c5;strokeWidth=2;" edge="1" source="ctrl_file" target="svc_img" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4: Services → Repositories -->
+        <mxCell id="arr4a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1A7F37;strokeWidth=2;" edge="1" source="svc_user" target="repo_user" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4b" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1A7F37;strokeWidth=2;" edge="1" source="svc_food" target="repo_food" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4c" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1A7F37;strokeWidth=2;" edge="1" source="svc_comment" target="repo_comment" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4d" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1A7F37;strokeWidth=2;" edge="1" source="svc_post" target="repo_like" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4e" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#1A7F37;strokeWidth=2;" edge="1" source="svc_profile" target="repo_profile" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4f" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#0071c5;strokeWidth=2;" edge="1" source="ctrl_home" target="svc_food" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr4g" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0;entryY=0.8;entryDx=0;entryDy=0;strokeColor=#1A7F37;strokeWidth=2;" edge="1" source="svc_food" target="repo_prefecture" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5: Repositories → MySQL -->
+        <mxCell id="arr5a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#00758F;strokeWidth=2;" edge="1" source="repo_user" target="ext_mysql" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr5b" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#4A90D9;strokeWidth=2;dashed=1;" edge="1" source="repo_food" target="ext_h2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr5c" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#00758F;strokeWidth=2;" edge="1" source="repo_comment" target="ext_mysql" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr5d" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#00758F;strokeWidth=2;" edge="1" source="repo_like" target="ext_mysql" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr5e" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#00758F;strokeWidth=2;" edge="1" source="repo_profile" target="ext_mysql" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 7: AiService → OpenAI -->
+        <mxCell id="arr7" value="AI 질문&#xa;답변" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#10A37F;strokeWidth=2;fontColor=#10A37F;fontSize=10;fontStyle=1;dashed=1;" edge="1" source="svc_ai" target="ext_openai" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 8: ImageUploadService → R2 -->
+        <mxCell id="arr8" value="이미지&#xa;업로드" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#F38020;strokeWidth=2;fontColor=#F38020;fontSize=10;fontStyle=1;dashed=1;" edge="1" source="svc_img" target="ext_r2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Swagger UI (from controllers - API documentation) -->
+        <mxCell id="arr9" value="API 문서" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.95;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#5C9E20;strokeWidth=2;dashed=1;fontColor=#5C9E20;fontSize=10;fontStyle=1;" edge="1" source="ctrl_post" target="ext_swagger" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== LEGEND ===== -->
+        <mxCell id="leg_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#CCCCCC;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="680" width="155" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_title" value="범례" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="688" width="155" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="Controller" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B2D8B;strokeColor=#5E1770;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="42" y="718" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0071c5;strokeColor=#005494;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="42" y="758" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7F37;strokeColor=#145D28;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="42" y="798" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="Security" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6D00;strokeColor=#E65100;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="42" y="838" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5" value="① 단계 번호" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050EF;strokeColor=none;fontColor=#FFFFFF;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="42" y="878" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg6" value="- - - 외부 연동" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="42" y="918" width="130" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- ===== FLOW STEP LABELS ===== -->
+        <mxCell id="step1_label" value="① 사용자 HTTP 요청" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#0050EF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="590" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="step2_label" value="② 인증/인가 처리" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#0050EF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="615" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="step3_label" value="③ 컨트롤러 라우팅" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#0050EF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="640" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="step7_label" value="⑦ AI 응답 생성" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#10A37F;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="665" width="160" height="25" as="geometry" />
+        </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>
@@ -212,48 +347,30 @@
         </mxCell>
 
         <!-- ====== RELATIONSHIPS ====== -->
-
-        <!-- User 1:1 Profile -->
         <mxCell id="e301" value="1:1" style="edgeStyle=orthogonalEdgeStyle;endArrow=ERone;endFill=0;startArrow=ERmandOne;startFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="e200" target="e210" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <!-- User 1:N Post -->
         <mxCell id="e302" value="1:N" style="edgeStyle=orthogonalEdgeStyle;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="e200" target="e220" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <!-- User 1:N FoodBoard -->
         <mxCell id="e303" value="1:N" style="edgeStyle=orthogonalEdgeStyle;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="e200" target="e230" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <!-- User 1:N Comment -->
         <mxCell id="e304" value="1:N" style="edgeStyle=orthogonalEdgeStyle;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" source="e200" target="e240" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <!-- FoodBoard 1:N Comment (postId) -->
         <mxCell id="e305" value="1:N (postId)" style="edgeStyle=orthogonalEdgeStyle;endArrow=ERmany;endFill=0;startArrow=ERmandOne;startFill=0;exitX=1;exitY=0.4;exitDx=0;exitDy=0;entryX=0;entryY=0.6;entryDx=0;entryDy=0;" edge="1" source="e230" target="e240" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <!-- Post → Like (논리적 관계, dashed) -->
         <mxCell id="e306" value="1:N (targetType=POST)" style="edgeStyle=orthogonalEdgeStyle;endArrow=ERmany;endFill=0;startArrow=none;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.2;entryDx=0;entryDy=0;" edge="1" source="e220" target="e250" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <!-- Comment → Like (논리적 관계, dashed) -->
         <mxCell id="e307" value="1:N (targetType=COMMENT)" style="edgeStyle=orthogonalEdgeStyle;endArrow=ERmany;endFill=0;startArrow=none;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.2;entryDx=0;entryDy=0;" edge="1" source="e240" target="e250" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <!-- FoodBoard → Like (논리적 관계, dashed) -->
         <mxCell id="e308" value="1:N (targetType=BOARD)" style="edgeStyle=orthogonalEdgeStyle;endArrow=ERmany;endFill=0;startArrow=none;dashed=1;exitX=1;exitY=0.85;exitDx=0;exitDy=0;entryX=0;entryY=0.6;entryDx=0;entryDy=0;" edge="1" source="e230" target="e250" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <!-- Comment self-reference (parentId for replies) -->
         <mxCell id="e309" value="1:N (대댓글 parentId)" style="edgeStyle=orthogonalEdgeStyle;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;exitX=1;exitY=0.1;exitDx=0;exitDy=0;entryX=1;entryY=0.9;entryDx=0;entryDy=0;" edge="1" source="e240" target="e240" parent="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">

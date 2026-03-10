@@ -101,6 +101,40 @@ public class UserController {
         }
         return "redirect:/login";
     }
+    //비밀번호 수정 페이지 보여주기
+    @GetMapping("/change-password")
+    public String changePassword(HttpSession session) {
+    	//로그인 안했으면 로그인 페이지로
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	if (loginUser == null) {
+    		return "redirect:/login";
+    	}
+    	return "user-change-password";
+    }
+    
+    //비밀번호 수정 처리 (POST)
+    @PostMapping("/change-password")
+    public String changePasswordSubmit(
+    		@RequestParam String newPassword,
+    		@RequestParam String newPasswordConfirm,
+    		HttpSession session,
+    		Model model) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	if (loginUser == null) {
+    		return "redirect:/login";
+    	}
+    	//새 비밀번호와 일치하는지 확인
+    	if (!newPassword.equals(newPasswordConfirm)) {
+    		model.addAttribute("error", "新しいパスワードが一致しません。");
+    		return "user-change-password";
+    	}
+    	//db에 새 비밀번호 암호화해서 저장
+    	userService.changePassword(loginUser.getUserId(), newPassword);
+    	//비밀번호가 바뀌었으니 세션 무효화 & 새 비밀번호로 다시 로그인하게 만들기
+    	//보안상 비밀번호 변경 후 재로그인이 일반적
+    	session.invalidate();
+    	return "redirect:/login";
+    }
     @PostMapping("/login")
     public String loginSubmit(
         @RequestParam String username,
@@ -161,5 +195,33 @@ public class UserController {
     	session.invalidate();
     	//로그인 페이지로
     	return "redirect:/login";
+    }
+    @GetMapping("/verify-password")
+    public String verifyPassword(HttpSession session) {
+    	//로그인 안했으면 로그인 페이지로 이동
+    	User loginUser =(User) session.getAttribute("loginUser");
+    	if (loginUser == null) {
+    		//로그인 안했으면 로그인 페이지로
+    		return "redirect:/login";
+    	}
+    	return "user-verify-password";
+    }
+    //비밀번호 확인(Post) 입력받은 비밀번호 맞으면 ->비밀번호 수정페이지로 이동
+    @PostMapping("/verify-password")
+    public String verifyPasswordSubmit(
+    	@RequestParam String password, HttpSession session, Model model){
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	if(loginUser == null) {
+    		return "redirect:/login";
+    	}
+    	//UserService의 verifyPassword로 현재 비밀번호 확인
+    	if(userService.verifyPassword(loginUser, password)) {
+    		//비밀번호 일치 => 수정페이지로 이동
+    		return "redirect:/change-password";
+    	}else {
+    		//틀리면 에러메시지와 함께 다시 확인 페이지
+    		model.addAttribute("error", "パスワードが一致しません。");
+    		return "user-verify-password";
+    	}
     }
 }

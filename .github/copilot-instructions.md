@@ -192,3 +192,24 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
   - GitHub Copilot Instructions 관리
   - 코드 리뷰 및 개선 제안
   - 개발 가이드라인 문서화
+
+---
+
+## 担当パートの概要（日本語）
+
+各コントリビューターが使用した技術と注力したポイントを簡潔にまとめます。
+
+### devman26173 — プロジェクト基盤・インフラ担当
+Spring Boot アプリケーションの初期設定を行い、Docker（Dockerfile・docker-compose.yml）と Maven によるビルド環境を構築。`application.properties` / `application-prod.yml` による環境別設定や README によるドキュメント管理など、プロジェクト全体のアーキテクチャと運用基盤に注力。
+
+### devhyunju — FoodBoard システム担当
+Spring Boot の Controller / Service / Repository / Entity の全レイヤーと、Thymeleaf テンプレートを用いて飲食情報掲示板（FoodBoard）を実装。ファイルアップロード機能（FileUploadController）も担当し、投稿の作成・編集・閲覧画面を中心に開発。
+
+### goodsujin — ユーザー認証・会員登録担当
+Spring Boot + Spring Data JPA + Thymeleaf でログイン・サインアップ機能を構築。User / SignupForm の全レイヤー（Controller・Entity・Service・Repository）を実装し、認証フローの正確性とセキュリティを重視。
+
+### java0731kk — Post 掲示板・コメント・いいね機能担当
+Spring Boot + JPA で投稿（Post）・コメント（Comment）・いいね（Like）の CRUD 機能を実装。Thymeleaf テンプレートに加え CSS・JavaScript を活用し、ユーザーインタラクション（コメント投稿・いいね操作）のフロントエンド体験にも注力。
+
+### min_chang_isaac — プロフィール管理担当
+Spring Boot + JPA + Thymeleaf でユーザープロフィールの表示・編集機能を全レイヤー（Controller・Entity・Repository・Service）にわたって実装。プロフィール情報の正確な取得・更新と、直感的な編集 UI の提供に注力。

@@ -144,6 +144,8 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
 **역할**: 프로젝트 메인 개발자 및 전체 아키텍처 담당
 - **Backend 개발**:
   - Spring Boot 애플리케이션 초기 설정 및 구성
+- **프론트엔드 개발**:
+  - 홈 페이지, 게시판 목록 페이지, 메뉴바, 에러 페이지 개발
 - **인프라 및 설정**:
   - Docker 설정 (Dockerfile, docker-compose.yml)
   - Maven 빌드 구성 (pom.xml)
@@ -155,6 +157,8 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
 - **담당 영역**:
   - FoodBoard 관련 모든 파일 (Controller, Entity, Repository, Service)
   - 파일 업로드 기능 (FileUploadController)
+  - 지역 필터링 기능 및 키워드 검색 기능 구현
+  - 공지사항(お知らせ) 페이지 작성
   - FoodBoard 관련 템플릿 4개 (foodboard.html, foodboard-edit.html, foodboard-view.html, foodboard-write.html)
   - FoodBoard CSS (foodboard.css)
 

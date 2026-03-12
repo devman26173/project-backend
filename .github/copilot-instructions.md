@@ -200,7 +200,7 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
 各コントリビューターが使用した技術と注力したポイントを簡潔にまとめます。
 
 ### devman26173 — プロジェクト基盤・インフラ担当
-Spring Boot アプリケーションの初期設定を行い、Docker（Dockerfile・docker-compose.yml）と Maven によるビルド環境を構築。`application.properties` / `application-prod.yml` による環境別設定や README によるドキュメント管理など、プロジェクト全体のアーキテクチャと運用基盤に注力。
+以下のスニペットは、プロジェクト全体の起点となる `JoinApplication.java` を示している。`@SpringBootApplication` 一つで自動設定・コンポーネントスキャン・設定クラス読み込みが有効になり、`SpringApplication.run()` でサーブレットコンテナを起動する。この 1 クラスを土台に Docker・Maven・`application.properties` / `application-prod.yml` による環境別設定が組み合わさり、プロジェクト全体の運用基盤が構成されている。
 
 ```java
 // JoinApplication.java — アプリケーションのエントリーポイント
@@ -213,7 +213,7 @@ public class JoinApplication {
 ```
 
 ### devhyunju — FoodBoard システム担当
-Spring Boot の Controller / Service / Repository / Entity の全レイヤーと、Thymeleaf テンプレートを用いて飲食情報掲示板（FoodBoard）を実装。ファイルアップロード機能（FileUploadController）も担当し、投稿の作成・編集・閲覧画面を中心に開発。
+以下のスニペットは FoodBoard 機能の 3 つの核心を示す。① `FoodBoard.java` では `title`・`region`・`prefecture`・`rating`・`content`・`imageUrls` などの投稿フィールドを定義し、`@ManyToOne` で `User` と紐付けている。② `FoodBoardRepository.java` では Spring Data JPA のメソッド命名規則を利用して、地域別・都道府県別・キーワード検索のクエリを宣言的に定義している。③ `FileUploadController.java` では `POST /api/uploads/presign` を受け付け、`ImageUploadService` に委譲して presigned URL を返す REST エンドポイントを実装している。
 
 ```java
 // FoodBoard.java — 飲食情報を管理するエンティティ
@@ -255,7 +255,7 @@ public class FileUploadController {
 ```
 
 ### goodsujin — ユーザー認証・会員登録担当
-Spring Boot + Spring Data JPA + Thymeleaf でログイン・サインアップ機能を構築。User / SignupForm の全レイヤー（Controller・Entity・Service・Repository）を実装し、認証フローの正確性とセキュリティを重視。
+以下のスニペットは認証フローの 2 つの中心的な実装を示す。① `UserService.registerUser()` では `userRepository.findByUsername()` で ID の重複を事前チェックし、重複があれば `IllegalArgumentException` をスローする。パスワードは `passwordEncoder.encode()` で BCrypt ハッシュ化してから保存するため、平文は DB に残らない。② `UserController.loginSubmit()` では `userService.login()` の戻り値が `null` でなければ `session.setAttribute("loginUser", user)` でセッションにユーザー情報をセットし、ボードページへリダイレクトする。認証失敗時は `model` にエラーメッセージを乗せてログイン画面に戻す。
 
 ```java
 // UserService.java — BCrypt でパスワードをハッシュ化して登録
@@ -291,7 +291,7 @@ public String loginSubmit(@RequestParam String username,
 ```
 
 ### java0731kk — Post 掲示板・コメント・いいね機能担当
-Spring Boot + JPA で投稿（Post）・コメント（Comment）・いいね（Like）の CRUD 機能を実装。Thymeleaf テンプレートに加え CSS・JavaScript を活用し、ユーザーインタラクション（コメント投稿・いいね操作）のフロントエンド体験にも注力。
+以下のスニペットは 3 種の機能の核心設計を示す。① `Comment.java` では `parentId` フィールドで返信（大댓글）の親子関係を表現し、`@Transient` な `replies` リストでツリー構造をメモリ上で組み立てる。② `Like.java` では `targetType`（`"POST"` / `"COMMENT"` / `"REPLY"`）と `targetId` の組み合わせで投稿・コメント・返信のいいねを単一テーブルに統合管理する。③ `LikeRepository.java` では `findByTargetIdAndTargetTypeAndUserId()` で重複いいねをチェックし、`countByTargetIdAndTargetType()` で件数を取得する 2 つのクエリを Spring Data JPA で宣言している。
 
 ```java
 // Comment.java — 返信（大댓글）構造を parentId で管理
@@ -326,7 +326,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 ```
 
 ### min_chang_isaac — プロフィール管理担当
-Spring Boot + JPA + Thymeleaf でユーザープロフィールの表示・編集機能を全レイヤー（Controller・Entity・Repository・Service）にわたって実装。プロフィール情報の正確な取得・更新と、直感的な編集 UI の提供に注力。
+以下のスニペットはプロフィール管理の全レイヤーを示す。① `Profile.java` では `@OneToOne(fetch = FetchType.LAZY)` と `@JoinColumn(name = "user_id", unique = true)` で `User` と 1 対 1 に紐付け、`imageUrl` と `introduction` の 2 フィールドでプロフィール情報を保持する。② `ProfileService.getByUserId()` では `orElseGet()` を利用してプロフィールが未作成のユーザーにも自動的に空のプロフィールを生成・保存して返す。③ `ProfileController` では `GET /{userId}` でプロフィールと直近 10 件の FoodBoard 投稿を Model に乗せて表示し、`POST /{userId}/edit` で `profileService.updateProfile()` を呼び出して編集内容を保存した後にリダイレクトする。
 
 ```java
 // Profile.java — User と 1 対 1 で紐付くプロフィールエンティティ

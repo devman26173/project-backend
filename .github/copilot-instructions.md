@@ -206,62 +206,113 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
 // JoinApplication.java — アプリケーションのエントリーポイント
 @SpringBootApplication
 public class JoinApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(JoinApplication.class, args);
-    }
+
+	public static void main(String[] args) {
+		SpringApplication.run(JoinApplication.class, args);
+	}
 }
 ```
 
 ### devhyunju — FoodBoard システム担当
-以下のスニペットは FoodBoard 機能の 3 つの核心を示す。① `FoodBoard.java` では `title`・`region`・`prefecture`・`rating`・`content`・`imageUrls` などの投稿フィールドを定義し、`@ManyToOne` で `User` と紐付けている。② `FoodBoardRepository.java` では Spring Data JPA のメソッド命名規則を利用して、地域別・都道府県別・キーワード検索のクエリを宣言的に定義している。③ `FileUploadController.java` では `POST /api/uploads/presign` を受け付け、`ImageUploadService` に委譲して presigned URL を返す REST エンドポイントを実装している。
+以下のスニペットは FoodBoard 機能の 3 つの核心を示す。① `FoodBoard.java` では `title`・`region`・`prefecture`・`rating`・`content`・`imageUrls`・`viewCount` のほか、DB に永続化しない `@Transient` フィールド（`likeCount`・`likedByMe`・`commentCount`）を持ち、`@PrePersist` で登録時刻を自動セットする。② `FoodBoardRepository.java` では地域別・都道府県別・複数都道府県・キーワード検索・ユーザー別 Top10 など実際に使用される全クエリを Spring Data JPA のメソッド命名で宣言している。③ `FileUploadController.java` では `POST /api/uploads/presign` で presigned URL を返し、`POST /api/uploads/image` で直接アップロードを受け付ける 2 つのエンドポイントを実装し、`PresignRequest` を Java record で定義している。
 
 ```java
 // FoodBoard.java — 飲食情報を管理するエンティティ
 @Entity
 public class FoodBoard {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
     private String title;
     private String region;
     private String prefecture;
     private Integer rating;
+
     @Column(columnDefinition = "TEXT")
     private String content;
     private String imageUrls;
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int viewCount = 0;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    // ...
+
+    @Transient private Integer likeCount = 0;
+    @Transient private Boolean likedByMe = false;
+    @Transient private Integer commentCount = 0;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+    // Getter & Setter ...
 }
 
-// FoodBoardRepository.java — 地域・都道府県別・検索クエリを Spring Data JPA で定義
+// FoodBoardRepository.java — 地域・都道府県別・検索など全クエリを Spring Data JPA で定義
 public interface FoodBoardRepository extends JpaRepository<FoodBoard, Long> {
+    List<FoodBoard> findAllByOrderByCreatedAtDesc();
     List<FoodBoard> findByRegionOrderByCreatedAtDesc(String region);
     List<FoodBoard> findByPrefectureOrderByCreatedAtDesc(String prefecture);
+    List<FoodBoard> findByPrefectureInOrderByCreatedAtDesc(List<String> prefectures);
+    List<FoodBoard> findTop10ByUser_UserIdOrderByCreatedAtDesc(Long userId);
+    List<FoodBoard> findTop1ByPrefectureInOrderByCreatedAtDesc(List<String> prefectures);
+    FoodBoard findFirstByRegionOrderByCreatedAtDesc(String region);
     List<FoodBoard> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
+    FoodBoard findTopByOrderByCreatedAtDesc();
 }
 
-// FileUploadController.java — 画像ファイルのアップロード API（presigned URL 対応）
+// FileUploadController.java — presigned URL と直接アップロードの 2 エンドポイント
 @RestController
 @RequestMapping("/api/uploads")
 public class FileUploadController {
+
+    private final ImageUploadService imageUploadService;
+
+    public FileUploadController(ImageUploadService imageUploadService) {
+        this.imageUploadService = imageUploadService;
+    }
+
     @PostMapping("/presign")
     public ResponseEntity<?> createPresignedUploadUrl(@RequestBody PresignRequest request) {
-        PresignedUpload upload = imageUploadService.createPresignedUpload(
-                request.fileName(), request.contentType(), request.fileSize());
-        return ResponseEntity.ok(upload);
+        try {
+            PresignedUpload upload = imageUploadService.createPresignedUpload(
+                    request.fileName(), request.contentType(), request.fileSize());
+            return ResponseEntity.ok(upload);
+        } catch (UnsupportedOperationException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "dev環境ではpresignアップロードをサポートしていません"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
+
+    @PostMapping("/image")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
+        UploadedImage uploadedImage = imageUploadService.uploadImage(file);
+        return ResponseEntity.ok(uploadedImage);
+    }
+
+    public record PresignRequest(String fileName, String contentType, long fileSize) {}
 }
 ```
 
 ### goodsujin — ユーザー認証・会員登録担当
-以下のスニペットは認証フローの 2 つの中心的な実装を示す。① `UserService.registerUser()` では `userRepository.findByUsername()` で ID の重複を事前チェックし、重複があれば `IllegalArgumentException` をスローする。パスワードは `passwordEncoder.encode()` で BCrypt ハッシュ化してから保存するため、平文は DB に残らない。② `UserController.loginSubmit()` では `userService.login()` の戻り値が `null` でなければ `session.setAttribute("loginUser", user)` でセッションにユーザー情報をセットし、ボードページへリダイレクトする。認証失敗時は `model` にエラーメッセージを乗せてログイン画面に戻す。
+以下のスニペットは認証フローの 2 つの中心的な実装を示す。① `UserService.registerUser()` では `userRepository.findByUsername()` で ID の重複を事前チェックし、重複があれば `IllegalArgumentException` をスローする。重複でなければ `username`・`name`・`region`・`prefecture` を全てセットしたうえで `passwordEncoder.encode()` で BCrypt ハッシュ化して保存する。`login()` では `passwordEncoder.matches()` で入力パスワードと DB のハッシュを照合し、一致すれば User を返す。② `UserController.loginSubmit()` では `returnUrl` パラメータを受け取り、ログイン成功後に元のページへ戻す動線を実装している。
 
 ```java
-// UserService.java — BCrypt でパスワードをハッシュ化して登録
+// UserService.java — 会員登録（重複チェック＋BCrypt）とログイン（matches 照合）
 @Service
 public class UserService {
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public void registerUser(String username, String name, String password,
                              String region, String prefecture) {
@@ -270,102 +321,196 @@ public class UserService {
             throw new IllegalArgumentException("このIDは既に使用されています。");
         }
         User user = new User();
+        user.setUsername(username);
+        user.setName(name);
         user.setPassword(passwordEncoder.encode(password));
+        user.setRegion(region);
+        user.setPrefecture(prefecture);
         userRepository.save(user);
+    }
+
+    public User login(String username, String password) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    @Transactional
+    public void withdrawUser(Long userId) {
+        userRepository.deleteById(userId);
     }
 }
 
-// UserController.java — ログイン処理：セッションにユーザー情報を保存
+// UserController.java — ログイン処理：returnUrl 対応＋セッション保存
 @PostMapping("/login")
-public String loginSubmit(@RequestParam String username,
-                          @RequestParam String password,
-                          HttpSession session, Model model) {
+public String loginSubmit(
+    @RequestParam String username,
+    @RequestParam String password,
+    @RequestParam(required = false) String returnUrl,
+    HttpSession session,
+    Model model
+) {
     User user = userService.login(username, password);
     if (user != null) {
         session.setAttribute("loginUser", user);
+        if (returnUrl != null && !returnUrl.isEmpty()) {
+            return "redirect:" + returnUrl;
+        }
         return "redirect:/board";
     }
     model.addAttribute("error", "IDまたはパスワードが一致しません");
+    model.addAttribute("returnUrl", returnUrl);
     return "user-login";
 }
 ```
 
 ### java0731kk — Post 掲示板・コメント・いいね機能担当
-以下のスニペットは 3 種の機能の核心設計を示す。① `Comment.java` では `parentId` フィールドで返信（大댓글）の親子関係を表現し、`@Transient` な `replies` リストでツリー構造をメモリ上で組み立てる。② `Like.java` では `targetType`（`"POST"` / `"COMMENT"` / `"REPLY"`）と `targetId` の組み合わせで投稿・コメント・返信のいいねを単一テーブルに統合管理する。③ `LikeRepository.java` では `findByTargetIdAndTargetTypeAndUserId()` で重複いいねをチェックし、`countByTargetIdAndTargetType()` で件数を取得する 2 つのクエリを Spring Data JPA で宣言している。
+以下のスニペットは 3 種の機能の核心設計を示す。① `Comment.java` では `parentId` フィールドで大댓글の親子関係を表現し、`@Transient` な `likeCount`・`likedByMe`・`replies` でいいね数・いいね済みフラグ・返信ツリーをメモリ上で保持する。② `Like.java` では `targetType`（`"POST"` / `"COMMENT"` / `"REPLY"`）と `targetId` の組み合わせで投稿・コメント・返信のいいねを単一テーブルに統合管理し、コンストラクタで一括初期化できる。③ `LikeRepository.java` では重複チェック・件数カウント・全取得の 3 クエリを Spring Data JPA で宣言している。
 
 ```java
-// Comment.java — 返信（大댓글）構造を parentId で管理
+// Comment.java — 大댓글構造（parentId）＋いいね・返信を @Transient で保持
 @Entity
 public class Comment {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long postId;
-    private Long parentId;   // 返信コメントの場合、親コメントの ID
+    private Long parentId;      // 大댓글の場合、親コメントの ID
     private String content;
+    private String author;
+    private LocalDateTime createdAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @Transient
-    private List<Comment> replies = new ArrayList<>();
+
+    @Transient private int likeCount;
+    @Transient private boolean likedByMe;
+    @Transient private List<Comment> replies = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) this.createdAt = LocalDateTime.now();
+    }
+    // Getter / Setter ...
 }
 
-// Like.java — Post / Comment / Reply を targetType で統一管理
+// Like.java — POST / COMMENT / REPLY を targetType で統一管理
 @Entity
 @Table(name = "likes")
 public class Like {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Long targetId;
     private String targetType;  // "POST", "COMMENT", "REPLY"
     private String userId;
+
+    public Like() {}
+
+    public Like(Long targetId, String targetType, String userId) {
+        this.targetId = targetId;
+        this.targetType = targetType;
+        this.userId = userId;
+    }
+    // Getter / Setter ...
 }
 
-// LikeRepository.java — いいね済みチェック・件数カウント
+// LikeRepository.java — 重複チェック・件数カウント・全取得の 3 クエリ
 public interface LikeRepository extends JpaRepository<Like, Long> {
     Optional<Like> findByTargetIdAndTargetTypeAndUserId(Long targetId, String targetType, String userId);
     long countByTargetIdAndTargetType(Long targetId, String targetType);
+    List<Like> findByTargetIdAndTargetType(Long targetId, String targetType);
 }
 ```
 
 ### min_chang_isaac — プロフィール管理担当
-以下のスニペットはプロフィール管理の全レイヤーを示す。① `Profile.java` では `@OneToOne(fetch = FetchType.LAZY)` と `@JoinColumn(name = "user_id", unique = true)` で `User` と 1 対 1 に紐付け、`imageUrl` と `introduction` の 2 フィールドでプロフィール情報を保持する。② `ProfileService.getByUserId()` では `orElseGet()` を利用してプロフィールが未作成のユーザーにも自動的に空のプロフィールを生成・保存して返す。③ `ProfileController` では `GET /{userId}` でプロフィールと直近 10 件の FoodBoard 投稿を Model に乗せて表示し、`POST /{userId}/edit` で `profileService.updateProfile()` を呼び出して編集内容を保存した後にリダイレクトする。
+以下のスニペットはプロフィール管理の全レイヤーを示す。① `Profile.java` では `@JsonIgnore` + `@OneToOne(fetch = FetchType.LAZY)` + `@JoinColumn(name = "user_id", unique = true)` で `User` と 1 対 1 に紐付け、`@Column` で `image_url`・`introduction`（最大 1000 文字）のカラム名を明示している。② `ProfileService` では `getByUserId()` が `orElseGet()` でプロフィール未作成ユーザーにも自動生成して返し、`updateProfile()` が introduction と imageUrl を上書き保存する。③ `ProfileController` では `GET /{userId}` でプロフィール・直近 10 件の FoodBoard・直近 10 件のコメントを Model に乗せて表示し、`POST /{userId}/edit` で編集内容を保存後にリダイレクトし、`POST /{userId}/withdraw` で会員脱退を処理する。
 
 ```java
-// Profile.java — User と 1 対 1 で紐付くプロフィールエンティティ
+// Profile.java — @JsonIgnore＋@OneToOne で User と 1 対 1 紐付け
 @Entity
 @Table(name = "profile")
 public class Profile {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "profile_id")
+    private Long profileId;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "introduction", length = 1000)
+    private String introduction;
+
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
-    private String imageUrl;
-    private String introduction;
+    // Getter / Setter ...
 }
 
-// ProfileService.java — プロフィールが未作成の場合は自動生成して返す
-public Profile getByUserId(Long userId) {
-    return profileRepository.findByUser_UserId(userId)
-        .orElseGet(() -> {
-            Profile p = new Profile();
-            p.setUser(userRepository.findById(userId).orElseThrow());
-            p.setIntroduction("");
-            return profileRepository.save(p);
-        });
+// ProfileService.java — 未作成プロフィールの自動生成と更新処理
+@Service
+public class ProfileService {
+
+    public Profile getByUserId(Long userId) {
+        return profileRepository.findByUser_UserId(userId)
+            .orElseGet(() -> {
+                Profile p = new Profile();
+                p.setUser(userRepository.findById(userId).orElseThrow());
+                p.setIntroduction("");
+                p.setImageUrl(null);
+                return profileRepository.save(p);
+            });
+    }
+
+    public void updateProfile(Long userId, Profile formProfile) {
+        Profile profile = getByUserId(userId);
+        profile.setIntroduction(formProfile.getIntroduction());
+        profile.setImageUrl(formProfile.getImageUrl());
+        profileRepository.save(profile);
+    }
 }
 
-// ProfileController.java — プロフィール表示・編集・会員脱退を担当
+// ProfileController.java — 表示・編集・会員脱退の 3 機能
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
+
     @GetMapping("/{userId}")
     public String showProfile(@PathVariable Long userId, Model model) {
         model.addAttribute("profile", profileService.getByUserId(userId));
         model.addAttribute("boards", foodBoardRepository.findTop10ByUser_UserIdOrderByCreatedAtDesc(userId));
+        model.addAttribute("comments", commentRepository.findTop10ByUser_UserIdOrderByCreatedAtDesc(userId));
         return "profile";
+    }
+
+    @GetMapping("/{userId}/edit")
+    public String editForm(@PathVariable Long userId, Model model) {
+        model.addAttribute("profile", profileService.getByUserId(userId));
+        return "profile_edit";
     }
 
     @PostMapping("/{userId}/edit")
     public String editProfile(@PathVariable Long userId, Profile formProfile) {
         profileService.updateProfile(userId, formProfile);
         return "redirect:/profile/" + userId;
+    }
+
+    @PostMapping("/{userId}/withdraw")
+    public String withdraw(@PathVariable Long userId, HttpSession session) {
+        userService.withdrawUser(userId);
+        session.invalidate();
+        return "redirect:/login";
     }
 }
 ```

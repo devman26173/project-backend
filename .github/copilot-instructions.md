@@ -202,14 +202,170 @@ PR 리뷰 시 다음 사항을 확인하고 표시해야 합니다:
 ### devman26173 — プロジェクト基盤・インフラ担当
 Spring Boot アプリケーションの初期設定を行い、Docker（Dockerfile・docker-compose.yml）と Maven によるビルド環境を構築。`application.properties` / `application-prod.yml` による環境別設定や README によるドキュメント管理など、プロジェクト全体のアーキテクチャと運用基盤に注力。
 
+```java
+// JoinApplication.java — アプリケーションのエントリーポイント
+@SpringBootApplication
+public class JoinApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(JoinApplication.class, args);
+    }
+}
+```
+
 ### devhyunju — FoodBoard システム担当
 Spring Boot の Controller / Service / Repository / Entity の全レイヤーと、Thymeleaf テンプレートを用いて飲食情報掲示板（FoodBoard）を実装。ファイルアップロード機能（FileUploadController）も担当し、投稿の作成・編集・閲覧画面を中心に開発。
+
+```java
+// FoodBoard.java — 飲食情報を管理するエンティティ
+@Entity
+public class FoodBoard {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+    private String title;
+    private String region;
+    private String prefecture;
+    private Integer rating;
+    @Column(columnDefinition = "TEXT")
+    private String content;
+    private String imageUrls;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+    // ...
+}
+
+// FoodBoardRepository.java — 地域・都道府県別・検索クエリを Spring Data JPA で定義
+public interface FoodBoardRepository extends JpaRepository<FoodBoard, Long> {
+    List<FoodBoard> findByRegionOrderByCreatedAtDesc(String region);
+    List<FoodBoard> findByPrefectureOrderByCreatedAtDesc(String prefecture);
+    List<FoodBoard> findByTitleContainingOrContentContainingOrderByCreatedAtDesc(String title, String content);
+}
+
+// FileUploadController.java — 画像ファイルのアップロード API（presigned URL 対応）
+@RestController
+@RequestMapping("/api/uploads")
+public class FileUploadController {
+    @PostMapping("/presign")
+    public ResponseEntity<?> createPresignedUploadUrl(@RequestBody PresignRequest request) {
+        PresignedUpload upload = imageUploadService.createPresignedUpload(
+                request.fileName(), request.contentType(), request.fileSize());
+        return ResponseEntity.ok(upload);
+    }
+}
+```
 
 ### goodsujin — ユーザー認証・会員登録担当
 Spring Boot + Spring Data JPA + Thymeleaf でログイン・サインアップ機能を構築。User / SignupForm の全レイヤー（Controller・Entity・Service・Repository）を実装し、認証フローの正確性とセキュリティを重視。
 
+```java
+// UserService.java — BCrypt でパスワードをハッシュ化して登録
+@Service
+public class UserService {
+    private final PasswordEncoder passwordEncoder;
+
+    public void registerUser(String username, String name, String password,
+                             String region, String prefecture) {
+        Optional<User> existingUser = userRepository.findByUsername(username);
+        if (existingUser.isPresent()) {
+            throw new IllegalArgumentException("このIDは既に使用されています。");
+        }
+        User user = new User();
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
+}
+
+// UserController.java — ログイン処理：セッションにユーザー情報を保存
+@PostMapping("/login")
+public String loginSubmit(@RequestParam String username,
+                          @RequestParam String password,
+                          HttpSession session, Model model) {
+    User user = userService.login(username, password);
+    if (user != null) {
+        session.setAttribute("loginUser", user);
+        return "redirect:/board";
+    }
+    model.addAttribute("error", "IDまたはパスワードが一致しません");
+    return "user-login";
+}
+```
+
 ### java0731kk — Post 掲示板・コメント・いいね機能担当
 Spring Boot + JPA で投稿（Post）・コメント（Comment）・いいね（Like）の CRUD 機能を実装。Thymeleaf テンプレートに加え CSS・JavaScript を活用し、ユーザーインタラクション（コメント投稿・いいね操作）のフロントエンド体験にも注力。
 
+```java
+// Comment.java — 返信（大댓글）構造を parentId で管理
+@Entity
+public class Comment {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Long postId;
+    private Long parentId;   // 返信コメントの場合、親コメントの ID
+    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    @Transient
+    private List<Comment> replies = new ArrayList<>();
+}
+
+// Like.java — Post / Comment / Reply を targetType で統一管理
+@Entity
+@Table(name = "likes")
+public class Like {
+    private Long targetId;
+    private String targetType;  // "POST", "COMMENT", "REPLY"
+    private String userId;
+}
+
+// LikeRepository.java — いいね済みチェック・件数カウント
+public interface LikeRepository extends JpaRepository<Like, Long> {
+    Optional<Like> findByTargetIdAndTargetTypeAndUserId(Long targetId, String targetType, String userId);
+    long countByTargetIdAndTargetType(Long targetId, String targetType);
+}
+```
+
 ### min_chang_isaac — プロフィール管理担当
 Spring Boot + JPA + Thymeleaf でユーザープロフィールの表示・編集機能を全レイヤー（Controller・Entity・Repository・Service）にわたって実装。プロフィール情報の正確な取得・更新と、直感的な編集 UI の提供に注力。
+
+```java
+// Profile.java — User と 1 対 1 で紐付くプロフィールエンティティ
+@Entity
+@Table(name = "profile")
+public class Profile {
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
+    private String imageUrl;
+    private String introduction;
+}
+
+// ProfileService.java — プロフィールが未作成の場合は自動生成して返す
+public Profile getByUserId(Long userId) {
+    return profileRepository.findByUser_UserId(userId)
+        .orElseGet(() -> {
+            Profile p = new Profile();
+            p.setUser(userRepository.findById(userId).orElseThrow());
+            p.setIntroduction("");
+            return profileRepository.save(p);
+        });
+}
+
+// ProfileController.java — プロフィール表示・編集・会員脱退を担当
+@Controller
+@RequestMapping("/profile")
+public class ProfileController {
+    @GetMapping("/{userId}")
+    public String showProfile(@PathVariable Long userId, Model model) {
+        model.addAttribute("profile", profileService.getByUserId(userId));
+        model.addAttribute("boards", foodBoardRepository.findTop10ByUser_UserIdOrderByCreatedAtDesc(userId));
+        return "profile";
+    }
+
+    @PostMapping("/{userId}/edit")
+    public String editProfile(@PathVariable Long userId, Profile formProfile) {
+        profileService.updateProfile(userId, formProfile);
+        return "redirect:/profile/" + userId;
+    }
+}
+```

@@ -29,8 +29,8 @@ erDiagram
 
     comment {
         BIGINT id PK "AUTO_INCREMENT"
-        BIGINT postId "게시글(FoodBoard) ID"
-        BIGINT parentId "대댓글 부모 ID (nullable)"
+        BIGINT postId "FoodBoard.Id (FK 없음, FoodBoard 전용)"
+        BIGINT parentId "대댓글 부모 ID (nullable, FK 없음)"
         VARCHAR content
         VARCHAR author
         DATETIME createdAt
@@ -54,7 +54,7 @@ erDiagram
         BIGINT id PK "AUTO_INCREMENT"
         BIGINT targetId "대상 게시글/댓글/답글 ID"
         VARCHAR targetType "POST / COMMENT / REPLY"
-        VARCHAR userId "사용자 식별자"
+        VARCHAR userId "임시 String (추후 FK 예정)"
     }
 
     prefectures {
@@ -85,14 +85,15 @@ erDiagram
 - **User — Profile**: 1:1 (`profile.user_id` → `users.userId`, UNIQUE)
 - **User — Post**: 1:N (`post.user_id` → `users.userId`)
 - **User — Comment**: 1:N (`comment.user_id` → `users.userId`)
+- **FoodBoard — Comment**: `comment.postId`가 `food_board.Id`를 저장 (명시적 FK 없음, **Post 엔티티와는 댓글 관계 없음**)
 - **User — FoodBoard**: 1:N (`food_board.user_id` → `users.userId`)
 - **Like**: 독립 테이블. `targetId` + `targetType`("POST"/"COMMENT"/"REPLY") 조합으로 좋아요 대상을 구분
 - **Prefecture**: 독립 참조 테이블 (다른 엔티티와 외래키 관계 없음)
 
 ## 비고
 
-- `Comment.postId`: FoodBoard의 ID를 저장 (명시적 FK 없음)
+- `Comment.postId`: FoodBoard의 ID를 저장 (명시적 FK 없음, **Post 엔티티와는 무관**)
 - `Comment.parentId`: 대댓글 구현용 자기 참조 필드 (명시적 FK 없음)
-- `Like.userId`: 현재 String 타입으로 임시 저장 (FK 없음)
+- `Like.userId`: 현재 String 타입으로 임시 저장 (FK 없음, 추후 `users.userId` FK로 교체 예정)
 - `Post.likeCount`, `Post.likedByMe`: `@Transient` — DB에 저장되지 않는 계산 필드
 - `FoodBoard.likeCount`, `FoodBoard.likedByMe`, `FoodBoard.commentCount`: `@Transient` — DB에 저장되지 않는 계산 필드

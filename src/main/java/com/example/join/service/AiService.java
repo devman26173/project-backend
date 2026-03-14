@@ -3,14 +3,12 @@ package com.example.join.service;
 import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
 public class AiService {
 
     private final ChatClient chatClient;

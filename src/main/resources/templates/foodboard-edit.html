@@ -201,14 +201,7 @@
 			loadPrefectures(selectedRegion, null);
 		   })
 		   
-		   //페이지 로드 시 현재 지역의 도시 목록 로드 
-		   window.addEventListener('DOMContentLoaded', function() {
-		           const initialUrls = imageUrlsInput.value;
-		           if (initialUrls && initialUrls.trim() !== '') {
-		               existingImageUrls = initialUrls.split(',').map(url => url.trim());
-		               updateExistingImages();
-		           }
-		       });
+		 
 		</script>
 		<script>
 		    // 페이지 로드 시 원본 데이터 저장
@@ -277,6 +270,11 @@
 			
 			//페이지 로드 시 기존 이미지 표시 
 			window.addEventListener('DOMContentLoaded', function(){
+				const initialRegion = regionSelect.value;
+				   if (initialRegion) {
+				       loadPrefectures(initialRegion, currentPrefecture);
+				   }
+				
 				const initialUrls = imageUrlsInput.value; 
 				if(initialUrls && initialUrls.trim() !== ''){
 					existingImageUrls = initialUrls.split(',').map(url => url.trim());
